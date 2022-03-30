@@ -55,10 +55,10 @@ def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,  
         mass = particles[:,2]
         charge = particles[:,3]
         
-        fCoulomb, potential = CoulombNBody(particles)#test
+        #fCoulomb, potential = CoulombNBody(particles)#test
         
-        #rMatrix, vMatrix = GetPosVelPairCMS(particles)
-        #fCoulomb, potential = CoulombNBody(rMatrix, charge)
+        rMatrix, vMatrix = GetPosVelPairCMS(particles)
+        fCoulomb, potential = CoulombNBody(rMatrix, charge)
 
         aCoulomb = fCoulomb / mass [:,None]
         #aCoulomb = np.zeros((n,3))#test
@@ -78,7 +78,7 @@ def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,  
             
             #potentialEnergy[k] = potentialEnergy[k] - 0.5*const*np.abs(charge[i])*Norm(r)**2 + potential[i] 
                         
-            """                         
+            #"""                         
                           
             if allowRecombination:
                 
@@ -114,8 +114,8 @@ def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,  
                 rv, t = Step(ODESystem, rv, t, dt, aCoulomb[i], mass[i], charge[i], trapParams)
 
 
-            """
-            rv, t = Step(ODESystem, rv, t, dt, aCoulomb[i], mass[i], charge[i], trapParams)#test
+            #"""
+            #rv, t = Step(ODESystem, rv, t, dt, aCoulomb[i], mass[i], charge[i], trapParams)#test
                 
                             
             r, v = rv            
@@ -141,7 +141,7 @@ def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,  
     
     stability = 0
     for i in range(n):
-        if((rMax[i] * 2000 / f2) > r0):
+        if((rMax[i] * 2 / f2) > 0.8 * r0):
             stability = stability + 1
         
     return rs, vs, Step.__name__, exeTime, energies, particles, stability

@@ -2,7 +2,7 @@
 #import matplotlib.pyplot as plt
 #from timeit import default_timer as timer
 #from copy import copy
-import sys
+#import sys
 
 #from scipy import interpolate
 #from multiprocessing import Pool, Process, Value
@@ -18,6 +18,10 @@ from stability import *
 
 
 if __name__ == '__main__':
+    
+    tmax = 2.5 * f2 / f1 #in normal time scale 5 * (1 / f1) -> five slower periods
+    dt = 1/(200) #in normal time scale 1/(100 * f2) -> faster period divided into 100 segments 
+
     """
     system = IonCrystal(1)
     
@@ -37,32 +41,32 @@ if __name__ == '__main__':
     for particle in system:
         particle[1] = np.zeros(3)
         
-    solution = ODEint(system, trapParams, tmax=1e-1, dt=1e-3, ODESystem=ODESystemCrystal,  Step=StepEulerAdvanced)      
+    solution = ODEint(system, trapParams, tmax, dt, ODESystem=ODESystemCrystal,  Step=StepEulerAdvanced)      
     PlotODESolution(solution)
     PlotFinalPositions(solution)
     """   
     
     
     """
-    initsystem = MakeParticleSystem(5,0)
-    #initsystem = ReadParticleSystem()
+    initsystem = MakeParticleSystem(0,1)
+    #initsystem = LoadParticleSystem('1') 
     
-    timeStep = 1e-2
-    endTime = 5e+2    
+    trapParams = np.array([0, 0.024, 0.37])
     
-    trapParams = np.array([0, 0, 0.5])
-    
-    ODESolution = ODEint(initsystem, trapParams, endTime, timeStep, ODESystemExact, StepEulerAdvanced)
+    ODESolution = ODEint(initsystem, trapParams, tmax, dt, ODESystemExact, StepEulerAdvanced)
     
     #PlotCoordinates(ODESolution)
-    #PlotEnergy(ODESolution)
+    PlotEnergy(ODESolution)
     PlotODESolution(ODESolution)
     """
     
     
     #"""
-    initsystem = MakeParticleSystem(6,0)
-    stability, plotParams = StabilityDiagram(initsystem, ODESystemExact, 0, 0.01, 30, 0.5, 1, 30, 5e+1, 1e-2) 
+    #initsystem = LoadParticleSystem('1')
+    initsystem = MakeParticleSystem(0,1)
+
+    stability, plotParams = StabilityDiagram(initsystem, ODESystemExact, 0, 0.14, 160, 0, 0.55, 300, tmax, dt) 
+
     PlotStability(stability, plotParams)
-    sys.modules[__name__].__dict__.clear()
+    #sys.modules[__name__].__dict__.clear()
     #"""

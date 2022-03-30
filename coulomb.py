@@ -1,10 +1,9 @@
 import numpy as np
 
-def Norm(position):
-    return np.linalg.norm(position)
+from parameters import *
 
 #CoulombForce -> Coulomb interaction between two particles
-#"""
+"""
 def CoulombForce(particle1, particle2):
     
     r1 = particle1[0]
@@ -42,9 +41,9 @@ def CoulombNBody(particles):
             potential[i] = potential[i] + potentials[i][j]
 
     return np.array(force), potential    
-#"""
-
 """
+
+#"""
 
 def GetPosVelPairCMS(particles):
     
@@ -111,4 +110,4 @@ def CoulombNBody(rMatrix, charges):
             potential[i] = potential[i] + potentials[i][j]
 
     return force, potential  
-"""   
+#"""   

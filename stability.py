@@ -48,11 +48,18 @@ def StabilityDiagram(system, ODESystem, q1Start=0, q1Stop=0.15, q1Resol=20, q2St
         
     pool.close()
     stop = timer()
-    print(stop-start)
+    time = stop-start
+    print(time)
     
-    nParticles = len(system)
+    n = len(system)
+    m = 0
     
-    params = np.array([q1Resol, q2Resol, nParticles])
+    for i in range(n):
+        if(system[i,3] > 0):
+            m = m + 1
+    nParticles = (m, n-m)#numer of ions and electrons
+        
+    params = np.array([q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nParticles, time, f1, f2])
     SaveStabilityDiagram(stability, params)
   
-    return stability, np.array([q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nParticles])    
+    return stability, params    

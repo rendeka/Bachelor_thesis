@@ -127,11 +127,16 @@ def PlotStability(data, params):
     X, Y = np.meshgrid(x_vals, y_vals) 
     
     
-    cp = plt.contourf(X, Y, data, cmap=cm.viridis)
+    cp = plt.contourf(X, Y, data)#, cmap=cm.viridis)
     plt.colorbar(cp)
     
-    fileName = 'pics/stability_diagrams/' + str(int(nParticles)) + '_particles_' + str(q2Resol) + 'x' + str(q1Resol)
+    nIons, nElectrons = nParticles
+    fileName = str(int(nIons)) + '_ions_' + str(int(nElectrons)) + '_electrons_' + 'q1_' + str(q1Start) + '-' + str(q1Stop) + '_q2_' + str(q2Start) + '-' + str(q2Stop)+ '_' + str(int(q2Resol)) + 'x' + str(int(q1Resol))
+  
     extensions = ['eps', 'png']
+    
+    plt.style.use('seaborn-colorblind')
+
     
     for extension in extensions:      
         plt.savefig(fileName + '.' + extension, format=extension)

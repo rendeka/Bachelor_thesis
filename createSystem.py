@@ -5,14 +5,14 @@ from integration import *
 from copy import copy
 import csv
 
-def RandomVelocity(T=4, mass=calciumMass, dim=3):
+def RandomVelocity(T=4, mass=ionMass, dim=3):
     Kb = 1.3806e-23
     maxElement = np.sqrt((2*Kb*T)/(3*mass))
     vector = 2 * maxElement * np.random.rand(dim) - maxElement
         
     return vector
 
-def RandomPosition(maxRadius=r0, dim=3):
+def RandomPosition(maxRadius=0.7 * r0, dim=3):
     
     vector = 2 * maxRadius * np.random.rand(dim) - maxRadius
     
@@ -23,8 +23,8 @@ def MakeParticleSystem(n=1,m=1):#system with n ions and m electrons
 
     for i in range(n): 
         position = RandomPosition()
-        velocity = RandomVelocity() 
-        mass = calciumMass
+        velocity = RandomVelocity(mass=ionMass) 
+        mass = ionMass
         charge = -electronCharge
         
         particle = np.array([position, velocity, mass, charge], dtype=object)
@@ -32,7 +32,7 @@ def MakeParticleSystem(n=1,m=1):#system with n ions and m electrons
         
     for i in range(m):
         position = RandomPosition()
-        velocity = RandomVelocity(T=4, mass=electronMass)
+        velocity = RandomVelocity(mass=electronMass)
         mass = electronMass
         charge = electronCharge
         
@@ -46,7 +46,7 @@ def MakeParticleGrid(n=10):
     spacing = 5e-9
     
     pos = np.ones(3) * -(np.cbrt(n)-1) * spacing / 2
-    mass = calciumMass
+    mass = ionMass
     charge = -electronCharge
     
     grid = []
@@ -127,8 +127,8 @@ def AddElectron(system):
 def AddIon(system):
     
     r = RandomPosition(maxRadius=1e-8) 
-    v = RandomVelocity(0.1, calciumMass)
-    m = calciumMass
+    v = RandomVelocity(0.1, ionMass)
+    m = ionMass
     c = -electronCharge
     
     ion = np.array([r, v, m, c], dtype=object)
@@ -179,8 +179,9 @@ def SaveParticleSystem(system, fileName='init_system'):
             
 def SaveStabilityDiagram(stability, params):
     
-    q1Resol, q2Resol, nParticles = params
-    fileName = str(nParticles) + '_particles_' + str(q2Resol) + 'x' + str(q1Resol)
+    q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nParticles, time, f1, f2 = params
+    nIons, nElectrons = nParticles
+    fileName = str(int(nIons)) + '_ions_' + str(int(nElectrons)) + '_electrons_' + 'q1_' + str(q1Start) + '-' + str(q1Stop) + '_q2_' + str(q2Start) + '-' + str(q2Stop)+ '_' + str(int(q2Resol)) + 'x' + str(int(q1Resol))
     
     with open(r"data/stability_diagrams/" + fileName + ".dat","w", newline="") as csvFile:
         csvWriter = csv.writer(csvFile, delimiter = "\t")

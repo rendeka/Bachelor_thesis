@@ -1,6 +1,10 @@
 import numpy as np
 from parameters import * 
 
+"""
+stability for light particle is stable for heavy particle if the condition q1 * (f2 / f1)**2 * (m2 / m1) < 0.9
+"""
+
 
 def ODESystemExact(rv, t, aCoulomb, mass, charge, trapParams): #exact equation of motion
     
@@ -15,7 +19,11 @@ def ODESystemExact(rv, t, aCoulomb, mass, charge, trapParams): #exact equation o
     #q1=0
     #q2=0.45
     
-    a, q1, q2 = trapParams
+    if (mass == electronMass):        
+        a, q1, q2 = trapParams
+    else:
+        a, q1, q2 = trapParams * (electronMass / ionMass)
+        
     
     r, v = rv
     x,y,z = r
