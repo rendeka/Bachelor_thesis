@@ -13,6 +13,7 @@ V0 = 0 #dc potential
 V1 = 5#slow ac potential  5
 V2 = 100 #fast ac potential 100
 
+Kb = 1.3806e-23#Boltzman constant
 
 #f1 = 3e6 * 2 * np.pi
 #f2 = 2.5e9 * 2 * np.pi
@@ -26,4 +27,4 @@ f1 = f2 / 13#test stability diagram
 
 
 const = 1e-3 #constant for harmonic potential
-const2 = 9.5e-1 #constant for damping force
+const2 = 4e-1 #constant for damping force
