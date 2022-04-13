@@ -75,7 +75,7 @@ def MakeStabilityDiagram():
     initsystem = LoadParticleSystem('1')     
     #initsystem = MakeParticleSystem(0,1)
     #SaveParticleSystem(initsystem, '1_170')
-    stability, plotParams = StabilityDiagram(initsystem, ODESystemExact, 0, 0.14, 2, 0, 0.6, 2, endTime, timeStep) 
+    stability, plotParams = StabilityDiagram(initsystem, ODESystemExact, 0, 0.14, 20, 0, 0.6, 20, endTime, timeStep) 
 
     PlotStability(stability, plotParams)    
 
@@ -90,13 +90,13 @@ if __name__ == '__main__':
     
     #SolveParticleSystem()
     
-    MakeStabilityDiagram()    
+    #MakeStabilityDiagram()    
     
-    """
+    #"""
     triangleStable = []
     triangleUnstable = []
 
-    data, params = LoadStabilityDiagram()
+    data, params = LoadStabilityDiagram('0_ions_1_electrons_q1_0-0.14_q2_0-0.6_20x20_13')
     
     def SaveTriang(tStable=triangleStable, tUnstable=triangleUnstable, parameters=params):
         SaveTriangles(tUnstable, tStable, parameters)  
@@ -133,5 +133,5 @@ if __name__ == '__main__':
 
     cid = fig.canvas.mpl_connect('button_press_event', onclick)
     plt.show()
-    """
+    #"""
 

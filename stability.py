@@ -10,32 +10,12 @@ from timeit import default_timer as timer
 from multiprocessing import Pool
 
 def IsStable(stabilityParam):
-    """    if stabilityParam < 0.8: #10000 * (2 / f2):
+    """    if stabilityParam < 0.8:
             return 0
         else:
             return 1
     """
     return stabilityParam
-
-def MakeList(system, ODESystem, q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, tmax, dt):
-    
-    q1Step = (q1Stop - q1Start) / q1Resol
-    q2Step = (q2Stop - q2Start) / q2Resol
-    
-    a = 0
-    
-    args = []
-    
-    q1 = q1Start
-    for i in range(q1Resol):
-        q2 = q2Start
-        for j in range(q2Resol):
-            params = [system, np.array([a,q1,q2]), tmax, dt, ODESystem]
-            args.append(tuple([params, i, j]))
-            q2 = q2 + q2Step
-        q1 = q1 + q1Step
-        
-    return np.array(args, dtype=object)
 
 def TriangleTest(p1, p2, p3):
     return (p1[0] - p3[0]) * (p2[1] - p3[1]) - (p2[0] - p3[0]) * (p1[1] - p3[1])
@@ -177,19 +157,48 @@ def IntWrapper(params, i, j):
     return result
 """
 
+def MakePoolList(system, ODESystem, q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, tmax, dt):
+    
+    q1Step = (q1Stop - q1Start) / q1Resol
+    q2Step = (q2Stop - q2Start) / q2Resol
+    
+    n = len(system)
+    m = 0
+    
+    for i in range(n):
+        if(system[i,3] > 0):
+            m = m + 1
+    nParticles = (m, n-m)#numer of ions and electrons
+    
+    a = 0
+    
+    args = []
+    loadParams = np.array([q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nParticles, int(f2/f1), None, None],dtype=object)#need to get all this data
+    
+    q1 = q1Start
+    for i in range(q1Resol):
+        q2 = q2Start
+        for j in range(q2Resol):
+            params = [system, np.array([a,q1,q2]), tmax, dt, ODESystem, loadParams]#loadParams are needed for ditching regions(parameter for LoadTriangles)
+            args.append(tuple([params, i, j]))
+            q2 = q2 + q2Step
+        q1 = q1 + q1Step
+        
+    return np.array(args, dtype=object)
+
 def IntWrapper(params, i, j):
     
     allowDitching = True
     
-    system, trapParams, tmax, dt, ODESystem = params
+    system, trapParams, tmax, dt, ODESystem, loadParams = params
     n = len(system)
     
     if allowDitching:
         
         a, q1, q2 = trapParams
         p = np.array([q2, q1])
-        
-        unstableRegion, stableRegion = LoadTriangles(params)
+                
+        unstableRegion, stableRegion = LoadTriangles(loadParams)
         
         if InTriangle(p, unstableRegion):
             stabilityValue = n
@@ -206,12 +215,12 @@ def IntWrapper(params, i, j):
 
 def StabilityDiagram(system, ODESystem, q1Start=0, q1Stop=0.15, q1Resol=20, q2Start=0, q2Stop=1, q2Resol=20, tmax=1.3e+2, dt=1e-2):
     
-    stability = np.zeros((q1Resol,q2Resol))
+    stability = np.zeros((q2Resol,q1Resol))
 
     start = timer()
 
-    pool = Pool()
-    args = MakeList(system, ODESystem, q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, tmax, dt)
+    pool = Pool()# take maximum available number of cpus
+    args = MakePoolList(system, ODESystem, q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, tmax, dt)
     results = pool.starmap(IntWrapper, args)
     
     for result in results:

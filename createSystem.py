@@ -289,35 +289,43 @@ def LoadTriangles(params):
     unstableFileName = 'unstable_' + str(int(nIons)) + '_ions_' + str(int(nElectrons)) + '_electrons_' + 'q1_' + str(q1Start) + '-' + str(q1Stop) + '_q2_' + str(q2Start) + '-' + str(q2Stop)+ '_' + str(int(q2Resol)) + 'x' + str(int(q1Resol)) + '_' + str(int(eta))
     
     unstableTriangles = []
-    with open(r"data/triangles/" + unstableFileName + ".dat") as csvFile:
-        csvReader = csv.reader(csvFile, delimiter = "\t")
+    
+    try:
+        with open(r"data/triangles/" + unstableFileName + ".dat") as csvFile:
+            csvReader = csv.reader(csvFile, delimiter = "\t")
+                    
+            for row in csvReader:
                 
-        for row in csvReader:
-            
-            triangle = []
-            data = row[0].split(',')
-            for i in range(3):
-                x = float(data[2*i])
-                y = float(data[2*i + 1])
-                triangle.append(np.array([x,y]))
-            triangle = np.array([triangle, int(data[-1])],dtype=object)
-            unstableTriangles.append(triangle)
-        unstableTriangles = np.array(unstableTriangles)
-
+                triangle = []
+                data = row[0].split(',')
+                for i in range(3):
+                    x = float(data[2*i])
+                    y = float(data[2*i + 1])
+                    triangle.append(np.array([x,y]))
+                triangle = np.array([triangle, int(data[-1])],dtype=object)
+                unstableTriangles.append(triangle)
+            unstableTriangles = np.array(unstableTriangles)
+    except Exception:
+        pass
+        
     stableTriangles = []
-    with open(r"data/triangles/" + stableFileName + ".dat") as csvFile:
-        csvReader = csv.reader(csvFile, delimiter = "\t")
+    
+    try:    
+        with open(r"data/triangles/" + stableFileName + ".dat") as csvFile:
+            csvReader = csv.reader(csvFile, delimiter = "\t")
+                    
+            for row in csvReader:
                 
-        for row in csvReader:
-            
-            triangle = []
-            data = row[0].split(',')
-            for i in range(3):
-                x = float(data[2*i])
-                y = float(data[2*i + 1])
-                triangle.append(np.array([x,y]))
-            triangle = np.array([triangle, int(data[-1])],dtype=object)
-            stableTriangles.append(triangle)
-        stableTriangles = np.array(unstableTriangles)            
+                triangle = []
+                data = row[0].split(',')
+                for i in range(3):
+                    x = float(data[2*i])
+                    y = float(data[2*i + 1])
+                    triangle.append(np.array([x,y]))
+                triangle = np.array([triangle, int(data[-1])],dtype=object)
+                stableTriangles.append(triangle)
+            stableTriangles = np.array(unstableTriangles)  
+    except Exception:
+        pass
 
     return unstableTriangles, stableTriangles
