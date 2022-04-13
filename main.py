@@ -16,57 +16,122 @@ from integration import *
 from createSystem import *
 from stability import *
 
-
-if __name__ == '__main__':
+def MakeCoulombCrystal(nCrystal = 36):
+    system, solution = IonCrystal(1)
     
-    tmax = 2.5 * f2 / f1 #in normal time scale 5 * (1 / f1) -> five slower periods
-    dt = 1/(200) #in normal time scale 1/(100 * f2) -> faster period divided into 100 segments 
-
-    """
-    system = IonCrystal(1)
-    
-    while len(system)<26:
+    while len(system) < nCrystal:
         
         #input("Press Enter to continue...")
         print(len(system))
         system = AddIon(system)
-        system = IonCrystal(system=system)
-    """ 
+        system, solution = IonCrystal(system=system)
+        
+    system, solution = IonCrystal(system=system)
+    
+    SaveParticleSystem(system, 'coulomb_crystals/' + str(int(nCrystal)))
+        
+    PlotODESolution(solution)
+    PlotFinalPositions(solution)
     
     
-    """    
-    system = LoadParticleSystem('coulomb_crystal_16')
-    trapParams = [0, 4.5, 0]
+def TestCoulombCrystal(nCrystal='36'):
+    system = LoadParticleSystem('coulomb_crystals/' + nCrystal)
+    trapParams = np.array([0, 0.4, 0])
     
     for particle in system:
         particle[1] = np.zeros(3)
         
-    solution = ODEint(system, trapParams, tmax, dt, ODESystem=ODESystemCrystal,  Step=StepEulerAdvanced)      
+    solution = ODEint(system, trapParams, 1*endTime, timeStep, ODESystem=ODESystemExact,  Step=StepEulerAdvanced)      
     PlotODESolution(solution)
     PlotFinalPositions(solution)
-    """   
+    print(TotalVelocity(system))
     
+    SaveParticleSystem(system, 'coulomb_crystals/crystal-evolution_' + nCrystal)
     
-    """
+def PlotCrystalTest(nCrystal='36'):
+    s=LoadParticleSystem('coulomb_crystals/crystal-evolution_' + nCrystal) 
+    sol = ODEint(s, np.array([0,0,0]), timeStep, timeStep, ODESystem=ODESystemExact,  Step=StepEulerAdvanced)
+    PlotFinalPositions(sol)
+    
+def SolveParticleSystem():
     initsystem = MakeParticleSystem(0,1)
+    #SaveParticleSystem(initsystem, '1')
+
     #initsystem = LoadParticleSystem('1') 
+    #initsystem = LoadParticleSystem('oneElectron')
     
-    trapParams = np.array([0, 0.024, 0.37])
+    #trapParams = np.array([0, 0.12, 0.45])
+    trapParams = np.array([0, 0.05, 0.6])#test
     
-    ODESolution = ODEint(initsystem, trapParams, tmax, dt, ODESystemExact, StepEulerAdvanced)
+    ODESolution = ODEint(initsystem, trapParams, 1*endTime, timeStep, ODESystemExact, StepEulerAdvanced)
     
     #PlotCoordinates(ODESolution)
     PlotEnergy(ODESolution)
     PlotODESolution(ODESolution)
+
+    
+def MakeStabilityDiagram():
+    #initsystem = LoadParticleSystem('1_170')
+    initsystem = LoadParticleSystem('1')     
+    #initsystem = MakeParticleSystem(0,1)
+    #SaveParticleSystem(initsystem, '1_170')
+    stability, plotParams = StabilityDiagram(initsystem, ODESystemExact, 0, 0.14, 2, 0, 0.6, 2, endTime, timeStep) 
+
+    PlotStability(stability, plotParams)    
+
+if __name__ == '__main__':
+    
+    timeStep = 1/(200) #in normal time scale 1/(100 * f2) -> faster period divided into 100 segments 
+    endTime = 2*2.5 * f2 / f1 #in normal time scale 5 * (1 / f1) -> five slower periods
+
+    #MakeCoulombCrystal()    
+    #TestCoulombCrystal()    
+    #PlotCrystalTest() 
+    
+    #SolveParticleSystem()
+    
+    MakeStabilityDiagram()    
+    
     """
-    
-    
-    #"""
-    #initsystem = LoadParticleSystem('1')
-    initsystem = MakeParticleSystem(0,1)
+    triangleStable = []
+    triangleUnstable = []
 
-    stability, plotParams = StabilityDiagram(initsystem, ODESystemExact, 0, 0.14, 160, 0, 0.55, 300, tmax, dt) 
+    data, params = LoadStabilityDiagram()
+    
+    def SaveTriang(tStable=triangleStable, tUnstable=triangleUnstable, parameters=params):
+        SaveTriangles(tUnstable, tStable, parameters)  
+        
+    q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nParticles, eta, f1, f2 = params
+    
+    fig = plt.figure()
+        
+    x_vals = np.linspace(q2Start, q2Stop, int(q2Resol))
+    y_vals = np.linspace(q1Start, q1Stop, int(q1Resol))
+    X, Y = np.meshgrid(x_vals, y_vals)  
 
-    PlotStability(stability, plotParams)
-    #sys.modules[__name__].__dict__.clear()
-    #"""
+    plt.xlabel('$q_{2}$')
+    plt.ylabel('$q_{1}$')
+    plt.contourf(X, Y, data)
+                
+    def onclick(event):
+        global triangleStable
+        global triangleUnstable
+        
+        if not((event.button is MouseButton.RIGHT)or(event.button is MouseButton.LEFT)):
+            fig.canvas.mpl_disconnect(cid)
+            
+        x, y = event.xdata, event.ydata
+        if(x != None):
+            print(x,y)
+            p = [x,y]
+                
+            if event.button is MouseButton.LEFT:
+                triangleUnstable.append(p)
+                
+            if event.button is MouseButton.RIGHT:
+                triangleStable.append(p)
+
+    cid = fig.canvas.mpl_connect('button_press_event', onclick)
+    plt.show()
+    """
+

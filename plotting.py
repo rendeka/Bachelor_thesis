@@ -19,9 +19,9 @@ def PlotODESolution(ODESolution):
     
     for i in range(n):
             
-        x = rs[i,:,0] * 2 / f2 * 1000
-        y = rs[i,:,1] * 2 / f2 * 1000
-        z = rs[i,:,2] * 2 / f2 * 1000
+        x = rs[i,:,0] * 1000#* 2 / f2 * 1000
+        y = rs[i,:,1] * 1000 #* 2 / f2 * 1000
+        z = rs[i,:,2] * 1000 #* 2 / f2 * 1000
         
         charge = system[i][3]
         if charge > 0:
@@ -54,13 +54,25 @@ def PlotEnergy(ODESolution):
     _, _, methodName, _, energies, _, _ = ODESolution
     
     totalEnergy = energies[0]
+    
+    fig = plt.figure()
 
-    plt.title("Total energy of the system in time")
-    plt.xlabel = 't'
-    plt.ylabel = 'Energy'            
-    plt.plot(np.arange(len(totalEnergy)),energies[0] ,label=methodName)
-    #plt.plot(np.arange(len(totalEnergy)),energies[1] ,label=methodName)
-    #plt.plot(np.arange(len(totalEnergy)),energies[2] ,label=methodName)
+    #plt.title("Total energy of the system in time")
+    plt.xlabel('t')
+    plt.ylabel('Energy')    
+        
+    plt.plot(np.arange(len(totalEnergy)),energies[0] ,label='Total energy')
+    plt.plot(np.arange(len(totalEnergy)),energies[1] ,label='Kinetic energy')
+    plt.plot(np.arange(len(totalEnergy)),energies[2] ,label='Potential energy')
+    
+    def onclick(event):
+        global ix, iy
+        ix, iy = event.xdata, event.ydata
+        print(ix, iy)
+        fig.canvas.mpl_disconnect(cid)
+    cid = fig.canvas.mpl_connect('button_press_event', onclick)
+    
+    plt.legend()
 
     plt.show()
     
@@ -89,9 +101,9 @@ def PlotFinalPositions(ODESolution):
     
     for i in range(n):
             
-        x = rs[i,-1,0] * 2 / f2 * 1000
-        y = rs[i,-1,1] * 2 / f2 * 1000
-        z = rs[i,-1,2] * 2 / f2 * 1000
+        x = rs[i,-1,0] * 1000 #* 2 / f2 * 1000
+        y = rs[i,-1,1] * 1000 #* 2 / f2 * 1000
+        z = rs[i,-1,2] * 1000 #* 2 / f2 * 1000
         
         charge = system[-1][3]
         if charge > 0:
@@ -118,27 +130,32 @@ def PlotFinalPositions(ODESolution):
     
 def PlotStability(data, params):
     
-    q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nParticles = params
+    q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nParticles, time, f1, f2 = params
     
-    plt.figure()
+    fig = plt.figure()
         
     x_vals = np.linspace(q2Start, q2Stop, int(q2Resol))
     y_vals = np.linspace(q1Start, q1Stop, int(q1Resol))
     X, Y = np.meshgrid(x_vals, y_vals) 
     
-    
-    cp = plt.contourf(X, Y, data)#, cmap=cm.viridis)
-    plt.colorbar(cp)
+    #cp = plt.contourf(X, Y, data)#, cmap=cm.viridis)
+    #plt.colorbar(cp)
+    plt.xlabel('$q_{2}$')
+    plt.ylabel('$q_{1}$')
+    #plt.ylabel("Calorie Burnage")
+    #plt.ylabel = '$q_{1}$'
+    #plt.clabel('$q_{2}$')
+    plt.contourf(X, Y, data)
     
     nIons, nElectrons = nParticles
-    fileName = str(int(nIons)) + '_ions_' + str(int(nElectrons)) + '_electrons_' + 'q1_' + str(q1Start) + '-' + str(q1Stop) + '_q2_' + str(q2Start) + '-' + str(q2Stop)+ '_' + str(int(q2Resol)) + 'x' + str(int(q1Resol))
+    fileName = str(int(nIons)) + '_ions_' + str(int(nElectrons)) + '_electrons_' + 'q1_' + str(q1Start) + '-' + str(q1Stop) + '_q2_' + str(q2Start) + '-' + str(q2Stop)+ '_' + str(int(q2Resol)) + 'x' + str(int(q1Resol)) + '_' + str(int(f2/f1))
   
     extensions = ['eps', 'png']
     
-    plt.style.use('seaborn-colorblind')
+    #plt.style.use('seaborn-colorblind')
 
     
     for extension in extensions:      
-        plt.savefig(fileName + '.' + extension, format=extension)
+        plt.savefig('pics/stability_diagrams/' + fileName + '.' + extension, format=extension)
     
     plt.show()

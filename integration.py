@@ -26,7 +26,7 @@ def DeleteRecombinedParticles(system, rs, vs, rMax):
 def Recombine(system, i, o):
     system[(i,o),3] = 0   
 
-def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,  Step=StepEulerAdvanced):
+def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,  Step=StepRungaKutta):
     
     #dt = GetDt(ODESystem)#get dt depending on system of ODEs you want to solve
     
@@ -42,41 +42,48 @@ def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,  
     vs = np.zeros((n,iterations,3)) #array of velocities in time for all particles
     rMax = np.zeros(n) #if rMax[i] > trashold(if it hits the electrode) then we declare particle[i] unstable
     potentialEnergy = np.zeros(iterations) #array of potential energy for the system in time
-    kineticEnergy = np.zeros(iterations) #array of kinetic energy for the system in time   
+    kineticEnergy = np.zeros(iterations) #array of kinetic energy for the system in time
+    
+    stabilityInt = np.zeros(n)#need to modify in case of recombination(in DeleteRecombinedParticles)
         
     for i in range(n): #initial positions and velocities
         rs[i][0] = particles[i][0]
         vs[i][0] = particles[i][1]
 
-    allowRecombination = False        
+    allowRecombination = False
+    freezeIons = True        
     
     for k in range(iterations - 1): #loop in time
         
         mass = particles[:,2]
         charge = particles[:,3]
         
-        #fCoulomb, potential = CoulombNBody(particles)#test
+        #fCoulomb, potentialCoulomb = CoulombNBody(particles)#test
         
         rMatrix, vMatrix = GetPosVelPairCMS(particles)
-        fCoulomb, potential = CoulombNBody(rMatrix, charge)
+        fCoulomb, potentialCoulomb = CoulombNBody(rMatrix, charge)
 
         aCoulomb = fCoulomb / mass [:,None]
-        #aCoulomb = np.zeros((n,3))#test
              
         for i in range(n): #loop through particles
             
             r = rs[i][k]
             v = vs[i][k]
             rv = np.array([r,v])
+            
+            #aCoulomb[i] = np.zeros(3)#test
 
             
             if(Norm(r) > rMax[i]):
                 rMax[i] = Norm(r) 
+                
+            stabilityInt[i] = stabilityInt[i] + np.dot(r,r)
             
-            kineticEnergy[k] = kineticEnergy[k] + 0.5 * mass[i] * Norm(v)**2 
-            potentialEnergy[k] = potentialEnergy[k] + potential[i] 
+            kineticEnergy[k] = kineticEnergy[k] + 0.5 * mass[i] * Norm(v)**2 * (f2/2)**2
+            potentialFromTrap = charge[i] * (V0 + V1 * np.cos(f1 * t) + V2 * np.cos(f2 * t) * (r[0]**2 + r[1]**2 - 2 * r[2]**2) / r0**2)
+            potentialEnergy[k] = potentialEnergy[k] + potentialCoulomb[i] + potentialFromTrap 
             
-            #potentialEnergy[k] = potentialEnergy[k] - 0.5*const*np.abs(charge[i])*Norm(r)**2 + potential[i] 
+            #potentialEnergy[k] = potentialEnergy[k] - 0.5*const*np.abs(charge[i])*Norm(r)**2 + potentialCoulomb[i] 
                         
             #"""                         
                           
@@ -111,7 +118,14 @@ def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,  
                     rv, t = Step(ODESystem, rv, t, finerDt, aCoulomb[i], mass[i], charge[i], trapParams)
                     
             else:
-                rv, t = Step(ODESystem, rv, t, dt, aCoulomb[i], mass[i], charge[i], trapParams)
+                if freezeIons:
+                    if(charge[i] > 0):
+                        t = t + dt
+                    else:
+                        rv, t = Step(ODESystem, rv, t, dt, aCoulomb[i], mass[i], charge[i], trapParams)
+                else:
+                    rv, t = Step(ODESystem, rv, t, dt, aCoulomb[i], mass[i], charge[i], trapParams)
+
 
 
             #"""
@@ -141,7 +155,12 @@ def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,  
     
     stability = 0
     for i in range(n):
-        if((rMax[i] * 2 / f2) > 0.8 * r0):
+        #print(rMax[i])
+        #if((rMax[i] * 2 / f2) > 0.8 * r0):
+        if(rMax[i] > 0.9 * r0):
             stability = stability + 1
+            
+    stabilityInt = np.sum(stabilityInt) * dt * 2 / (n * tmax * f2)
+    #print(stabilityInt)
         
-    return rs, vs, Step.__name__, exeTime, energies, particles, stability
+    return rs, vs, Step.__name__, exeTime, energies, particles, stability#stabilityInt

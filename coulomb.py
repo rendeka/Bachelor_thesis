@@ -81,8 +81,8 @@ def NeedFinerTimeStep(r, v, dt):
 
 def CoulombForce(r, charges):
     
-    c = 4 * np.pi * 8.854e-12
-    force = 1/c * charges * Norm(r)**(-3) * r
+    c = 1 /(4 * np.pi * 8.854e-12) * (2/f2)**2 #term (2/f2)**2 is due to time scaling 
+    force = c * charges * Norm(r)**(-3) * r
     potential = np.dot(force,r)#this is potential energy
     
     return np.array(force), potential
