@@ -76,13 +76,42 @@ def MakeStabilityDiagram():
     #initsystem = MakeParticleSystem(0,1)
     #SaveParticleSystem(initsystem, 'test')
     
-    fileName = '0_ions_1_electrons_q1_0.0-0.25_q2_0.0-1.0_5x5_3'
-    #stability, plotParams = StabilityDiagram(initsystem, ODESystemExact, 0.0, 0.25, 5, 0.0, 1.0, 5, endTime, timeStep) 
-    stability, plotParams = StabilityDiagramEdge(initsystem, ODESystemExact, fileName, 0.0, 0.25, 10, 0.0, 1.0, 10, endTime, timeStep)
+    stability, plotParams = StabilityDiagram(initsystem, ODESystemExact, 0.0, 0.25, 10, 0.0, 1.0, 10, endTime, timeStep) 
+    #stability, plotParams = StabilityDiagram(initsystem, ODESystemExact, 0.0, 0.25, 160, 0.0, 1.0, 160, endTime, timeStep) 
+        
+    PlotStability(stability, plotParams)   
+
+def MakeStabilityDiagramEdge(previousFileName=None, q1Start=0.0, q1Stop=0.04, q1Resol=8, q2Start=0.0, q2Stop=0.5, q2Resol=8):
+    initsystem = LoadParticleSystem('test')
     
+    start = timer()#to track real time of the computation
+
+
+    if previousFileName == None:
+        stability, plotParams = StabilityDiagram(initsystem, ODESystemExact, q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, endTime, timeStep)
+        nParticles = plotParams[-4]
+        nIons, nElectrons = nParticles
+    else:
+        q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nIons, nElectrons, eta = ParseFileName(previousFileName)
+        
+    for i in range(2):
+        
+        scaleFactor = 2
+        
+        previousFileName = str(int(nIons)) + '_ions_' + str(int(nElectrons)) + '_electrons_' + 'q1_' + str(q1Start) + '-' + str(q1Stop) + '_q2_' + str(q2Start) + '-' + str(q2Stop)+ '_' + str(int(q2Resol)) + 'x' + str(int(q1Resol)) + '_' + str(int(f2/f1))
+
+        q1Resol = scaleFactor * q1Resol - (scaleFactor - 1)
+        q2Resol = scaleFactor * q2Resol - (scaleFactor - 1)
+                
+        stability, plotParams = StabilityDiagramEdge(initsystem, ODESystemExact, previousFileName, q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, endTime, timeStep)
+        
+    PlotStability(stability, plotParams)
     
-    print(stability)
-    PlotStability(stability, plotParams)    
+    stop = timer()#to track real time of the computation
+    time = stop - start
+    
+    print('total time: ', time)
+
     
     
 if __name__ == '__main__':
@@ -95,7 +124,8 @@ if __name__ == '__main__':
     
     #SolveParticleSystem()
     
-    MakeStabilityDiagram()    
+    #MakeStabilityDiagram()
+    MakeStabilityDiagramEdge()    
     
     #params = ClickStabilityRegions('0_ions_1_electrons_q1_0.0-0.04_q2_0.0-0.5_10x10_833')
     #unstableRegion, stableRegion = LoadTriangles(params)

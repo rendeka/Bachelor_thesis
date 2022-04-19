@@ -194,8 +194,7 @@ def SaveStabilityDiagram(stability, params):
         for row in stability:
             csvWriter.writerow([str(row)[1:-1]])
             
-def LoadStabilityDiagram(fileName='0_ions_1_electrons_q1_0-0.06_q2_0-0.48_700x700_13'):
-    
+def ParseFileName(fileName='0_ions_1_electrons_q1_0-0.06_q2_0-0.48_700x700_13'):
     parseFileName = fileName.split('_')
     
     nIons = int(parseFileName[0])
@@ -214,6 +213,12 @@ def LoadStabilityDiagram(fileName='0_ions_1_electrons_q1_0-0.06_q2_0-0.48_700x70
     q2Resol = int(parseResol[0])
     
     eta = parseFileName[9]
+    
+    return np.array([q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nIons, nElectrons, eta],dtype=object)
+            
+def LoadStabilityDiagram(fileName='0_ions_1_electrons_q1_0-0.06_q2_0-0.48_700x700_13'):
+    
+    q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nIons, nElectrons, eta = ParseFileName(fileName)
     
     stability = np.zeros((q1Resol,q2Resol))
     

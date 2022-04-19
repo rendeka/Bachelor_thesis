@@ -15,8 +15,8 @@ V2 = 100 #fast ac potential 100
 
 Kb = 1.3806e-23#Boltzman constant
 
-#f1 = 3e6 * 2 * np.pi
-#f2 = 2.5e9 * 2 * np.pi
+f1 = 3e6 * 2 * np.pi
+f2 = 2.5e9 * 2 * np.pi
 
 #f2 = 6e8 * 2 * np.pi#test
 #f1 = f2 / 13#test stability diagram
@@ -24,8 +24,8 @@ Kb = 1.3806e-23#Boltzman constant
 #f2 = 6e8 * 2 * np.pi#test
 #f1 = f2 / 170#test trajectory
 
-f2 = 6e8 * 2 * np.pi#test
-f1 = f2 / 3#test stability diagram
+#f2 = 6e8 * 2 * np.pi#test
+#f1 = f2 / 3#test stability diagram
 
 
 

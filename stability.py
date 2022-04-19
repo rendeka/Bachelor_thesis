@@ -173,6 +173,9 @@ def MakePoolListEdge(system, ODESystem, q1Start, q1Stop, q1Resol, q2Start, q2Sto
     
     needComputation, previous_q1Resol, previous_q2Resol = needComputationPack
     
+    previous_q1Step = (q1Stop - q1Start) / previous_q1Resol
+    previous_q2Step = (q2Stop - q2Start) / previous_q2Resol
+    
     n = len(system)
     m = 0    
     for i in range(n):
@@ -184,13 +187,17 @@ def MakePoolListEdge(system, ODESystem, q1Start, q1Stop, q1Resol, q2Start, q2Sto
     
     args = []
     
-    a = 0    
+    a = 0  
+    
+    previous_i = 0
+    previous_j = 0
+    
     q1 = q1Start
     for i in range(q1Resol):
         q2 = q2Start
         for j in range(q2Resol):
-            previous_i = int(np.round(i * previous_q1Resol / q1Resol))            
-            previous_j = int(np.round(j * previous_q2Resol / q2Resol))            
+            previous_i = int(np.round(i * q1Step / previous_q1Step))            
+            previous_j = int(np.round(j * q2Step / previous_q2Step))            
             
             stabilityValue = needComputation[previous_i, previous_j]
                 
@@ -224,8 +231,9 @@ def StabilityDiagramEdge(system, ODESystem, previousFile, q1Start=0.0, q1Stop=0.
     
     stability = np.zeros((q1Resol, q2Resol))
     needComputationPack = PrepForStabilityEdge(previousFile)
-
-    start = timer()
+    
+    #print(needComputationPack[0])
+    #start = timer()
 
     pool = Pool()# take maximum available number of cpus
     args = MakePoolListEdge(system, ODESystem, q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, tmax, dt, needComputationPack)
@@ -237,9 +245,10 @@ def StabilityDiagramEdge(system, ODESystem, previousFile, q1Start=0.0, q1Stop=0.
         stability[i,j] = stabilityValue
         
     pool.close()
-    stop = timer()
-    time = stop-start
-    print(time)
+    
+    #stop = timer()
+    #time = stop-start
+    #print(time)
     
     n = len(system)
     m = 0    
@@ -248,7 +257,7 @@ def StabilityDiagramEdge(system, ODESystem, previousFile, q1Start=0.0, q1Stop=0.
             m = m + 1
     nParticles = (m, n-m)#numer of (ions, electrons)
         
-    params = np.array([q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nParticles, time, f1, f2], dtype=object)
+    params = np.array([q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nParticles, None, f1, f2], dtype=object)
     SaveStabilityDiagram(stability, params)
   
     return stability, params   
@@ -277,19 +286,19 @@ def PrepForStabilityEdge(fileName='0_ions_1_electrons_q1_0-0.06_q2_0-0.48_700x70
             needComputation[i+1,j] = -1
         
     def GoToNeighbour(i,j):
-        if not((i == q1Resol) and (j == q2Resol)):
-            if i == q1Resol:
+        if not((i == q1Resol-1) and (j == q2Resol-1)):
+            if i == q1Resol-1:
                 TalkToRightNeighbour(i,j)
                 
-            elif j == q2Resol:
+            elif j == q2Resol-1:
                 TalkToTopNeighbour(i,j)
                 
             else:
                 TalkToRightNeighbour(i,j)
                 TalkToTopNeighbour(i,j) 
                
-    for i in range(q1Resol-1):
-        for j in range(q2Resol-1):
+    for i in range(q1Resol):
+        for j in range(q2Resol):
             GoToNeighbour(i, j)
             
     return np.array([needComputation, q1Resol, q2Resol], dtype=object)
