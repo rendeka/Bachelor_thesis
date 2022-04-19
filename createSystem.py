@@ -198,8 +198,8 @@ def LoadStabilityDiagram(fileName='0_ions_1_electrons_q1_0-0.06_q2_0-0.48_700x70
     
     parseFileName = fileName.split('_')
     
-    nIons = int(parseFileName[2])
-    nElectrons = int(parseFileName[0])
+    nIons = int(parseFileName[0])
+    nElectrons = int(parseFileName[2])
     
     parseQ1 = parseFileName[5].split('-')
     q1Start = float(parseQ1[0])
@@ -255,8 +255,8 @@ def SaveTriangles(triangleUnstable, triangleStable, params):
     for i in range(nStable):
         stables.append([triangleStable[i*3:i*3 + 3], n])
     
-    fileNameStable = 'stable_' + str(int(nIons)) + '_ions_' + str(int(nElectrons)) + '_electrons_' + 'q1_' + str(q1Start) + '-' + str(q1Stop) + '_q2_' + str(q2Start) + '-' + str(q2Stop)+ '_' + str(int(q2Resol)) + 'x' + str(int(q1Resol)) + '_' + str(int(eta))
-    fileNameUnstable = 'unstable_' + str(int(nIons)) + '_ions_' + str(int(nElectrons)) + '_electrons_' + 'q1_' + str(q1Start) + '-' + str(q1Stop) + '_q2_' + str(q2Start) + '-' + str(q2Stop)+ '_' + str(int(q2Resol)) + 'x' + str(int(q1Resol)) + '_' + str(int(eta))
+    fileNameStable = 'stable_' + str(int(nIons)) + '_ions_' + str(int(nElectrons)) + '_electrons_' + 'q1_' + str(q1Start) + '-' + str(q1Stop) + '_q2_' + str(q2Start) + '-' + str(q2Stop) + '_' + str(int(eta))
+    fileNameUnstable = 'unstable_' + str(int(nIons)) + '_ions_' + str(int(nElectrons)) + '_electrons_' + 'q1_' + str(q1Start) + '-' + str(q1Stop) + '_q2_' + str(q2Start) + '-' + str(q2Stop) + '_' + str(int(eta))
     
     with open(r"data/triangles/" + fileNameUnstable + ".dat","w", newline="") as csvFile:
         csvWriter = csv.writer(csvFile, delimiter = "\t")
@@ -285,9 +285,9 @@ def LoadTriangles(params):
     nIons, nElectrons = nParticles
     n = nIons + nElectrons
     
-    stableFileName = 'stable_' + str(int(nIons)) + '_ions_' + str(int(nElectrons)) + '_electrons_' + 'q1_' + str(q1Start) + '-' + str(q1Stop) + '_q2_' + str(q2Start) + '-' + str(q2Stop)+ '_' + str(int(q2Resol)) + 'x' + str(int(q1Resol)) + '_' + str(int(eta))
-    unstableFileName = 'unstable_' + str(int(nIons)) + '_ions_' + str(int(nElectrons)) + '_electrons_' + 'q1_' + str(q1Start) + '-' + str(q1Stop) + '_q2_' + str(q2Start) + '-' + str(q2Stop)+ '_' + str(int(q2Resol)) + 'x' + str(int(q1Resol)) + '_' + str(int(eta))
-    
+    stableFileName = 'stable_' + str(int(nIons)) + '_ions_' + str(int(nElectrons)) + '_electrons_' + 'q1_' + str(q1Start) + '-' + str(q1Stop) + '_q2_' + str(q2Start) + '-' + str(q2Stop)+ '_'  + str(int(eta))
+    unstableFileName = 'unstable_' + str(int(nIons)) + '_ions_' + str(int(nElectrons)) + '_electrons_' + 'q1_' + str(q1Start) + '-' + str(q1Stop) + '_q2_' + str(q2Start) + '-' + str(q2Stop)+ '_' + str(int(eta))
+        
     unstableTriangles = []
     
     try:

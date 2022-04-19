@@ -49,7 +49,7 @@ def TestCoulombCrystal(nCrystal='36'):
     SaveParticleSystem(system, 'coulomb_crystals/crystal-evolution_' + nCrystal)
     
 def PlotCrystalTest(nCrystal='36'):
-    s=LoadParticleSystem('coulomb_crystals/crystal-evolution_' + nCrystal) 
+    s = LoadParticleSystem('coulomb_crystals/crystal-evolution_' + nCrystal) 
     sol = ODEint(s, np.array([0,0,0]), timeStep, timeStep, ODESystem=ODESystemExact,  Step=StepEulerAdvanced)
     PlotFinalPositions(sol)
     
@@ -72,66 +72,32 @@ def SolveParticleSystem():
     
 def MakeStabilityDiagram():
     #initsystem = LoadParticleSystem('1_170')
-    initsystem = LoadParticleSystem('1')     
+    initsystem = LoadParticleSystem('test')     
     #initsystem = MakeParticleSystem(0,1)
-    #SaveParticleSystem(initsystem, '1_170')
-    stability, plotParams = StabilityDiagram(initsystem, ODESystemExact, 0, 0.14, 20, 0, 0.6, 20, endTime, timeStep) 
-
+    #SaveParticleSystem(initsystem, 'test')
+    
+    fileName = '0_ions_1_electrons_q1_0.0-0.25_q2_0.0-1.0_5x5_3'
+    #stability, plotParams = StabilityDiagram(initsystem, ODESystemExact, 0.0, 0.25, 5, 0.0, 1.0, 5, endTime, timeStep) 
+    stability, plotParams = StabilityDiagramEdge(initsystem, ODESystemExact, fileName, 0.0, 0.25, 10, 0.0, 1.0, 10, endTime, timeStep)
+    
+    
+    print(stability)
     PlotStability(stability, plotParams)    
-
+    
+    
 if __name__ == '__main__':
     
     timeStep = 1/(200) #in normal time scale 1/(100 * f2) -> faster period divided into 100 segments 
-    endTime = 2*2.5 * f2 / f1 #in normal time scale 5 * (1 / f1) -> five slower periods
-
+    endTime = 1*2.5 * f2 / f1 #in normal time scale 5 * (1 / f1) -> five slower periods
     #MakeCoulombCrystal()    
     #TestCoulombCrystal()    
     #PlotCrystalTest() 
     
     #SolveParticleSystem()
     
-    #MakeStabilityDiagram()    
+    MakeStabilityDiagram()    
     
-    #"""
-    triangleStable = []
-    triangleUnstable = []
+    #params = ClickStabilityRegions('0_ions_1_electrons_q1_0.0-0.04_q2_0.0-0.5_10x10_833')
+    #unstableRegion, stableRegion = LoadTriangles(params)
 
-    data, params = LoadStabilityDiagram('0_ions_1_electrons_q1_0-0.14_q2_0-0.6_20x20_13')
-    
-    def SaveTriang(tStable=triangleStable, tUnstable=triangleUnstable, parameters=params):
-        SaveTriangles(tUnstable, tStable, parameters)  
-        
-    q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nParticles, eta, f1, f2 = params
-    
-    fig = plt.figure()
-        
-    x_vals = np.linspace(q2Start, q2Stop, int(q2Resol))
-    y_vals = np.linspace(q1Start, q1Stop, int(q1Resol))
-    X, Y = np.meshgrid(x_vals, y_vals)  
-
-    plt.xlabel('$q_{2}$')
-    plt.ylabel('$q_{1}$')
-    plt.contourf(X, Y, data)
-                
-    def onclick(event):
-        global triangleStable
-        global triangleUnstable
-        
-        if not((event.button is MouseButton.RIGHT)or(event.button is MouseButton.LEFT)):
-            fig.canvas.mpl_disconnect(cid)
-            
-        x, y = event.xdata, event.ydata
-        if(x != None):
-            print(x,y)
-            p = [x,y]
-                
-            if event.button is MouseButton.LEFT:
-                triangleUnstable.append(p)
-                
-            if event.button is MouseButton.RIGHT:
-                triangleStable.append(p)
-
-    cid = fig.canvas.mpl_connect('button_press_event', onclick)
-    plt.show()
-    #"""
-
+    #SaveTriangles(triangleUnstable, triangleStable, params)

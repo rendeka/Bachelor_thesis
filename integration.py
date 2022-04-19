@@ -44,7 +44,7 @@ def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,  
     potentialEnergy = np.zeros(iterations) #array of potential energy for the system in time
     kineticEnergy = np.zeros(iterations) #array of kinetic energy for the system in time
     
-    stabilityInt = np.zeros(n)#need to modify in case of recombination(in DeleteRecombinedParticles)
+    #stabilityInt = np.zeros(n)#need to modify in case of recombination(in DeleteRecombinedParticles)
         
     for i in range(n): #initial positions and velocities
         rs[i][0] = particles[i][0]
@@ -77,11 +77,11 @@ def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,  
             if(Norm(r) > rMax[i]):
                 rMax[i] = Norm(r) 
                 
-            stabilityInt[i] = stabilityInt[i] + np.dot(r,r)
+            #stabilityInt[i] = stabilityInt[i] + np.dot(r,r)
             
-            kineticEnergy[k] = kineticEnergy[k] + 0.5 * mass[i] * Norm(v)**2 * (f2/2)**2
-            potentialFromTrap = charge[i] * (V0 + V1 * np.cos(f1 * t) + V2 * np.cos(f2 * t) * (r[0]**2 + r[1]**2 - 2 * r[2]**2) / r0**2)
-            potentialEnergy[k] = potentialEnergy[k] + potentialCoulomb[i] + potentialFromTrap 
+            #kineticEnergy[k] = kineticEnergy[k] + 0.5 * mass[i] * Norm(v)**2 * (f2/2)**2
+            #potentialFromTrap = charge[i]**2 * (V0 + V1 * np.cos(f1 * t) + V2 * np.cos(f2 * t) * (r[0]**2 + r[1]**2 - 2 * r[2]**2) / r0**2)
+            #potentialEnergy[k] = potentialEnergy[k] + potentialCoulomb[i] + potentialFromTrap 
             
             #potentialEnergy[k] = potentialEnergy[k] - 0.5*const*np.abs(charge[i])*Norm(r)**2 + potentialCoulomb[i] 
                         
@@ -132,7 +132,12 @@ def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,  
             #rv, t = Step(ODESystem, rv, t, dt, aCoulomb[i], mass[i], charge[i], trapParams)#test
                 
                             
-            r, v = rv            
+            r, v = rv
+            
+            if np.isposinf(np.dot(r,r)) or np.isposinf(np.dot(v,v)):
+                stability = n
+                return None, None, Step.__name__, None, None, particles, stability#stabilityInt
+                
             
             rs[i][k+1] = r
             vs[i][k+1] = v
@@ -147,11 +152,11 @@ def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,  
     end = timer()#to track real time of the computation
     exeTime = round((end - start), 2)
     
-    kineticEnergy = kineticEnergy[:-1]#just deleting last element
-    potentialEnergy = potentialEnergy[:-1]    
+    #kineticEnergy = kineticEnergy[:-1]#just deleting last element
+    #potentialEnergy = potentialEnergy[:-1]    
     
-    energy = kineticEnergy + potentialEnergy
-    energies = [energy, kineticEnergy, potentialEnergy]
+    #energy = kineticEnergy + potentialEnergy
+    energies = [0,0,0]#[energy, kineticEnergy, potentialEnergy]
     
     stability = 0
     for i in range(n):
@@ -160,7 +165,7 @@ def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,  
         if(rMax[i] > 0.9 * r0):
             stability = stability + 1
             
-    stabilityInt = np.sum(stabilityInt) * dt * 2 / (n * tmax * f2)
+    #stabilityInt = np.sum(stabilityInt) * dt * 2 / (n * tmax * f2)
     #print(stabilityInt)
         
     return rs, vs, Step.__name__, exeTime, energies, particles, stability#stabilityInt
