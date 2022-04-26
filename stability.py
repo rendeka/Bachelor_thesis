@@ -1,3 +1,17 @@
+"""
+In this module we make diagrams of stability depending on trap parameters setting.
+We also use two approaches to try to decrease time needed for making such a diagram.
+First approach is to make low resolution picture first, then mark regions which you are sure to be stable
+or unstable with help of function ClickStabilityRegions() and in this regions we won't solve equations of motion
+for much higher resolution, saving precious time.
+The second approach is to gradually compute stability diagram for higher and higher resolutions, but in this case we
+solve equations of motion only on the edge between stable and unstable regions, which increase the speed of computation radically.
+(Functions working this way have the name ending with 'Edge'). This approach is much faster but has it's own drawbacks.
+If we start with the picture with low resolution and then continue to improove quality just od the edge of stability,
+then we won't by able to detect thin stability strips that escaped our sight in low resolution setting.
+"""
+
+
 import numpy as np
 
 import matplotlib.pyplot as plt
@@ -5,21 +19,31 @@ from matplotlib.backend_bases import MouseButton
 from matplotlib import cm           # Colour maps for the contour graph
 
 from integration import *
-from createSystem import *
+#from createSystem import *
+from fileHandling import *
+
 from timeit import default_timer as timer
 from multiprocessing import Pool
 
+"""
+Function IsStable() decides whether given stability parameters corresponds to stable or unstable trajectory.
+In this case it doesn't do anything.
+"""
 def IsStable(stabilityParam):
-    """    if stabilityParam < 0.8:
-            return 0
-        else:
-            return 1
-    """
-    return stabilityParam
+    result = stabilityParam
+    return result
 
+"""
+Function TriangleTest() is given 3 points in x-y plane. Points p2 and p3 define a straight line dividing x-y plane into two.
+TriangleTest() checks on which half-plane the point p1 is. 
+"""
 def TriangleTest(p1, p2, p3):
     return (p1[0] - p3[0]) * (p2[1] - p3[1]) - (p2[0] - p3[0]) * (p1[1] - p3[1])
 
+"""
+Function InTriangle() has two arguments. First is p -> position in x-y plane. Second is list of tringles.
+If point p belongs in some of the given triangles, InTriangle() returns True, else it returns False
+"""
 def InTriangle(p, regions):
     
     for region in regions:
@@ -34,7 +58,10 @@ def InTriangle(p, regions):
             return True
     
     return False    
-
+"""
+Function MakePoolList() prepares list of arguments for parallel computing. Each element from this list is
+argument for function IntWrapper().
+"""
 def MakePoolList(system, ODESystem, q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, tmax, dt):
     
     q1Step = (q1Stop - q1Start) / q1Resol
@@ -47,7 +74,7 @@ def MakePoolList(system, ODESystem, q1Start, q1Stop, q1Resol, q2Start, q2Stop, q
             m = m + 1
     nParticles = (m, n-m)#numer of (ions, electrons)
 
-    loadParams = np.array([q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nParticles, int(f2/f1), None, None],dtype=object)#need to get all this data    
+    loadParams = np.array([q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nParticles, int(f2/f1), f1, f2],dtype=object)  
     unstableRegion, stableRegion = LoadTriangles(loadParams)
     
     args = []
@@ -59,14 +86,14 @@ def MakePoolList(system, ODESystem, q1Start, q1Stop, q1Resol, q2Start, q2Stop, q
         for j in range(q2Resol):
             
             p = np.array([q2, q1])
-            if InTriangle(p, unstableRegion):
+            if InTriangle(p, unstableRegion):# here we decide whether we need to compute the stability value or whether we already know it for given parameters
                 stabilityValue = n
             elif InTriangle(p, stableRegion):
                 stabilityValue = 0
             else:
                 stabilityValue = -1
                 
-            params = [system, np.array([a,q1,q2]), tmax, dt, ODESystem, loadParams]#loadParams are needed for ditching regions(parameter for LoadTriangles)
+            params = [system, np.array([a,q1,q2]), tmax, dt, ODESystem]
             args.append(tuple([params, i, j, stabilityValue]))
             
             q2 = q2 + q2Step
@@ -74,20 +101,17 @@ def MakePoolList(system, ODESystem, q1Start, q1Stop, q1Resol, q2Start, q2Stop, q
         
     return np.array(args, dtype=object)
 
+"""
+Function IntWrapper returns stability value for given set of trapping paramaters.
+"""
 def IntWrapper(params, i, j, stabilityValue):
-    
-    allowDitching = True
-    
-    system, trapParams, tmax, dt, ODESystem, loadParams = params
-    n = len(system)
-    
-    if allowDitching:
         
-        if stabilityValue == -1:
-            stabilityValue = ODEint(system, trapParams, tmax, dt, ODESystem)[-1]
+    system, trapParams, tmax, dt, ODESystem = params
+    n = len(system)
             
-    else:
+    if stabilityValue == -1: #stability value is computed only if 
         stabilityValue = ODEint(system, trapParams, tmax, dt, ODESystem)[-1]
+            
         
     result = np.array([IsStable(stabilityValue), i, j])
     return result
@@ -109,7 +133,7 @@ def StabilityDiagram(system, ODESystem, q1Start=0.0, q1Stop=0.15, q1Resol=20, q2
     pool.close()
     stop = timer()
     time = stop-start
-    print(time)
+    print('time: ', time, 'seconds')
     
     n = len(system)
     m = 0    
@@ -165,7 +189,9 @@ def ClickStabilityRegions(fileName='0_ions_1_electrons_q1_0-0.06_q2_0-0.48_700x7
     plt.show()
     
     return params
-##############################testing
+
+"""Here follows similar function as we've already seen, but for computing stability just od the EDGE"""
+
 def MakePoolListEdge(system, ODESystem, q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, tmax, dt, needComputationPack):
     
     q1Step = (q1Stop - q1Start) / q1Resol
@@ -173,28 +199,36 @@ def MakePoolListEdge(system, ODESystem, q1Start, q1Stop, q1Resol, q2Start, q2Sto
     
     needComputation, previous_q1Resol, previous_q2Resol = needComputationPack
     
+    previous_q1Step = (q1Stop - q1Start) / previous_q1Resol
+    previous_q2Step = (q2Stop - q2Start) / previous_q2Resol
+    
     n = len(system)
     m = 0    
     for i in range(n):
         if(system[i,3] > 0):
             m = m + 1
-    nParticles = (m, n-m)#numer of (ions, electrons)
-
-    loadParams = np.array([q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nParticles, int(f2/f1), None, None],dtype=object)#need to get all this data    
+    nParticles = (m, n-m)#number of (ions, electrons)
     
     args = []
     
-    a = 0    
+    a = 0  
+    
+    previous_i = 0
+    previous_j = 0
+    
     q1 = q1Start
     for i in range(q1Resol):
         q2 = q2Start
         for j in range(q2Resol):
-            previous_i = int(np.round(i * previous_q1Resol / q1Resol))            
-            previous_j = int(np.round(j * previous_q2Resol / q2Resol))            
+            previous_i = int(np.round(i * q1Step / previous_q1Step))            
+            previous_j = int(np.round(j * q2Step / previous_q2Step))
+
+            if previous_i == previous_q1Resol: previous_i = previous_q1Resol - 1 #it's obvious why we need to do this if you draw a picture..    
+            if previous_j == previous_q2Resol: previous_j = previous_q2Resol - 1         
             
             stabilityValue = needComputation[previous_i, previous_j]
                 
-            params = [system, np.array([a,q1,q2]), tmax, dt, ODESystem, loadParams]#loadParams are needed for ditching regions(parameter for LoadTriangles)
+            params = [system, np.array([a,q1,q2]), tmax, dt, ODESystem]
             args.append(tuple([params, i, j, stabilityValue]))
             
             q2 = q2 + q2Step
@@ -203,18 +237,11 @@ def MakePoolListEdge(system, ODESystem, q1Start, q1Stop, q1Resol, q2Start, q2Sto
     return np.array(args, dtype=object)
 
 def IntWrapperEdge(params, i, j, stabilityValue):
-    
-    allowDitching = True
-    
-    system, trapParams, tmax, dt, ODESystem, loadParams = params
-    n = len(system)
-    
-    if allowDitching:
         
-        if stabilityValue == -1:
-            stabilityValue = ODEint(system, trapParams, tmax, dt, ODESystem)[-1]
+    system, trapParams, tmax, dt, ODESystem = params
+    n = len(system)
             
-    else:
+    if stabilityValue == -1:
         stabilityValue = ODEint(system, trapParams, tmax, dt, ODESystem)[-1]
         
     result = np.array([IsStable(stabilityValue), i, j])
@@ -224,9 +251,7 @@ def StabilityDiagramEdge(system, ODESystem, previousFile, q1Start=0.0, q1Stop=0.
     
     stability = np.zeros((q1Resol, q2Resol))
     needComputationPack = PrepForStabilityEdge(previousFile)
-
-    start = timer()
-
+    
     pool = Pool()# take maximum available number of cpus
     args = MakePoolListEdge(system, ODESystem, q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, tmax, dt, needComputationPack)
     results = pool.starmap(IntWrapper, args)
@@ -237,9 +262,6 @@ def StabilityDiagramEdge(system, ODESystem, previousFile, q1Start=0.0, q1Stop=0.
         stability[i,j] = stabilityValue
         
     pool.close()
-    stop = timer()
-    time = stop-start
-    print(time)
     
     n = len(system)
     m = 0    
@@ -248,12 +270,17 @@ def StabilityDiagramEdge(system, ODESystem, previousFile, q1Start=0.0, q1Stop=0.
             m = m + 1
     nParticles = (m, n-m)#numer of (ions, electrons)
         
-    params = np.array([q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nParticles, time, f1, f2], dtype=object)
+    params = np.array([q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nParticles, None, f1, f2], dtype=object)
     SaveStabilityDiagram(stability, params)
   
     return stability, params   
 
-
+"""
+Function PrepForStabilityEdge() loads the stability diagram which is represented by AxB matrix filled with stability values.
+It returns same AxB matrix but if some value of stability isn't the same as values of it's closest neighbours,
+then it changes these stability values to -1. Which means that we will compute the equations of motion in thiw regions
+with the better resolution in next interation.
+"""
 def PrepForStabilityEdge(fileName='0_ions_1_electrons_q1_0-0.06_q2_0-0.48_700x700_13'):
     
     stability, params = LoadStabilityDiagram(fileName)
@@ -275,21 +302,36 @@ def PrepForStabilityEdge(fileName='0_ions_1_electrons_q1_0-0.06_q2_0-0.48_700x70
         if stability[i,j] != stability[i+1,j]:
             needComputation[i,j] = -1
             needComputation[i+1,j] = -1
-        
+            
+    def TalkToDiagonalNeighbour(i, j):
+        if stability[i,j] != stability[i+1,j+1]:
+            needComputation[i,j] = -1
+            needComputation[i+1,j+1] = -1
+            
+    
+    
+    """
+    We need to check every pair of closest neighbours in a grid. To do so, we start in the bottom left corner and we check
+    the neighbour to the right and then top neighbour. Then we repeat this process through all rows and columns(if there is no more neighbour
+                                                                                                                to the right or top then we don't check it)
+    The function GoToNeighbour() does exactly that
+    """
     def GoToNeighbour(i,j):
-        if not((i == q1Resol) and (j == q2Resol)):
-            if i == q1Resol:
+        if not((i == q1Resol-1) and (j == q2Resol-1)):
+            if i == q1Resol-1:
                 TalkToRightNeighbour(i,j)
                 
-            elif j == q2Resol:
+            elif j == q2Resol-1:
                 TalkToTopNeighbour(i,j)
                 
             else:
                 TalkToRightNeighbour(i,j)
-                TalkToTopNeighbour(i,j) 
-               
-    for i in range(q1Resol-1):
-        for j in range(q2Resol-1):
-            GoToNeighbour(i, j)
+                TalkToTopNeighbour(i,j)
+                TalkToDiagonalNeighbour(i,j)
+    
+    """In next for loops we are making new AxB matrix with stability value = -1 on the edge of two regions with different stability"""
+    for i in range(q1Resol):
+        for j in range(q2Resol):
+            GoToNeighbour(i,j)
             
     return np.array([needComputation, q1Resol, q2Resol], dtype=object)

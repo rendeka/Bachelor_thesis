@@ -1,15 +1,18 @@
+"""This file is concerned with ploting and saving pictures"""
 import numpy as np
 import matplotlib.pyplot as plt
 
-from matplotlib import cm           # Colour maps for the contour graph
+from matplotlib import cm# Colour maps for the contour graph
 from scipy import interpolate
+
+from fileHandling import *
 
 from mpl_toolkits import mplot3d
 from parameters import * 
 
 
 def PlotODESolution(ODESolution):
-    
+    """plots trajectories of all particles in the system"""    
     rs, _, methodName, exeTime, _, system, _ = ODESolution
     
     fig = plt.figure()
@@ -19,9 +22,9 @@ def PlotODESolution(ODESolution):
     
     for i in range(n):
             
-        x = rs[i,:,0] * 1000#* 2 / f2 * 1000
-        y = rs[i,:,1] * 1000 #* 2 / f2 * 1000
-        z = rs[i,:,2] * 1000 #* 2 / f2 * 1000
+        x = rs[i,:,0] * 1000 # 1000 to convert into milimeters
+        y = rs[i,:,1] * 1000
+        z = rs[i,:,2] * 1000
         
         charge = system[i][3]
         if charge > 0:
@@ -50,6 +53,7 @@ def PlotODESolution(ODESolution):
     plt.show()    
 
 def PlotEnergy(ODESolution):
+    """plots energy balance of all particles throughout the computation"""
     
     _, _, methodName, _, energies, _, _ = ODESolution
     
@@ -65,32 +69,12 @@ def PlotEnergy(ODESolution):
     plt.plot(np.arange(len(totalEnergy)),energies[1] ,label='Kinetic energy')
     plt.plot(np.arange(len(totalEnergy)),energies[2] ,label='Potential energy')
     
-    def onclick(event):
-        global ix, iy
-        ix, iy = event.xdata, event.ydata
-        print(ix, iy)
-        fig.canvas.mpl_disconnect(cid)
-    cid = fig.canvas.mpl_connect('button_press_event', onclick)
-    
     plt.legend()
 
     plt.show()
     
-def PlotCoordinates(ODESolution):
-    
-    rs, vs, methodName, exeTime, energy, _, _ = ODESolution
-    coordinate = ["x", "y", "z"]
-    
-    for i in range(2):  
-        r = rs[0,:,i] * 2 / f2
-        
-        plt.title("jednotlive suradnice")
-        plt.xlabel = 't'
-        plt.ylabel = coordinate[i]            
-        plt.plot(np.arange(len(energy)),r ,label=methodName)
-        plt.show()
-    
 def PlotFinalPositions(ODESolution):
+    """scatter plot of all particle positions -> using this for coulomb crystals """
     
     rs, vs, methodName, exeTime, energy, system, _ = ODESolution
     
@@ -101,9 +85,9 @@ def PlotFinalPositions(ODESolution):
     
     for i in range(n):
             
-        x = rs[i,-1,0] * 1000 #* 2 / f2 * 1000
-        y = rs[i,-1,1] * 1000 #* 2 / f2 * 1000
-        z = rs[i,-1,2] * 1000 #* 2 / f2 * 1000
+        x = rs[i,-1,0] * 1000 # 1000 to convert into milimeters
+        y = rs[i,-1,1] * 1000 
+        z = rs[i,-1,2] * 1000 
         
         charge = system[-1][3]
         if charge > 0:
@@ -131,31 +115,21 @@ def PlotFinalPositions(ODESolution):
 def PlotStability(data, params):
     
     q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nParticles, time, f1, f2 = params
-    
+        
     fig = plt.figure()
         
     x_vals = np.linspace(q2Start, q2Stop, int(q2Resol))
     y_vals = np.linspace(q1Start, q1Stop, int(q1Resol))
     X, Y = np.meshgrid(x_vals, y_vals) 
     
-    #cp = plt.contourf(X, Y, data)#, cmap=cm.viridis)
-    #plt.colorbar(cp)
     plt.xlabel('$q_{2}$')
     plt.ylabel('$q_{1}$')
-    #plt.ylabel("Calorie Burnage")
-    #plt.ylabel = '$q_{1}$'
-    #plt.clabel('$q_{2}$')
     plt.contourf(X, Y, data)
     
-    nIons, nElectrons = nParticles
-    fileName = str(int(nIons)) + '_ions_' + str(int(nElectrons)) + '_electrons_' + 'q1_' + str(q1Start) + '-' + str(q1Stop) + '_q2_' + str(q2Start) + '-' + str(q2Stop)+ '_' + str(int(q2Resol)) + 'x' + str(int(q1Resol)) + '_' + str(int(f2/f1))
-  
+    fileName = MakeFileName(params)
     extensions = ['eps', 'png']
     
-    #plt.style.use('seaborn-colorblind')
-
-    
-    for extension in extensions:      
+    for extension in extensions: #saving pictures 
         plt.savefig('pics/stability_diagrams/' + fileName + '.' + extension, format=extension)
     
     plt.show()

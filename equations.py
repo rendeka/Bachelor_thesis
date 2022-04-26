@@ -6,25 +6,14 @@ stability for light particle is stable for heavy particle if the condition q1 * 
 """
 
 
-def ODESystemExact(rv, t, aCoulomb, mass, charge, trapParams): #exact equation of motion
+def ODESystemExact(rv, tau, aCoulomb, mass, charge, trapParams): #exact equation of motion
+    """Exact equations of motion for ideal quadrupole trap""" 
     
-    #tau = t * f2 / 2
-    tau = t
-    
-    #a = 4 * V0 * charge / (mass * f2**2 * r0**2)
-    #q1 = -2 * V1 * charge / (mass * f2**2 * r0**2)
-    #q2 = -2 * V2 * charge / (mass * f2**2 * r0**2)
-    
-    #a=0
-    #q1=0
-    #q2=0.45
-    
-    if (mass == electronMass):        
+    if (mass == electronMass):#trap parameters depend on charge to mass ration      
         a, q1, q2 = trapParams
     else:
         a, q1, q2 = trapParams * (electronMass / ionMass)
         
-    
     r, v = rv
     x,y,z = r
     vx,vy,vz = v
@@ -41,6 +30,21 @@ def ODESystemExact(rv, t, aCoulomb, mass, charge, trapParams): #exact equation o
     
     r1 = np.array([x1, y1, z1])
     v1 = np.array([vx1, vy1, vz1])
+
+    return np.array([r1, v1])
+
+def ODESystemExactSymmetric(rv, tau, aCoulomb, mass, charge, trapParams): #exact equation of motion
+    """Symmetrized equations of motion for ideal quadrupole trap""" 
+    
+    if (mass == electronMass):#trap parameters depend on charge to mass ration      
+        a, q1, q2 = trapParams
+    else:
+        a, q1, q2 = trapParams * (electronMass / ionMass)
+        
+    r, v = rv
+            
+    r1 = v
+    v1 = aCoulomb - r * (a - 2 * q1 * np.cos(2 * tau * f1 / f2) - 2 * q2 * np.cos(2 * tau))
 
     return np.array([r1, v1])
 

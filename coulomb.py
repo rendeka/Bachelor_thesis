@@ -1,51 +1,15 @@
-import numpy as np
+"""
+In this module handle coulomb interaction between charged particles
+"""
 
+import numpy as np
 from parameters import *
 
-#CoulombForce -> Coulomb interaction between two particles
-"""
-def CoulombForce(particle1, particle2):
-    
-    r1 = particle1[0]
-    r2 = particle2[0]
-    r = r1 - r2
-    
-    charges = particle1[3] * particle2[3]
-    
-    c = 4 * np.pi * 8.854e-12
-    force = 1/c * charges * Norm(r)**(-3) * r
-    potential = np.dot(force,r)#this is potential energy
-    
-    return np.array(force), potential
-
-#CoulombNBody -> Coulomb interaction between all particles + potential energy
-def CoulombNBody(particles):
-    n = len(particles)
-    forces = np.zeros((n,n,3))
-    force = np.zeros((n,3))
-    potentials = np.zeros((n,n))
-    potential = np.zeros(n)
-    
-    for i in range(n):
-        p1 = particles[i]
-        for j in range(i+1 ,n):
-            p2 = particles[j]
-            forces[i][j],potentials[i][j] = CoulombForce(p1, p2)
-            forces[j][i] = -forces[i][j]
-            potentials[j][i] = potentials[i][j]
-            
-
-    for i in range(n):
-        for j in range(n):
-            force[i] = force[i] + forces[i][j]
-            potential[i] = potential[i] + potentials[i][j]
-
-    return np.array(force), potential    
-"""
-
-#"""
-
 def GetPosVelPairCMS(particles):
+    """
+    This function takes a system with N particles and returns two NxN matrices. (i,j) element of the first 
+    matrix is a distance between i-th and j-th particle in the system. Same for second matrix butwith relative velocities.
+    """
     
     n = len(particles)
     
@@ -72,7 +36,9 @@ def GetPosVelPairCMS(particles):
 def NeedFinerTimeStep(r, v, dt):
     a = np.dot(v,r)
     b = np.dot(r,r)
-    
+    """
+    if one particle is about to cross another, then use finer step
+    """
     if(a * dt > 0.6 * b): 
         return True
     else:
@@ -110,4 +76,3 @@ def CoulombNBody(rMatrix, charges):
             potential[i] = potential[i] + potentials[i][j]
 
     return force, potential  
-#"""   

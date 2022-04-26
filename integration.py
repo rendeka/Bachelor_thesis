@@ -1,3 +1,9 @@
+"""
+Main task of this module is to integrate given equations of motion for system of charged particles.
+We can also track energy bilance of the system, allow or disallow recombinations and freeze heavy ions
+for solving equations of motion for electrons in a bigger Coulomb crystal
+"""
+
 import numpy as np
 from timeit import default_timer as timer
 from copy import copy
@@ -57,9 +63,7 @@ def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,  
         
         mass = particles[:,2]
         charge = particles[:,3]
-        
-        #fCoulomb, potentialCoulomb = CoulombNBody(particles)#test
-        
+                
         rMatrix, vMatrix = GetPosVelPairCMS(particles)
         fCoulomb, potentialCoulomb = CoulombNBody(rMatrix, charge)
 
@@ -71,9 +75,6 @@ def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,  
             v = vs[i][k]
             rv = np.array([r,v])
             
-            #aCoulomb[i] = np.zeros(3)#test
-
-            
             if(Norm(r) > rMax[i]):
                 rMax[i] = Norm(r) 
                 
@@ -84,9 +85,7 @@ def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,  
             #potentialEnergy[k] = potentialEnergy[k] + potentialCoulomb[i] + potentialFromTrap 
             
             #potentialEnergy[k] = potentialEnergy[k] - 0.5*const*np.abs(charge[i])*Norm(r)**2 + potentialCoulomb[i] 
-                        
-            #"""                         
-                          
+                                                  
             if allowRecombination:
                 
                 recombinationEnergy = 1e-12
@@ -125,20 +124,13 @@ def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,  
                         rv, t = Step(ODESystem, rv, t, dt, aCoulomb[i], mass[i], charge[i], trapParams)
                 else:
                     rv, t = Step(ODESystem, rv, t, dt, aCoulomb[i], mass[i], charge[i], trapParams)
-
-
-
-            #"""
-            #rv, t = Step(ODESystem, rv, t, dt, aCoulomb[i], mass[i], charge[i], trapParams)#test
-                
-                            
+                           
             r, v = rv
             
             if np.isposinf(np.dot(r,r)) or np.isposinf(np.dot(v,v)):
-                stability = n
+                stability = nElectron
                 return None, None, Step.__name__, None, None, particles, stability#stabilityInt
-                
-            
+                 
             rs[i][k+1] = r
             vs[i][k+1] = v
             
@@ -160,12 +152,12 @@ def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,  
     
     stability = 0
     for i in range(n):
-        #print(rMax[i])
-        #if((rMax[i] * 2 / f2) > 0.8 * r0):
-        if(rMax[i] > 0.9 * r0):
+        if(rMax[i] > 0.8 * r0) and (charge[i] < 0): # condition (charge[i] < 0) is here for the case of freezed ions
             stability = stability + 1
             
     #stabilityInt = np.sum(stabilityInt) * dt * 2 / (n * tmax * f2)
     #print(stabilityInt)
-        
+    
+    """WARNING! other parts of the program expects that the last value that this function (ODEint) returns is the stability parameter"""    
     return rs, vs, Step.__name__, exeTime, energies, particles, stability#stabilityInt
+
