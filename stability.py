@@ -11,6 +11,9 @@ If we start with the picture with low resolution and then continue to improove q
 then we won't by able to detect thin stability strips that escaped our sight in low resolution setting.
 """
 
+"""
+stability for light particle is stable for heavy particle if the condition q1 * (f2 / f1)**2 * (m2 / m1) < 0.9
+"""
 
 import numpy as np
 
@@ -25,26 +28,29 @@ from fileHandling import *
 from timeit import default_timer as timer
 from multiprocessing import Pool
 
-"""
-Function IsStable() decides whether given stability parameters corresponds to stable or unstable trajectory.
-In this case it doesn't do anything.
-"""
+
 def IsStable(stabilityParam):
+    """
+    Function IsStable() decides whether given stability parameters corresponds to stable or unstable trajectory.
+    In this case it doesn't do anything.
+    """
     result = stabilityParam
     return result
 
-"""
-Function TriangleTest() is given 3 points in x-y plane. Points p2 and p3 define a straight line dividing x-y plane into two.
-TriangleTest() checks on which half-plane the point p1 is. 
-"""
+
 def TriangleTest(p1, p2, p3):
+    """
+    Function TriangleTest() is given 3 points in x-y plane. Points p2 and p3 define a straight line dividing x-y plane into two.
+    TriangleTest() checks on which half-plane the point p1 is. 
+    """
     return (p1[0] - p3[0]) * (p2[1] - p3[1]) - (p2[0] - p3[0]) * (p1[1] - p3[1])
 
-"""
-Function InTriangle() has two arguments. First is p -> position in x-y plane. Second is list of tringles.
-If point p belongs in some of the given triangles, InTriangle() returns True, else it returns False
-"""
+
 def InTriangle(p, regions):
+    """
+    Function InTriangle() has two arguments. First is p -> position in x-y plane. Second is list of tringles.
+    If point p belongs in some of the given triangles, InTriangle() returns True, else it returns False
+    """
     
     for region in regions:
         triangle, inValue = region
@@ -58,11 +64,12 @@ def InTriangle(p, regions):
             return True
     
     return False    
-"""
-Function MakePoolList() prepares list of arguments for parallel computing. Each element from this list is
-argument for function IntWrapper().
-"""
-def MakePoolList(system, ODESystem, q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, tmax, dt):
+
+def MakePoolList(system, ODESystem, q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, tmax, dt, freezeIons):
+    """
+    Prepares list of arguments for parallel computing. Each element from this list is
+    argument for function IntWrapper().
+    """
     
     q1Step = (q1Stop - q1Start) / q1Resol
     q2Step = (q2Stop - q2Start) / q2Resol
@@ -93,7 +100,7 @@ def MakePoolList(system, ODESystem, q1Start, q1Stop, q1Resol, q2Start, q2Stop, q
             else:
                 stabilityValue = -1
                 
-            params = [system, np.array([a,q1,q2]), tmax, dt, ODESystem]
+            params = [system, np.array([a,q1,q2]), tmax, dt, ODESystem, freezeIons]
             args.append(tuple([params, i, j, stabilityValue]))
             
             q2 = q2 + q2Step
@@ -101,29 +108,30 @@ def MakePoolList(system, ODESystem, q1Start, q1Stop, q1Resol, q2Start, q2Stop, q
         
     return np.array(args, dtype=object)
 
-"""
-Function IntWrapper returns stability value for given set of trapping paramaters.
-"""
+
 def IntWrapper(params, i, j, stabilityValue):
+    """
+    Function IntWrapper returns stability value for given set of trapping paramaters.
+    """
         
-    system, trapParams, tmax, dt, ODESystem = params
+    system, trapParams, tmax, dt, ODESystem, freezeIons = params
     n = len(system)
             
     if stabilityValue == -1: #stability value is computed only if 
-        stabilityValue = ODEint(system, trapParams, tmax, dt, ODESystem)[-1]
+        stabilityValue = ODEint(system, trapParams, tmax, dt, ODESystem, freezeIons=freezeIons)[-1]
             
         
     result = np.array([IsStable(stabilityValue), i, j])
     return result
 
-def StabilityDiagram(system, ODESystem, q1Start=0.0, q1Stop=0.15, q1Resol=20, q2Start=0.0, q2Stop=1.0, q2Resol=20, tmax=1.3e+2, dt=1e-2):
+def StabilityDiagram(system, ODESystem, q1Start=0.0, q1Stop=0.15, q1Resol=20, q2Start=0.0, q2Stop=1.0, q2Resol=20, tmax=1.3e+2, dt=1e-2, freezeIons=False):
     
     stability = np.zeros((q1Resol,q2Resol))
 
     start = timer()
 
     pool = Pool()# take maximum available number of cpus
-    args = MakePoolList(system, ODESystem, q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, tmax, dt)
+    args = MakePoolList(system, ODESystem, q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, tmax, dt, freezeIons)
     results = pool.starmap(IntWrapper, args)
     
     for result in results:
@@ -138,7 +146,7 @@ def StabilityDiagram(system, ODESystem, q1Start=0.0, q1Stop=0.15, q1Resol=20, q2
     n = len(system)
     m = 0    
     for i in range(n):
-        if(system[i,3] > 0):
+        if(system[i,3] >= 0):
             m = m + 1
     nParticles = (m, n-m)#numer of (ions, electrons)
         
@@ -190,9 +198,9 @@ def ClickStabilityRegions(fileName='0_ions_1_electrons_q1_0-0.06_q2_0-0.48_700x7
     
     return params
 
-"""Here follows similar function as we've already seen, but for computing stability just od the EDGE"""
+"""Here follows similar function as we've already seen, but for computing stability just od the edge of stability"""
 
-def MakePoolListEdge(system, ODESystem, q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, tmax, dt, needComputationPack):
+def MakePoolListEdge(system, ODESystem, q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, tmax, dt, needComputationPack, freezeIons):
     
     q1Step = (q1Stop - q1Start) / q1Resol
     q2Step = (q2Stop - q2Start) / q2Resol
@@ -228,7 +236,7 @@ def MakePoolListEdge(system, ODESystem, q1Start, q1Stop, q1Resol, q2Start, q2Sto
             
             stabilityValue = needComputation[previous_i, previous_j]
                 
-            params = [system, np.array([a,q1,q2]), tmax, dt, ODESystem]
+            params = [system, np.array([a,q1,q2]), tmax, dt, ODESystem, freezeIons]
             args.append(tuple([params, i, j, stabilityValue]))
             
             q2 = q2 + q2Step
@@ -242,18 +250,18 @@ def IntWrapperEdge(params, i, j, stabilityValue):
     n = len(system)
             
     if stabilityValue == -1:
-        stabilityValue = ODEint(system, trapParams, tmax, dt, ODESystem)[-1]
+        stabilityValue = ODEint(system, trapParams, tmax, dt, ODESystem, freezeIons=freezeIons)[-1]
         
     result = np.array([IsStable(stabilityValue), i, j])
     return result
 
-def StabilityDiagramEdge(system, ODESystem, previousFile, q1Start=0.0, q1Stop=0.15, q1Resol=20, q2Start=0.0, q2Stop=1.0, q2Resol=20, tmax=1.3e+2, dt=1e-2):
+def StabilityDiagramEdge(system, ODESystem, previousFile, q1Start=0.0, q1Stop=0.15, q1Resol=20, q2Start=0.0, q2Stop=1.0, q2Resol=20, tmax=1.3e+2, dt=1e-2, freezeIons=False):
     
     stability = np.zeros((q1Resol, q2Resol))
     needComputationPack = PrepForStabilityEdge(previousFile)
     
     pool = Pool()# take maximum available number of cpus
-    args = MakePoolListEdge(system, ODESystem, q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, tmax, dt, needComputationPack)
+    args = MakePoolListEdge(system, ODESystem, q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, tmax, dt, needComputationPack, freezeIons)
     results = pool.starmap(IntWrapper, args)
     
     for result in results:
@@ -275,13 +283,14 @@ def StabilityDiagramEdge(system, ODESystem, previousFile, q1Start=0.0, q1Stop=0.
   
     return stability, params   
 
-"""
-Function PrepForStabilityEdge() loads the stability diagram which is represented by AxB matrix filled with stability values.
-It returns same AxB matrix but if some value of stability isn't the same as values of it's closest neighbours,
-then it changes these stability values to -1. Which means that we will compute the equations of motion in thiw regions
-with the better resolution in next interation.
-"""
+
 def PrepForStabilityEdge(fileName='0_ions_1_electrons_q1_0-0.06_q2_0-0.48_700x700_13'):
+    """
+    Function PrepForStabilityEdge() loads the stability diagram which is represented by AxB matrix filled with stability values.
+    It returns same AxB matrix but if some value of stability isn't the same as values of it's closest neighbours,
+    then it changes these stability values to -1. Which means that we will compute the equations of motion in thiw regions
+    with the better resolution in next interation.
+    """
     
     stability, params = LoadStabilityDiagram(fileName)
     q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nParticles, eta, f1, f2 = params

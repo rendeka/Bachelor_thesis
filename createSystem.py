@@ -1,15 +1,16 @@
 """
-In this file we initialize the particle system, create coulomb crystal and adding new particles into the system
+In this file we initialize the particle system, create coulomb crystal and add new particles into the system
 """
 
 import numpy as np
 from parameters import *
 from plotting import *
 from integration import *
-from copy import copy
-import csv
+from fileHandling import *
 
-def RandomVelocity(T=4, mass=ionMass, dim=3):
+from copy import copy
+
+def RandomVelocity(T=100, mass=ionMass, dim=3):
     maxElement = np.sqrt((Kb*T)/(mass))
     vector = 2 * maxElement * np.random.rand(dim) - maxElement
         
@@ -19,7 +20,7 @@ def TemperatureToVelocity(T=4, mass=ionMass):
     
     return np.sqrt((8 * Kb * T)/(mass * np.pi)) * (2/f2)
 
-def RandomPosition(maxRadius=0.4 * r0, dim=3):
+def RandomPosition(maxRadius=0.6 * r0, dim=3):
     
     vector = 2 * maxRadius * np.random.rand(dim) - maxRadius
     
@@ -39,7 +40,7 @@ def MakeParticleSystem(n=1,m=1):#system with n ions and m electrons
         
     for i in range(m):
         position = RandomPosition()
-        velocity = RandomVelocity(mass=electronMass)
+        velocity = RandomVelocity(T=4, mass=electronMass)
         mass = electronMass
         charge = electronCharge
         
@@ -79,37 +80,35 @@ def MakeParticleGrid(n=10):
                 k = k + 1
                 
     return np.array(grid)        
-        
-
-def TotalVelocity(system):
-    vTot = 0
-    for particle in system:
-        v = particle[1]
-        vTot = vTot + Norm(v)**2
-        
-    return vTot/len(system)
-
     
-def IonCrystal(nIons=20, vMax=5e-1, system=None, trapParams=np.array([0, 0.4, 0])):
+def IonCrystal(nIons=20, vMax=5e-1, system=np.array([]), trapParams=np.array([0, 0.4, 0])):
     """making coulomb crystal by molecular dynamics -> solving equations of motion with damping"""
-    if (system == None):
-        system = MakeParticleGrid(nIons)
-            
+    if len(system) == 0:
+        return system, None
+                
     vMax = TemperatureToVelocity(T=1e-3, mass=ionMass)#temperature we can get with Doppler cooling is 0.5 miliKelvin for calsium atom
     
-    tmax = f2 / f1 
-    dt = 1/(100)   
+    tmax = 5 * f2 / f1 
+    dt = 1/(50)   
         
-    solution = ODEint(system, trapParams, tmax, dt, ODESystem=ODESystemDampingEff,  Step=StepEulerAdvanced)
+    solution = ODEint(system, trapParams, tmax, dt, ODESystem=ODESystemEffectiveDamping,  Step=StepEulerAdvanced, freezeIons=False)
 
     k = 1
     trashold = 20
     
-    while((TotalVelocity(system) > vMax) and (k < trashold)):
-        solution = ODEint(system, trapParams, tmax, dt, ODESystem=ODESystemDampingEff,  Step=StepEulerAdvanced)
+    velocityTest = True    
+    while(velocityTest) and (k < trashold):
+
+        solution = ODEint(system, trapParams, tmax, dt, ODESystem=ODESystemEffectiveDamping,  Step=StepEulerAdvanced, freezeIons=False)
         system = solution[-2]
-        k = k + 1
         print(k)
+        k = k + 1
+        
+        velocityTest = False
+        for particle in system:
+            if Norm(particle[1]) > vMax:
+                velocityTest = True
+
         
     if(k >= trashold):
         print('unsuccessful')
@@ -119,29 +118,82 @@ def IonCrystal(nIons=20, vMax=5e-1, system=None, trapParams=np.array([0, 0.4, 0]
     #PlotODESolution(solution)      
     #PlotFinalPositions(solution)              
     
-    return system, solution    
-    
-def AddElectron(system):
-    """adds electron to the system"""
-    
-    r = RandomPosition(maxRadius=1e-4) 
-    v = RandomVelocity(10, electronMass)
-    m = electronMass
-    c = electronCharge
-    
-    electron = np.array([r, v, m, c], dtype=object)
-    newSystem = np.vstack([system,electron])
-    
-    return newSystem
+    return system, solution
 
-def AddIon(system):
-    """adds ion to the system"""
-    
+def MakeParticle(mass, charge, T=4):
     r = RandomPosition() 
-    v = RandomVelocity(10000, ionMass)
-    m = ionMass
-    c = -electronCharge
+    v = RandomVelocity(mass=mass, T=T)
     
-    ion = np.array([r, v, m, c], dtype=object)
-    newSystem = np.vstack([system,ion])
-    return newSystem
+    return np.array([r, v, mass, charge], dtype=object)
+    
+    
+def AddElectron(system, electron=[], T=4):
+    """adds electron to the system"""
+    if len(electron) == 0:
+        r = RandomPosition() 
+        v = RandomVelocity(T, electronMass)
+        m = electronMass
+        c = electronCharge
+        
+        electron = np.array([r, v, m, c], dtype=object)
+    
+    if len(system) == 0:
+        return np.array([electron], dtype=object)
+        
+    else:
+        return np.vstack([system, electron])
+    
+def AddIon(system, ion=[], T=4):
+    """adds ion to the system"""
+    if len(ion) == 0:
+        r = RandomPosition() 
+        v = RandomVelocity(T, ionMass)
+        m = ionMass
+        c = -electronCharge
+        
+        ion = np.array([r, v, m, c], dtype=object)
+    
+    if len(system) == 0:
+        return np.array([ion], dtype=object)
+        
+    else:
+        return np.vstack([system, ion])
+    
+def MakeCoulombCrystal(nCrystal='20', trapParams=np.array([0, 0.4, 0])):
+    """
+    CLUSTER
+    Makes coulomb crystal using molecular dynamics. Its single argument final number of ions in crystal
+    """       
+    
+    system, solution = IonCrystal(nIons=1, trapParams=trapParams)
+    nCrystal = int(nCrystal)
+    
+    while len(system) < nCrystal:
+        
+        print('Number of ions: ', len(system))
+        system = AddIon(system, T=10)
+        system, solution = IonCrystal(system=system, trapParams=trapParams)
+        
+    system, solution = IonCrystal(system=system, trapParams=trapParams)
+    
+    SaveParticleSystem(system, 'coulomb_crystals/' + str(int(nCrystal)))
+        
+    #PlotODESolution(solution)
+    #PlotFinalPositions(solution)
+    
+    print('returning crystal')    
+    return system
+
+def TestCoulombCrystal(nCrystal='20', trapParams=np.array([0, 0.4, 0])):
+    """Testing whether particles start to move in exact potential"""
+    
+    system = LoadParticleSystem('coulomb_crystals/' + nCrystal)
+    
+    for particle in system:
+        particle[1] = np.zeros(3)
+        
+    solution = ODEint(system, trapParams, 1*endTime, timeStep, ODESystem=ODESystemExact,  Step=StepEulerAdvanced, freezeIons=True)      
+
+    print('total velocity of the system', TotalVelocity(system))
+    
+    SaveParticleSystem(system, 'coulomb_crystals/crystal-evolution_' + nCrystal)

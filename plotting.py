@@ -127,9 +127,20 @@ def PlotStability(data, params):
     plt.contourf(X, Y, data)
     
     fileName = MakeFileName(params)
+        
     extensions = ['eps', 'png']
     
     for extension in extensions: #saving pictures 
         plt.savefig('pics/stability_diagrams/' + fileName + '.' + extension, format=extension)
     
     plt.show()
+    
+def PlotCrystalTest(nCrystal='20'):
+    s = LoadParticleSystem('coulomb_crystals/crystal-evolution_' + nCrystal) 
+    sol = ODEint(s, np.array([0,0,0]), 1e-10, 1e-10, ODESystem=ODESystemExact,  Step=StepEulerAdvanced, freezeIons=True)
+    PlotFinalPositions(sol)
+    
+def PlotCrystal(nCrystal='20'):
+    s = LoadParticleSystem('coulomb_crystals/' + nCrystal) 
+    sol = ODEint(s, np.array([0,0,0]), 1e-10, 1e-10, ODESystem=ODESystemExact,  Step=StepEulerAdvanced, freezeIons=True)
+    PlotFinalPositions(sol)

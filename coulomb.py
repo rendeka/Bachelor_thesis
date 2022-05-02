@@ -34,12 +34,17 @@ def GetPosVelPairCMS(particles):
     return rs, vs
     
 def NeedFinerTimeStep(r, v, dt):
+    """
+    r is vector of relative position between two concrete particles
+    v is vector of relative velocity between two concrete particles     
+    if projection of (v * timeStep) onto the direction of r is greater than the length of r 
+    then we will use finer time step.
+    This option is used only when we allow recombinations because it can considerably slow computation.
+    """
     a = np.dot(v,r)
     b = np.dot(r,r)
-    """
-    if one particle is about to cross another, then use finer step
-    """
-    if(a * dt > 0.6 * b): 
+
+    if(a * dt > 0.9 * b): 
         return True
     else:
         return False     
@@ -47,17 +52,22 @@ def NeedFinerTimeStep(r, v, dt):
 
 def CoulombForce(r, charges):
     
+    """returns Coulomb force and potential energy caused by Coulomb interaction between single pair of particles"""
+    
     c = 1 /(4 * np.pi * 8.854e-12) * (2/f2)**2 #term (2/f2)**2 is due to time scaling 
     force = c * charges * Norm(r)**(-3) * r
     potential = np.dot(force,r)#this is potential energy
     
     return np.array(force), potential
 
-#CoulombNBody -> Coulomb interaction between all particles + potential energy
 def CoulombNBody(rMatrix, charges):
+    """
+    rMatrix is matrix of relative positions between all pairs of particles
+    returns a vector of cumulatice Coulomb force on each particle and a vector of Coulombic potential energy of each particle
+    """
     n = len(charges)
-    forces = np.zeros((n,n,3))
-    force = np.zeros((n,3))
+    forces = np.zeros((n,n,3)) #matrix of Coulomb forces between all pairs of particles
+    force = np.zeros((n,3)) #i-th element of this vector is cumulative Coulomb force on i-th particle
     potentials = np.zeros((n,n))
     potential = np.zeros(n)
     

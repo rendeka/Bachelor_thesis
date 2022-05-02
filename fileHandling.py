@@ -111,9 +111,12 @@ def LoadParticleSystem(fileName='init_system'):
 """
 SaveStabilityDiagram() saves stability matrix into a file
 """            
-def SaveStabilityDiagram(stability, params):
+def SaveStabilityDiagram(stability, params, index=None):
     
     fileName = MakeFileName(params)
+    
+    if index != None:
+        fileName = fileName + '_' + str(int(index))
     
     with open(r"data/stability_diagrams/" + fileName + ".dat","w", newline="") as csvFile:
         csvWriter = csv.writer(csvFile, delimiter = "\t")
@@ -160,12 +163,13 @@ def SaveTriangles(triangleUnstable, triangleStable, params):
     
     q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nParticles, eta, f1, f2 = params
     nIons, nElectrons = nParticles
-    n = nIons + nElectrons
+    #n = nIons + nElectrons
+    #for freezed ions we are interested only in syability of electrons
     
     nUnstable = len(triangleUnstable) // 3
     unstables = []
     for i in range(nUnstable):
-        unstables.append([triangleUnstable[i*3:i*3 + 3], n])#saves 3 points unambiguously defining a triangle and saving number of unstable particles aswell
+        unstables.append([triangleUnstable[i*3:i*3 + 3], nElectrons])#saves 3 points unambiguously defining a triangle and saving number of unstable particles aswell
         
     
     nStable = len(triangleStable) // 3
