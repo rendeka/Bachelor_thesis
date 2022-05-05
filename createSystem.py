@@ -26,7 +26,7 @@ def RandomPosition(maxRadius=0.6 * r0, dim=3):
     
     return vector
 
-def MakeParticleSystem(n=1,m=1):#system with n ions and m electrons
+def MakeParticleSystem(n=1, m=1, dimension=3):#system with n ions and m electrons
     particles = []
 
     for i in range(n): 
@@ -47,39 +47,59 @@ def MakeParticleSystem(n=1,m=1):#system with n ions and m electrons
         particle = np.array([position, velocity, mass, charge], dtype=object)
         particles.append(particle)
 
-    return np.array(particles)
+    if dimension == 2:
+        for particle in particles:                
+            particle[0][2] = 0 #setting position in z direction to zero
+            particle[1][2] = 0 #setting velocity in z direction to zero
 
-def MakeParticleGrid(n=10):
+    return np.array(particles)  
+def MakeParticleGrid(n=10, T=4):
     
-    spacing = 1e-4
+    spacing = 0.5e-4
     
-    pos = np.ones(3) * -(np.cbrt(n)-1) * spacing / 2
+    anchorPos = np.ones(3) * -(np.cbrt(n)-1) * spacing
     mass = ionMass
     charge = -electronCharge
-    
+        
+    def NextParticle(r, mass=mass, charge=charge):
+        vel = RandomVelocity(T=T, mass=mass)
+        pos = copy(r)
+        return np.array([pos, vel, mass, charge], dtype=object)
+
     grid = []
     
-    def NextParticle(r, m=mass, c=charge):
-        vel = RandomVelocity(1, m) / 5
-        pos = copy(r)
-        return np.array([pos, vel, m, c], dtype=object)
-        
+    iVec = np.array([1,0,0]) * spacing
+    jVec = np.array([0,1,0]) * spacing
+    kVec = np.array([0,0,1]) * spacing
     
-    k = 0
-    while(k < n):
-        grid.append(NextParticle(pos))
-        pos[0] = pos[0] + spacing
-        k = k + 1
-        if(k < n):
-            grid.append(NextParticle(pos))
-            pos[1] = pos[1] + spacing
-            k = k + 1
-            if(k < n):
-                grid.append(NextParticle(pos))
-                pos[2] = pos[2] + spacing
-                k = k + 1
+    m = int(np.cbrt(n) + 1) 
+    idxMax = 0           
+    for i in range(m):
+        for j in range(m):
+            for k in range(m):
+                if idxMax < n:
+                    idxMax = idxMax + 1
+                    pos = anchorPos + i*iVec + j*jVec + k*kVec
+                    grid.append(NextParticle(pos))        
                 
-    return np.array(grid)        
+    return np.array(grid) 
+
+def MakeCoulombCrystalFromGrid(nCrystal='25', trapParams=np.array([0, 0.4, 0])):
+    
+    #system = MakeParticleGrid(int(nCrystal))
+    system = MakeParticleSystem(int(nCrystal), 0)
+    
+    dt = 5e-1
+    tmax = 5e5 * dt
+    
+    solution = ODEint(system, trapParams, tmax, dt, ODESystem=ODESystemEffectiveDamping,  Step=StepEulerAdvanced, freezeIons=False)
+    
+    SaveParticleSystem(system, 'coulomb_crystals/' + str(int(nCrystal)))
+    PlotODESolution(solution)
+    #PlotFinalPositions(solution)
+    #PlotEnergy(solution)
+    
+      
     
 def IonCrystal(nIons=20, vMax=5e-1, system=np.array([]), trapParams=np.array([0, 0.4, 0])):
     """making coulomb crystal by molecular dynamics -> solving equations of motion with damping"""

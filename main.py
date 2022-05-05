@@ -18,7 +18,7 @@ from fileHandling import *
 from stability import *
     
 def SolveParticleSystem(nCrystal='20'):
-    initsystem = MakeParticleSystem(0,2)
+    initsystem = MakeParticleSystem(0,1)
     #initsystem = MakeParticleSystem(2,0)
     
     #initsystem = np.array([], dtype=object)    
@@ -39,9 +39,9 @@ def SolveParticleSystem(nCrystal='20'):
     #trapParams = np.array([0, 0.24, 0.37])
     trapParams = np.array([0, 0.02, 0.35])
     
-    ODESolution = ODEint(initsystem, trapParams, 1*endTime, timeStep, ODESystemExact, StepVerlet, freezeIons=False)
+    ODESolution = ODEint(initsystem, trapParams, 1*endTime, timeStep, ODESystemExact, StepVerlet, freezeIons=True)
     
-    #PlotEnergy(ODESolution)
+    PlotEnergy(ODESolution)
     PlotODESolution(ODESolution)
 
     

@@ -12,6 +12,55 @@ from parameters import *
 from coulomb import * 
 from equations import *
 
+def needTimeTransform(ODESystem):
+    
+    ODESystemList = ['ODESystemExact',
+                     'ODESystemExactSymmetric']
+    
+    if ODESystem.__name__ in ODESystemList:
+        return True
+    else:
+        return False
+    
+
+def trapEnergy(ODESystem, trapParams, r, m, t):
+    
+    if m == electronMass:
+        a, q1, q2 = trapParams
+    else:
+        a, q1, q2 = trapParams * electronMass / m
+        
+    
+    if needTimeTransform(ODESystem):
+        return 1/8 * m * f2**2 * (a - 2 * q1 * np.cos(f1 * t) - 2 * q2 * np.cos(f2 * t)) * (r[0]**2 + r[1]**2 - 2 * r[2]**2)
+
+    else:
+        if m == electronMass:
+            return 1/8 * m * (a + q2**2 / 2) * f2**2 * (r[0]**2 + r[1]**2 + 2 * r[2]**2)
+        else:
+            return 1/8 * m * (a + q1**2 / 2 * (f2/f1)**2 + q2**2 / 2) * f2**2 * (r[0]**2 + r[1]**2 + 2 * r[2]**2)
+            
+def RearrangeSystem(particles):
+    """
+    we want to rearrange list of particles so we can hadle them more effectively
+    """ 
+    n = len(particles)
+    nElectrons = 0
+    
+    electrons = []
+    ions = []    
+    
+    for particle in particles:
+        if particle[3] < 0:
+            electrons.append(particle)
+            nElectrons = nElectrons + 1
+        else:
+            ions.append(particle)
+            
+    nIons = n - nElectrons
+    
+    return np.array(electrons + ions), n, nElectrons, nIons
+
 def DeleteRecombinedParticles(system, rs, vs, rMax):
     """removes recombined particles from the system"""
 
@@ -43,15 +92,18 @@ def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,  
     #dt = GetDt(ODESystem)#get dt depending on system of ODEs you want to solve
     
     particles = copy(system)#don't want to modify initial system
+    particles, n, nElectrons, nIons = RearrangeSystem(particles)
         
     start = timer()#to track real time of the computation
     
+    """
     n = len(particles)
     nIons = 0
     for particle in particles:
         if particle[3] > 0:
             nIons = nIons + 1
     nElectrons = n - nIons
+    """
     
     t = np.zeros(n)
     iterations = int((tmax - t[0]) / dt) + 1 #this is number of steps that will by saved in an array
@@ -67,14 +119,15 @@ def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,  
         vs[i][0] = particles[i][1]
 
     allowRecombination = False
+    timeTransform = needTimeTransform(ODESystem)
     
     for k in range(iterations - 1): #loop in time
         
         mass = particles[:,2]
         charge = particles[:,3]
                 
-        rMatrix, vMatrix = GetPosVelPairCMS(particles)
-        fCoulomb, potentialCoulomb = CoulombNBody(rMatrix, charge)
+        rMatrix, vMatrix = GetPosVelPairCMS(particles, freezeIons)
+        fCoulomb, potentialCoulomb = CoulombNBody(rMatrix, charge, particles, freezeIons, timeTransform)
 
         aCoulomb = fCoulomb / mass [:,None]
              
@@ -87,11 +140,9 @@ def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,  
             if(Norm(r) > rMax[i]): #tracking the most distant point in trajectory
                 rMax[i] = Norm(r)
                             
-            """
-            kineticEnergy[k] = kineticEnergy[k] + 0.5 * mass[i] * Norm(v)**2 * (f2/2)**2
-            potentialFromTrap = mass[i] * f2**2 * r0**2 * 1/4 * (trapParams[0] / 2 - trapParams[1] * np.cos(f1 * t[i]) - trapParams[2] * np.cos(f2 * t[i]) * (r[0]**2 + r[1]**2 - 2 * r[2]**2))
-            potentialEnergy[k] = potentialEnergy[k] + potentialCoulomb[i] + potentialFromTrap
-            """
+            kineticEnergy[k] = kineticEnergy[k] + 0.5 * mass[i] * Norm(v)**2 #* (f2/2)**2
+            potentialFromTrap = trapEnergy(ODESystem, trapParams, r, mass[i], t[i]) 
+            potentialEnergy[k] = potentialEnergy[k] + potentialFromTrap + potentialCoulomb[i]
                                                               
             if allowRecombination:
                 
