@@ -11,8 +11,8 @@ electronMass = 9.109e-31
 electronCharge = -1.602e-19
 mu = 1.66e-27
 #ionMass = 40.08 * mu#calcium
-ionMass = mu#hydrogen
-#ionMass = electronMass#positron
+#ionMass = mu#hydrogen
+ionMass = electronMass#positron
 
 r0 = 0.5e-3
 V0 = 0 #dc potential
@@ -26,9 +26,9 @@ Kb = 1.3806e-23#Boltzman constant
 
 f2 = 6e8 * 2 * np.pi#test
 
-f1 = f2 / 13#test stability diagram
+#f1 = f2 / 13#test stability diagram
 #f1 = f2 / 170#test trajectory
-#f1 = f2 / 3#test stability diagram
+f1 = f2 / 3#test stability diagram
 
 const = 1e-3 #constant for harmonic potential
-beta = 1e-1 #constant for damping force
+beta = 1e-2 #constant for damping force

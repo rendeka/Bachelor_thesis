@@ -86,18 +86,61 @@ def MakeParticleGrid(n=10, T=4):
 
 def MakeCoulombCrystalFromGrid(nCrystal='25', trapParams=np.array([0, 0.4, 0])):
     
-    #system = MakeParticleGrid(int(nCrystal))
-    system = MakeParticleSystem(int(nCrystal), 0)
+    n = int(nCrystal)
+    system = MakeParticleSystem(n, 0)
     
-    dt = 5e-1
-    tmax = 5e5 * dt
+    tmax = 2.5 * f2 / f1 
+    dt = 1/(200)  
     
-    solution = ODEint(system, trapParams, tmax, dt, ODESystem=ODESystemEffectiveDamping,  Step=StepEulerAdvanced, freezeIons=False)
+    tmax = 2*tmax
+    dt = 25*dt
     
-    SaveParticleSystem(system, 'coulomb_crystals/' + str(int(nCrystal)))
+    def TotalVelocity(system):
+        vTot = 0
+        for particle in system:
+            v = particle[1]
+            vTot = vTot + Norm(v)
+            
+        return vTot/n
+    
+    trasholdVel = TemperatureToVelocity(T=0.01, mass=ionMass)    
+    i = 0
+    while(i < 10):
+        """
+        if TotalVelocity(system) < trasholdVel:
+            for particle in system:
+                particle[1] = RandomVelocity(T=10, mass=ionMass)
+        """
+        
+        rs, vs, stepName, exeTime, energies, system, stability = ODEint(system, trapParams, tmax, dt, ODESystem=ODESystemEffectiveDamping,  Step=StepEulerAdvanced, freezeIons=False)
+        
+        if i == 0:
+            rsFinal = rs
+            vsFinal = vs
+            exeTimeFinal = 0
+            totalEnergyFinal, kineticEnergyFinal, potentialEnergyFinal = energies
+
+        else:
+            rsFinal = np.hstack([rsFinal, rs])
+            vsFinal = np.hstack([vsFinal, vs])
+            totalEnergy, kineticEnergy, potentialEnergy = energies
+            totalEnergyFinal = np.hstack([totalEnergyFinal, totalEnergy])
+            kineticEnergyFinal = np.hstack([kineticEnergyFinal, kineticEnergy])
+            potentialEnergyFinal = np.hstack([potentialEnergyFinal, potentialEnergy])
+
+            
+        exeTimeFinal = exeTimeFinal + exeTime       
+        i = i + 1
+        
+    exeTimeFinal = round(exeTimeFinal, 2)
+
+    energiesFinal = [totalEnergyFinal, kineticEnergyFinal, potentialEnergyFinal]
+    solution = rsFinal, vsFinal, stepName, exeTimeFinal, energiesFinal, system, 0
+    
+    SaveParticleSystem(system, 'coulomb_crystals/' + str(n))
     PlotODESolution(solution)
-    #PlotFinalPositions(solution)
-    #PlotEnergy(solution)
+    PlotFinalPositions(solution)
+    PlotEnergy(solution)
     
       
     
@@ -217,3 +260,23 @@ def TestCoulombCrystal(nCrystal='20', trapParams=np.array([0, 0.4, 0])):
     print('total velocity of the system', TotalVelocity(system))
     
     SaveParticleSystem(system, 'coulomb_crystals/crystal-evolution_' + nCrystal)
+    
+def CreateInitialSystems(mass=electronMass, charge=electronCharge):
+    
+    systems = []
+    rMax = 0.75 * r0
+    initRange = 3
+    step = rMax / initRange
+    v = np.array([1,1,1]) * 5e-7
+    vStep = 10
+    
+    for iX in range(initRange):
+        for iZ in range(initRange):
+            for iVel in range(initRange):                
+                pos = np.array([iX*step, 0, iZ*step])
+                vel = v * vStep**iVel
+                system = np.array([pos, vel, mass, charge], dtype=object)
+                systems.append(np.array([system]))
+                
+    return np.array(systems)
+                

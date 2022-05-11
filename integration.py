@@ -12,26 +12,27 @@ from parameters import *
 from coulomb import * 
 from equations import *
 
-def needTimeTransform(ODESystem):
+def TotVel(system, nElectrons):
+    result = 0
+    for i in range(nElectrons):
+        result = result + Norm(system[i,1])
+    return result
+        
+
+def IsExact(ODESystem):
     
-    ODESystemList = ['ODESystemExact',
-                     'ODESystemExactSymmetric']
+    name = ODESystem.__name__.lower()
     
-    if ODESystem.__name__ in ODESystemList:
+    if 'exact' in name:
         return True
     else:
-        return False
-    
+        return False    
 
 def trapEnergy(ODESystem, trapParams, r, m, t):
     
-    if m == electronMass:
-        a, q1, q2 = trapParams
-    else:
-        a, q1, q2 = trapParams * electronMass / m
-        
+    a, q1, q2 = trapParams * electronMass / m    
     
-    if needTimeTransform(ODESystem):
+    if IsExact(ODESystem):
         return 1/8 * m * f2**2 * (a - 2 * q1 * np.cos(f1 * t) - 2 * q2 * np.cos(f2 * t)) * (r[0]**2 + r[1]**2 - 2 * r[2]**2)
 
     else:
@@ -63,9 +64,9 @@ def RearrangeSystem(particles):
 
 def DeleteRecombinedParticles(system, rs, vs, rMax):
     """removes recombined particles from the system"""
-
+    
+    deleteThis = []
     for i in range(len(system)):
-        deleteThis = []
         if(system[i,3] == 0): #if charge of a particle is zero than remoze it from the system
             deleteThis.append(i)
             
@@ -73,9 +74,9 @@ def DeleteRecombinedParticles(system, rs, vs, rMax):
     
     system = np.delete(system, deleteThis, 0)
     n = len(system)
-    rs = np.delete(rs, deleteThis, 0)
-    vs = np.delete(vs, deleteThis, 0)
-    rMax = np.delete(rMax, deleteThis)  
+    #rs = np.delete(rs, deleteThis, 0)
+    #vs = np.delete(vs, deleteThis, 0)
+    #rMax = np.delete(rMax, deleteThis)  
 
     return system, n, rs, vs, rMax               
         
@@ -86,24 +87,17 @@ def Recombine(system, i, o):
 def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,  Step=StepRungaKutta, freezeIons=False):
     """
     integrating equations of motion
-    ------
     """
     
     #dt = GetDt(ODESystem)#get dt depending on system of ODEs you want to solve
     
     particles = copy(system)#don't want to modify initial system
     particles, n, nElectrons, nIons = RearrangeSystem(particles)
+    
+    if freezeIons: #with freezed ions we will loop only through electrons
+        n = nElectrons
         
     start = timer()#to track real time of the computation
-    
-    """
-    n = len(particles)
-    nIons = 0
-    for particle in particles:
-        if particle[3] > 0:
-            nIons = nIons + 1
-    nElectrons = n - nIons
-    """
     
     t = np.zeros(n)
     iterations = int((tmax - t[0]) / dt) + 1 #this is number of steps that will by saved in an array
@@ -119,7 +113,10 @@ def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,  
         vs[i][0] = particles[i][1]
 
     allowRecombination = False
-    timeTransform = needTimeTransform(ODESystem)
+    timeTransform = IsExact(ODESystem)
+    
+    velInit = TotVel(particles, nElectrons)
+    velFinal = 0
     
     for k in range(iterations - 1): #loop in time
         
@@ -143,6 +140,140 @@ def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,  
             kineticEnergy[k] = kineticEnergy[k] + 0.5 * mass[i] * Norm(v)**2 #* (f2/2)**2
             potentialFromTrap = trapEnergy(ODESystem, trapParams, r, mass[i], t[i]) 
             potentialEnergy[k] = potentialEnergy[k] + potentialFromTrap + potentialCoulomb[i]
+                                                              
+            if allowRecombination:
+                
+                recombinationEnergy = 1e-12
+                recombinationRadius = 1e-10
+                
+                finerDt = dt
+                howMuchFiner = 1           
+                
+                for o in range(i + 1, n):#another loop throughout particles -> checking for recombination
+                
+                    finerDt = dt
+                    howMuchFiner = 1
+                
+                    rCMS = rMatrix[i,o] #CMS -> central mass system(different for every pair of particles)
+                    vCMS = vMatrix[i,0] + (aCoulomb[i] - aCoulomb[o]) * dt
+                    massCMS = (mass[i] * mass[o]) / (mass[i] + mass[o])
+
+                    if NeedFinerTimeStep(rCMS, vCMS, dt):
+                        howMuchFiner = 100
+                        finerDt = dt / howMuchFiner
+                    
+                    if(charge[i] * charge[o] < 0):
+                        CMSKineticEnergy = 0.5 * CMSmass * Norm(CMSv)**2
+                        
+                        if((rCMS < recombinationRadius) and (CMSKineticEnergy < recombinationEnergy)):
+                            particles = Recombine(particles,i,o)
+                    
+                for _ in range(howMuchFiner):
+                    rv, t[i] = Step(ODESystem, rv, t[i], finerDt, aCoulomb[i], mass[i], charge[i], trapParams)
+                    
+            else:
+                rv, t[i] = Step(ODESystem, rv, t[i], dt, aCoulomb[i], mass[i], charge[i], trapParams)
+                           
+            r, v = rv
+            
+            if np.isposinf(np.dot(r,r)) or np.isposinf(np.dot(v,v)): #if position or velocity is too large we stop integrating
+                stability = nElectrons
+                return rs, None, Step.__name__, None, None, particles, stability
+                 
+            rs[i][k+1] = r
+            vs[i][k+1] = v
+            
+        for i in range(n):
+            particles[i][0] = rs[i][k+1]
+            particles[i][1] = vs[i][k+1]
+            
+        if allowRecombination:
+            particles, n, rs, vs, rMax = DeleteRecombinedParticles(particles, rs, vs, rMax)
+            
+        velFinal = velFinal + TotVel(particles, nElectrons)
+
+    
+    end = timer()#to track real time of the computation
+    exeTime = round((end - start), 2)
+    
+    kineticEnergy = kineticEnergy[:-1]#just deleting last element
+    potentialEnergy = potentialEnergy[:-1]    
+    
+    energy = kineticEnergy + potentialEnergy
+    energies = [energy, kineticEnergy, potentialEnergy]
+    
+    velFinal = velFinal / (iterations - 1)
+    
+    
+    stability = 0
+    for i in range(n):
+        if(rMax[i] > 0.8 * r0) and (charge[i] < 0): # condition (charge[i] < 0) is here for the case of freezed ions
+            stability = stability + 1
+    
+    stabilityVel = round((velFinal / velInit), 5)
+        
+    if freezeIons:
+        for particle in particles:
+            if particle[3] > 0:
+                particle[3] = 0
+        particles, n, rs, vs, rMax = DeleteRecombinedParticles(particles, rs, vs, rMax)      
+    
+    """WARNING! other parts of the program expects that the last value that this function (ODEint) returns is the stability parameter"""    
+    return rs, vs, Step.__name__, exeTime, energies, particles, stabilityVel
+
+
+
+"""
+def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,  Step=StepRungaKutta, freezeIons=False):
+    
+    #integrating equations of motion
+    
+    
+    #dt = GetDt(ODESystem)#get dt depending on system of ODEs you want to solve
+    
+    particles = copy(system)#don't want to modify initial system
+    particles, n, nElectrons, nIons = RearrangeSystem(particles)
+        
+    start = timer()#to track real time of the computation
+    
+    t = np.zeros(n)
+    iterations = int((tmax - t[0]) / dt) + 1 #this is number of steps that will by saved in an array
+    
+    rs = np.zeros((n,iterations,3)) #array of positions in time for all particles
+    vs = np.zeros((n,iterations,3)) #array of velocities in time for all particles
+    rMax = np.zeros(n) #if rMax[i] > trashold(if it hits the electrode) then we declare particle[i] unstable
+    potentialEnergy = np.zeros(iterations) #array of potential energy for the system in time
+    kineticEnergy = np.zeros(iterations) #array of kinetic energy for the system in time
+            
+    for i in range(n): #initial positions and velocities
+        rs[i][0] = particles[i][0]
+        vs[i][0] = particles[i][1]
+
+    allowRecombination = False
+    timeTransform = IsExact(ODESystem)
+    
+    for k in range(iterations - 1): #loop in time
+        
+        mass = particles[:,2]
+        charge = particles[:,3]
+                
+        rMatrix, vMatrix = GetPosVelPairCMS(particles, freezeIons)
+        fCoulomb, potentialCoulomb = CoulombNBody(rMatrix, charge, particles, freezeIons, timeTransform)
+
+        aCoulomb = fCoulomb / mass [:,None]
+             
+        for i in range(n): #loop through particles
+            
+            r = rs[i][k]
+            v = vs[i][k]
+            rv = np.array([r,v])
+            
+            if(Norm(r) > rMax[i]): #tracking the most distant point in trajectory
+                rMax[i] = Norm(r)
+                            
+            #kineticEnergy[k] = kineticEnergy[k] + 0.5 * mass[i] * Norm(v)**2 #* (f2/2)**2
+            #potentialFromTrap = trapEnergy(ODESystem, trapParams, r, mass[i], t[i]) 
+            #potentialEnergy[k] = potentialEnergy[k] + potentialFromTrap + potentialCoulomb[i]
                                                               
             if allowRecombination:
                 
@@ -214,6 +345,7 @@ def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,  
             stability = stability + 1
 
     
-    """WARNING! other parts of the program expects that the last value that this function (ODEint) returns is the stability parameter"""    
+    #WARNING! other parts of the program expects that the last value that this function (ODEint) returns is the stability parameter    
     return rs, vs, Step.__name__, exeTime, energies, particles, stability
 
+"""

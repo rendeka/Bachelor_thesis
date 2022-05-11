@@ -136,6 +136,7 @@ def StabilityDiagram(system, ODESystem, q1Start=0.0, q1Stop=0.15, q1Resol=20, q2
     
     for result in results:
         stabilityValue, i, j = result
+        i, j = int(i), int(j)
         stability[i,j] = stabilityValue
         
     pool.close()
@@ -284,7 +285,7 @@ def StabilityDiagramEdge(system, ODESystem, previousFile, q1Start=0.0, q1Stop=0.
     return stability, params   
 
 
-def PrepForStabilityEdge(fileName='0_ions_1_electrons_q1_0-0.06_q2_0-0.48_700x700_13'):
+def PrepForStabilityEdge(fileName):
     """
     Function PrepForStabilityEdge() loads the stability diagram which is represented by AxB matrix filled with stability values.
     It returns same AxB matrix but if some value of stability isn't the same as values of it's closest neighbours,
@@ -296,7 +297,7 @@ def PrepForStabilityEdge(fileName='0_ions_1_electrons_q1_0-0.06_q2_0-0.48_700x70
     q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nParticles, eta, f1, f2 = params
     nIons, nElectrons = nParticles
     n = nIons + nElectrons
-    
+        
     q1Step = (q1Stop - q1Start) / q1Resol
     q2Step = (q2Stop - q2Start) / q2Resol
     
@@ -312,10 +313,15 @@ def PrepForStabilityEdge(fileName='0_ions_1_electrons_q1_0-0.06_q2_0-0.48_700x70
             needComputation[i,j] = -1
             needComputation[i+1,j] = -1
             
-    def TalkToDiagonalNeighbour(i, j):
+    def TalkToUpperDiagonalNeighbour(i, j):
         if stability[i,j] != stability[i+1,j+1]:
             needComputation[i,j] = -1
             needComputation[i+1,j+1] = -1
+    
+    def TalkToLowerDiagonalNeighbour(i, j):
+        if stability[i,j] != stability[i-1,j+1]:
+            needComputation[i,j] = -1
+            needComputation[i-1,j+1] = -1
             
     
     
@@ -327,16 +333,24 @@ def PrepForStabilityEdge(fileName='0_ions_1_electrons_q1_0-0.06_q2_0-0.48_700x70
     """
     def GoToNeighbour(i,j):
         if not((i == q1Resol-1) and (j == q2Resol-1)):
+            
             if i == q1Resol-1:
                 TalkToRightNeighbour(i,j)
+                TalkToLowerDiagonalNeighbour(i,j)                            
                 
             elif j == q2Resol-1:
+                TalkToTopNeighbour(i,j)  
+            
+            elif i == 0:
+                TalkToRightNeighbour(i,j)
                 TalkToTopNeighbour(i,j)
+                TalkToUpperDiagonalNeighbour(i,j)
                 
             else:
                 TalkToRightNeighbour(i,j)
                 TalkToTopNeighbour(i,j)
-                TalkToDiagonalNeighbour(i,j)
+                TalkToUpperDiagonalNeighbour(i,j)
+                TalkToLowerDiagonalNeighbour(i,j)
     
     """In next for loops we are making new AxB matrix with stability value = -1 on the edge of two regions with different stability"""
     for i in range(q1Resol):

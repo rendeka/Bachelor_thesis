@@ -29,12 +29,15 @@ def GetPosVelPairCMS(particles, freezeIons=False):
                 electrons = particles[:i]
                 ions = particles[i:]
                 break
+            
+        nElectrons = len(electrons)
+        nIons = len(ions)
         
-        for i in range(len(electrons)):
+        for i in range(nElectrons):
             r1 = electrons[i,0]
             #v1 = electron[i,1]
             for j in range(i+1, n):
-                r2 = ion[j,0] 
+                r2 = particles[j,0] 
                 rs[i,j] = r2 - r1
                 rs[j,i] = -rs[i,j]
                 
@@ -76,12 +79,10 @@ def NeedFinerTimeStep(r, v, dt):
 
 def CoulombForce(r, charges, timeTransformation=True):
     
-    """returns Coulomb force and potential energy caused by Coulomb interaction between single pair of particles"""
-    
-    if timeTransformation:
-        c = 1 /(4 * np.pi * 8.854e-12) * (2/f2)**2 #term (2/f2)**2 is due to time scaling 
-    else:
-        c = 1 /(4 * np.pi * 8.854e-12)      
+    """returns Coulomb force and potential energy caused by Coulomb interaction between single pair of particles"""     
+        
+    c = 1 /(4 * np.pi * 8.854e-12) * (2/f2)**2 #term (2/f2)**2 is due to time scaling 
+
     force = c * charges * Norm(r)**(-3) * r
     potential = np.dot(force,r)#this is potential energy
     
@@ -111,7 +112,10 @@ def CoulombNBody(rMatrix, charges, particles, freezeIons=False, timeTransformati
                 ions = particles[i:]
                 break
             
-        for i in range(len(electrons)):
+        nElectrons = len(electrons)
+        nIons = len(ions)       
+            
+        for i in range(nElectrons):
             r1 = electrons[i,0]
             #v1 = electron[i,1]
             for j in range(i+1, n):

@@ -2,6 +2,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+
+from matplotlib.cm import ScalarMappable
 from matplotlib import cm# Colour maps for the contour graph
 from scipy import interpolate
 
@@ -50,7 +52,47 @@ def PlotODESolution(ODESolution):
     plt.grid(b=None)
     #plt.legend()
     plt.savefig(fname='pics/' + str(methodName), dpi=500)
-    plt.show()    
+    plt.show()   
+    
+def PlotODESolution2D(ODESolution):
+    """plots trajectories of all particles in the system"""    
+    rs, _, methodName, exeTime, _, system, _ = ODESolution
+    
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    
+    n = len(system)
+    
+    for i in range(n):
+            
+        x = rs[i,:,0] * 1000 # 1000 to convert into milimeters
+        y = rs[i,:,1] * 1000
+        
+        charge = system[i][3]
+        if charge > 0:
+            color = "red"
+        else:
+            color = "blue"
+        
+        #plt.axis('off')
+        #plt.grid(b=None)
+        ax.plot(x, y, color)
+    
+    #ax.view_init(15, 240)
+    ax.set_title(str(n) + " charged particles \n" + "method: " + methodName + "\n" + "execution time: " + str(exeTime) + " s")
+    
+    ax.set_xlabel('x[mm]')
+    ax.set_ylabel('y[mm]')
+    
+    ax.xaxis.set_tick_params(labelsize=10)
+    ax.yaxis.set_tick_params(labelsize=10)
+    
+    #plt.gca().set_aspect('equal') #setting aspect ration to 1
+
+    plt.grid(b=None)
+    #plt.legend()
+    plt.savefig(fname='pics/' + str(methodName), dpi=500)
+    plt.show()   
 
 def PlotEnergy(ODESolution):
     """plots energy balance of all particles throughout the computation"""
@@ -112,7 +154,7 @@ def PlotFinalPositions(ODESolution):
     #plt.savefig('pics/' + "final-positions", dpi=500)
     plt.show()
     
-def PlotStability(data, params):
+def PlotStability(data, params, index=None):
     
     q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nParticles, time, f1, f2 = params
         
@@ -127,6 +169,9 @@ def PlotStability(data, params):
     plt.contourf(X, Y, data)
     
     fileName = MakeFileName(params)
+    
+    if index != None:
+        fileName = fileName + '_' + str(index)
         
     extensions = ['eps', 'png']
     
@@ -134,6 +179,58 @@ def PlotStability(data, params):
         plt.savefig('pics/stability_diagrams/' + fileName + '.' + extension, format=extension)
     
     plt.show()
+    
+def PlotStabilityVelocity(data=np.zeros((2,2)), params=np.zeros(10), index=None, fileName=None):
+    
+    if fileName is None:
+        q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nParticles, time, f1, f2 = params
+    else:
+        data, params = LoadStabilityDiagram(fileName)
+        q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nParticles, eta, f1, f2 = params
+        
+    
+    x_vals = np.linspace(q2Start, q2Stop, int(q2Resol))
+    y_vals = np.linspace(q1Start, q1Stop, int(q1Resol))
+    X, Y = np.meshgrid(x_vals, y_vals)
+    
+    fig, ax = plt.subplots()
+    
+    vmin, vmax = 0, 40
+    levels = 1000
+    level_boundaries = np.linspace(vmin, vmax, levels + 1)
+    
+    quadcontourset = ax.contourf(
+        X, Y, data,
+        levels,
+        vmin=vmin, vmax=vmax
+    )
+    
+    
+    fig.colorbar(
+        ScalarMappable(norm=quadcontourset.norm, cmap=quadcontourset.cmap),
+        ticks=range(vmin, vmax+5, 5),
+        boundaries=level_boundaries,
+        values=(level_boundaries[:-1] + level_boundaries[1:]) / 2,
+        extend='max',
+    )
+      
+    plt.xlabel('$q_{2}$')
+    plt.ylabel('$q_{1}$')
+    
+    
+    """
+    fileName = MakeFileName(params)
+    
+    if index != None:
+        fileName = fileName + '_' + str(index)
+        
+    extensions = ['eps', 'png']
+    
+    for extension in extensions: #saving pictures 
+        plt.savefig('pics/stability_diagrams/' + fileName + '.' + extension, format=extension)
+    """
+    
+    #plt.show()
     
 def PlotCrystalTest(nCrystal='20'):
     s = LoadParticleSystem('coulomb_crystals/crystal-evolution_' + nCrystal) 

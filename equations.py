@@ -9,10 +9,7 @@ This file contains systems of ODEs that we want to integrate
 def ODESystemExact(rv, tau, aCoulomb, mass, charge, trapParams): #exact equation of motion
     """Exact equations of motion for ideal quadrupole trap""" 
     
-    if (mass == electronMass):#trap parameters depend on charge to mass ration      
-        a, q1, q2 = trapParams
-    else:
-        a, q1, q2 = trapParams * (electronMass / ionMass)
+    a, q1, q2 = trapParams * (electronMass / mass)#trap parameters depend on charge to mass ration  
         
     r, v = rv
     x,y,z = r
@@ -36,11 +33,8 @@ def ODESystemExact(rv, tau, aCoulomb, mass, charge, trapParams): #exact equation
 def ODESystemExactSymmetric(rv, tau, aCoulomb, mass, charge, trapParams):
     """Symmetrized equations of motion for ideal quadrupole trap""" 
     
-    if (mass == electronMass):#trap parameters depend on charge to mass ration      
-        a, q1, q2 = trapParams
-    else:
-        a, q1, q2 = trapParams * (electronMass / ionMass)
-        
+    a, q1, q2 = trapParams * (electronMass / mass)#trap parameters depend on charge to mass ration  
+
     r, v = rv
             
     r1 = v
@@ -51,10 +45,7 @@ def ODESystemExactSymmetric(rv, tau, aCoulomb, mass, charge, trapParams):
 def ODESystemEffective(rv, t, aCoulomb, mass, charge, trapParams):
     """Equations of motion devived from effective potential for ideal quadrupole trap""" 
  
-    if (mass == electronMass):        
-        a, q1, q2 = trapParams
-    else:
-        a, q1, q2 = trapParams * (electronMass / ionMass)
+    a, q1, q2 = trapParams * (electronMass / mass)#trap parameters depend on charge to mass ration  
     
     r, v = rv
     x,y,z = r
@@ -67,21 +58,17 @@ def ODESystemEffective(rv, t, aCoulomb, mass, charge, trapParams):
     vy1 = aCoulomb[1] - y / 4 * (a + 2 * q1**2 / 2 * (f2 / f1)**2 + q2**2 / 2)
     
     z1 = vz
-    vz1 = aCoulomb[2] + z / 2 * (a + 2 * q1**2 / 2 * (f2 / f1)**2 + q2**2 / 2)
+    vz1 = aCoulomb[2] - z / 2 * (a + 2 * q1**2 / 2 * (f2 / f1)**2 + q2**2 / 2)
     
     r1 = np.array([x1, y1, z1])
     v1 = np.array([vx1, vy1, vz1])
 
     return np.array([r1, v1])
 
-def ODESystemEffectiveSymmetric(rv, t, aCoulomb, mass, charge, trapParams): 
+def ODESystemEffectiveSymmetric(rv, tau, aCoulomb, mass, charge, trapParams): 
     """Symmetrized equations of motion devived from effective potential for ideal quadrupole trap""" 
-
     
-    if (mass == electronMass):        
-        a, q1, q2 = trapParams
-    else:
-        a, q1, q2 = trapParams * (electronMass / ionMass)
+    a, q1, q2 = trapParams * (electronMass / mass)#trap parameters depend on charge to mass ration  
     
     r, v = rv
 
@@ -90,14 +77,14 @@ def ODESystemEffectiveSymmetric(rv, t, aCoulomb, mass, charge, trapParams):
 
     return np.array([r1, v1])
 
-def ODESystemEffectiveDamping(rv, t, aCoulomb, mass, charge, trapParams): #effective potential
+def ODESystemEffectiveDamping(rv, tau, aCoulomb, mass, charge, trapParams): #effective potential
     """Equations of motion devived from effective potential for ideal quadrupole trap with damping """ 
 
     if (mass == electronMass):        
         a, q1, q2 = trapParams
         q1 = 0
     else:
-        a, q1, q2 = trapParams * (electronMass / ionMass)
+        a, q1, q2 = trapParams * (electronMass / mass)
     
     r, v = rv
     x,y,z = r
@@ -110,22 +97,16 @@ def ODESystemEffectiveDamping(rv, t, aCoulomb, mass, charge, trapParams): #effec
     vy1 = aCoulomb[1] - y / 4 * (a + 2 * q1**2 / 2 * (f2 / f1)**2 + q2**2 / 2) - 2 * beta * vy
     
     z1 = vz
-    vz1 = aCoulomb[2] + z / 2 * (a + 2 * q1**2 / 2 * (f2 / f1)**2 + q2**2 / 2) - 2 * beta * vz
+    vz1 = aCoulomb[2] - z / 2 * (a + 2 * q1**2 / 2 * (f2 / f1)**2 + q2**2 / 2) - 2 * beta * vz
     
     r1 = np.array([x1, y1, z1])
     v1 = np.array([vx1, vy1, vz1])
 
     return np.array([r1, v1])
 
-def ODESystemDampingExact(rv, t, aCoulomb, mass, charge, trapParams):
-
-    tau = t
+def ODESystemDampingExact(rv, tau, aCoulomb, mass, charge, trapParams):
     
-    if (mass == electronMass):        
-        a, q1, q2 = trapParams
-        q1 = 0
-    else:
-        a, q1, q2 = trapParams * (electronMass / ionMass)
+    a, q1, q2 = trapParams * (electronMass / mass)#trap parameters depend on charge to mass ration  
     
     r, v = rv
     x,y,z = r
@@ -149,7 +130,7 @@ def ODESystemDampingExact(rv, t, aCoulomb, mass, charge, trapParams):
 def ODESystemCrystal(rv, t, aCoulomb, mass, charge, trapParams): 
     
     r, v = rv
-    rv1 = [v, aCoulomb - r*const*np.abs(charge)/mass - 2 * beta * v]
+    rv1 = [v, aCoulomb - r*const*np.abs(charge)/mass]
     
     return np.array(rv1)
 

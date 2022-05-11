@@ -13,7 +13,7 @@ I've decided to put some information about the system into the corresponding fil
 Function ParseFileName() extracts this information. Its single argument is the name of the file
 we want to get information about.
 """
-def ParseFileName(fileName='0_ions_1_electrons_q1_0-0.06_q2_0-0.48_700x700_13'):
+def ParseFileName(fileName):
     parseFileName = fileName.split('_')
     
     nIons = int(parseFileName[0])
@@ -127,7 +127,7 @@ def SaveStabilityDiagram(stability, params, index=None):
 """
 LoadStabilityDiagram() loads stability matrix from a file
 """            
-def LoadStabilityDiagram(fileName='0_ions_1_electrons_q1_0-0.06_q2_0-0.48_700x700_13'):
+def LoadStabilityDiagram(fileName):
     
     q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nIons, nElectrons, eta = ParseFileName(fileName)
     
@@ -139,11 +139,19 @@ def LoadStabilityDiagram(fileName='0_ions_1_electrons_q1_0-0.06_q2_0-0.48_700x70
         i = 0        
         for row in csvReader:
             
-            dataRaw = row[0].split(' ')
+            dataSubRaw = row[0].split(' ')
+            dataRaw = []
+            for letter in dataSubRaw:
+                if letter != '':
+                    dataRaw.append(letter)
+                
             data = []
             for k in range(len(dataRaw)):
-                prepareDataValue = dataRaw[k].split('.')
-                data.append(int(prepareDataValue[0]))
+                splitFloatingPoint = dataRaw[k].split('.')
+                if splitFloatingPoint[1] == '': # if the number has no floating point
+                    data.append(float(splitFloatingPoint[0]))
+                else: #if the number has a floating point
+                    data.append(float(dataRaw[k]))
 
             for j in range(len(data)):
                 stability[i,j] = data[j]
