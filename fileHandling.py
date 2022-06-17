@@ -111,14 +111,20 @@ def LoadParticleSystem(fileName='init_system'):
 """
 SaveStabilityDiagram() saves stability matrix into a file
 """            
-def SaveStabilityDiagram(stability, params, index=None):
+def SaveStabilityDiagram(stability, params, index=None, velocityDiagram=False):
     
     fileName = MakeFileName(params)
     
     if index != None:
         fileName = fileName + '_' + str(int(index))
+        
+    path = 'stability_diagrams/'
     
-    with open(r"data/stability_diagrams/" + fileName + ".dat","w", newline="") as csvFile:
+    if velocityDiagram:
+        path = path + 'velocity/'
+    
+    #with open(r"data/stability_diagrams/" + fileName + ".dat","w", newline="") as csvFile:
+    with open(r'data/' + path + fileName + '.dat',"w", newline="") as csvFile:
         csvWriter = csv.writer(csvFile, delimiter = "\t")
         #csvWriter.writerow("Ta toto su nejake data")
         for row in stability:
@@ -127,13 +133,18 @@ def SaveStabilityDiagram(stability, params, index=None):
 """
 LoadStabilityDiagram() loads stability matrix from a file
 """            
-def LoadStabilityDiagram(fileName):
+def LoadStabilityDiagram(fileName, velocityDiagram=False):
     
     q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nIons, nElectrons, eta = ParseFileName(fileName)
     
     stability = np.zeros((q1Resol,q2Resol))
+
+    path = 'stability_diagrams/'
     
-    with open(r"data/stability_diagrams/" + fileName + ".dat") as csvFile:
+    if velocityDiagram:
+        path = path + 'velocity/'    
+    
+    with open(r'data/' + path + fileName + '.dat') as csvFile:
         csvReader = csv.reader(csvFile, delimiter = "\t")
         
         i = 0        
@@ -257,3 +268,44 @@ def LoadTriangles(params):
         pass
 
     return unstableTriangles, stableTriangles
+
+def ReshapeData(data, reshapeParams):
+    
+    q1Start, q1Stop, q1ResolOld, q1ResolNew, q2Start, q2Stop, q2ResolOld, q2ResolNew = reshapeParams
+    newData = np.zeros((q1ResolNew, q2ResolNew))
+    
+    q1StepOld = (q1Stop - q1Start) / q1ResolOld
+    q2StepOld = (q2Stop - q2Start) / q2ResolOld
+    
+    q1StepNew = (q1Stop - q1Start) / q1ResolNew
+    q2StepNew = (q2Stop - q2Start) / q2ResolNew
+    
+    for i in range(q1ResolNew):
+        for j in range(q2ResolNew):
+            previous_i = int(np.round(i * q1StepNew / q1StepOld))            
+            previous_j = int(np.round(j * q2StepNew / q2StepOld))
+
+            if previous_i == q1ResolOld: previous_i = q1ResolOld - 1 #it's obvious why we need to do this if you draw a picture..    
+            if previous_j == q2ResolOld: previous_j = q2ResolOld - 1         
+            
+            newData[i,j] = data[previous_i, previous_j]
+        
+    return newData
+    
+"""
+SaveStabilityDiagramDet() saves stability matrix made with the use of floquet theory into a file
+"""            
+def SaveStabilityDiagramDet(stability, params):
+    
+    q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, eta = params
+    
+    fileName = 'q1_' + str(q1Start) + '-' + str(q1Stop) + '_q2_' + str(q2Start) + '-' + str(q2Stop) + '_' + str(int(q2Resol)) + 'x' + str(int(q1Resol)) + '_' + str(eta)
+       
+    path = 'stability_diagrams/determinant/'
+    
+    #with open(r"data/stability_diagrams/" + fileName + ".dat","w", newline="") as csvFile:
+    with open(r'data/' + path + fileName + '.dat',"w", newline="") as csvFile:
+        csvWriter = csv.writer(csvFile, delimiter = "\t")
+        #csvWriter.writerow("Ta toto su nejake data")
+        for row in stability:
+            csvWriter.writerow([str(row)[1:-1]])

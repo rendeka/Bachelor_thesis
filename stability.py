@@ -24,9 +24,15 @@ from matplotlib import cm           # Colour maps for the contour graph
 from integration import *
 #from createSystem import *
 from fileHandling import *
+#from parameters import *
+
+from scipy.sparse.linalg import eigsh
+
 
 from timeit import default_timer as timer
 from multiprocessing import Pool
+
+#from scipy.sparse.linalg import eigsh
 
 
 def IsStable(stabilityParam):
@@ -65,7 +71,7 @@ def InTriangle(p, regions):
     
     return False    
 
-def MakePoolList(system, ODESystem, q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, tmax, dt, freezeIons):
+def MakePoolList(system, ODESystem, q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, tmax, dt, freezeIons, velocityDiagram):
     """
     Prepares list of arguments for parallel computing. Each element from this list is
     argument for function IntWrapper().
@@ -92,15 +98,19 @@ def MakePoolList(system, ODESystem, q1Start, q1Stop, q1Resol, q2Start, q2Stop, q
         q2 = q2Start
         for j in range(q2Resol):
             
-            p = np.array([q2, q1])
-            if InTriangle(p, unstableRegion):# here we decide whether we need to compute the stability value or whether we already know it for given parameters
-                stabilityValue = n
-            elif InTriangle(p, stableRegion):
-                stabilityValue = 0
-            else:
+            if velocityDiagram:
                 stabilityValue = -1
+            
+            else:
+                p = np.array([q2, q1])
+                if InTriangle(p, unstableRegion):# here we decide whether we need to compute the stability value or whether we already know it for given parameters
+                    stabilityValue = n
+                elif InTriangle(p, stableRegion):
+                    stabilityValue = 0
+                else:
+                    stabilityValue = -1
                 
-            params = [system, np.array([a,q1,q2]), tmax, dt, ODESystem, freezeIons]
+            params = [system, np.array([a,q1,q2]), tmax, dt, ODESystem, freezeIons, velocityDiagram]
             args.append(tuple([params, i, j, stabilityValue]))
             
             q2 = q2 + q2Step
@@ -108,30 +118,29 @@ def MakePoolList(system, ODESystem, q1Start, q1Stop, q1Resol, q2Start, q2Stop, q
         
     return np.array(args, dtype=object)
 
-
 def IntWrapper(params, i, j, stabilityValue):
     """
     Function IntWrapper returns stability value for given set of trapping paramaters.
     """
         
-    system, trapParams, tmax, dt, ODESystem, freezeIons = params
+    system, trapParams, tmax, dt, ODESystem, freezeIons, velocityDiagram = params
     n = len(system)
             
     if stabilityValue == -1: #stability value is computed only if 
-        stabilityValue = ODEint(system, trapParams, tmax, dt, ODESystem, freezeIons=freezeIons)[-1]
+        stabilityValue = ODEint(system, trapParams, tmax, dt, ODESystem, freezeIons=freezeIons, velocityDiagram=velocityDiagram)[-1]
             
         
     result = np.array([IsStable(stabilityValue), i, j])
     return result
 
-def StabilityDiagram(system, ODESystem, q1Start=0.0, q1Stop=0.15, q1Resol=20, q2Start=0.0, q2Stop=1.0, q2Resol=20, tmax=1.3e+2, dt=1e-2, freezeIons=False):
+def StabilityDiagram(system, ODESystem, q1Start=0.0, q1Stop=0.15, q1Resol=20, q2Start=0.0, q2Stop=1.0, q2Resol=20, tmax=1.3e+2, dt=1e-2, freezeIons=False, velocityDiagram=False):
     
     stability = np.zeros((q1Resol,q2Resol))
 
     start = timer()
 
     pool = Pool()# take maximum available number of cpus
-    args = MakePoolList(system, ODESystem, q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, tmax, dt, freezeIons)
+    args = MakePoolList(system, ODESystem, q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, tmax, dt, freezeIons, velocityDiagram)
     results = pool.starmap(IntWrapper, args)
     
     for result in results:
@@ -152,7 +161,7 @@ def StabilityDiagram(system, ODESystem, q1Start=0.0, q1Stop=0.15, q1Resol=20, q2
     nParticles = (m, n-m)#numer of (ions, electrons)
         
     params = np.array([q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nParticles, time, f1, f2], dtype=object)
-    SaveStabilityDiagram(stability, params)
+    SaveStabilityDiagram(stability, params, velocityDiagram=velocityDiagram)
   
     return stability, params   
 
@@ -247,7 +256,7 @@ def MakePoolListEdge(system, ODESystem, q1Start, q1Stop, q1Resol, q2Start, q2Sto
 
 def IntWrapperEdge(params, i, j, stabilityValue):
         
-    system, trapParams, tmax, dt, ODESystem = params
+    system, trapParams, tmax, dt, ODESystem, freezeIons = params
     n = len(system)
             
     if stabilityValue == -1:
@@ -263,7 +272,7 @@ def StabilityDiagramEdge(system, ODESystem, previousFile, q1Start=0.0, q1Stop=0.
     
     pool = Pool()# take maximum available number of cpus
     args = MakePoolListEdge(system, ODESystem, q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, tmax, dt, needComputationPack, freezeIons)
-    results = pool.starmap(IntWrapper, args)
+    results = pool.starmap(IntWrapperEdge, args)
     
     for result in results:
         stabilityValue, i, j = result
@@ -358,3 +367,123 @@ def PrepForStabilityEdge(fileName):
             GoToNeighbour(i,j)
             
     return np.array([needComputation, q1Resol, q2Resol], dtype=object)
+
+"""
+next we will create stability diagram using floquet theory
+"""
+
+def StabilityMatrix(trapParams, f1, f2):
+    
+    a, q1, q2 = trapParams
+    
+    """
+    F1 = f1 / (2*np.pi)
+    F2 = f2 / (2*np.pi)
+    
+    gcd = np.gcd(int(F1),int(F2))
+    m = int(F2 // gcd)
+    n = int(F1 // gcd)
+    """
+    
+    gcd = np.gcd(int(f1),int(f2))
+    m = int(f2 // gcd)
+    n = int(f1 // gcd)
+    
+    eta = f2 / f1
+    
+    resol = 10*m + 1
+    
+    stabilityMatrix = np.zeros((resol,resol))
+    
+    for i in range(resol):
+        k = i - (resol-1)/2
+        stabilityMatrix[i,i] = a * eta**2 - ((k)/m)**2
+        if i + 2*n < resol:            
+            stabilityMatrix[i,i + 2*n] = -q1 * (-2)
+            stabilityMatrix[i + 2*n,i] = -q1 * (-2)
+            
+            if i + 2*m < resol:        
+                stabilityMatrix[i,i + 2*m] = -q2 * (-2)
+                stabilityMatrix[i + 2*m,i] = -q2 * (-2)
+        
+    return stabilityMatrix
+    
+
+def MakePoolListDet(q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, f1, f2):
+    """
+    Prepares list of arguments for parallel computing. Each element from this list is
+    argument for function IntWrapper().
+    """
+    
+    q1Step = (q1Stop - q1Start) / q1Resol
+    q2Step = (q2Stop - q2Start) / q2Resol
+    
+    args = []
+    
+    a = 0    
+    q1 = q1Start
+    for i in range(q1Resol):
+        q2 = q2Start
+        for j in range(q2Resol):
+                
+            trapParams = np.array([a,q1,q2])
+            args.append(tuple([trapParams, i, j, f1, f2]))
+            
+            q2 = q2 + q2Step
+        q1 = q1 + q1Step
+        
+    return np.array(args, dtype=object)
+
+def IntWrapperDet(trapParams, i, j, f1, f2):
+    """
+    Function IntWrapper returns stability value for given set of trapping paramaters.
+    """
+        
+    matrix = StabilityMatrix(trapParams, f1, f2)            
+    #det = np.linalg.det(matrix)
+    stabilityValue = -np.linalg.slogdet(matrix)[0]
+    
+    #rank = np.linalg.matrix_rank(matrix)
+    #eigVals = eig(matrix, k=rank-1)[0] #need to import scipy
+    #det = np.prod(eigVals)
+    
+    """
+    if det > 0:
+        stabilityValue = -1
+    elif det == 0:
+        stabilityValue = 0
+    else:
+        stabilityValue = 1
+    """
+            
+        
+    result = np.array([IsStable(stabilityValue), i, j])
+    return result
+
+def StabilityDet(q1Start=0.0, q1Stop=0.15, q1Resol=20, q2Start=0.0, q2Stop=1.0, q2Resol=20, f1=3e6*2*np.pi, f2=17*3e6*2*np.pi):
+    
+    stability = np.zeros((q1Resol,q2Resol))
+
+    start = timer()
+
+    pool = Pool()# take maximum available number of cpus
+    args = MakePoolListDet(q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, f1, f2)
+    results = pool.starmap(IntWrapperDet, args)
+    
+    for result in results:
+        stabilityValue, i, j = result
+        i, j = int(i), int(j)
+        stability[i,j] = stabilityValue
+        
+    pool.close()
+    stop = timer()
+    time = stop-start
+    print('time: ', time, 'seconds')
+    
+    params = [q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, int(f2/f1)]
+    
+    SaveStabilityDiagramDet(stability, params)
+    from plotting import PlotStabilityDet
+    PlotStabilityDet(stability, params)
+  
+    #return stability, params   

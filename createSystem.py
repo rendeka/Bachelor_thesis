@@ -10,7 +10,7 @@ from fileHandling import *
 
 from copy import copy
 
-def RandomVelocity(T=100, mass=ionMass, dim=3):
+def RandomVelocity(T=10, mass=ionMass, dim=3):
     maxElement = np.sqrt((Kb*T)/(mass))
     vector = 2 * maxElement * np.random.rand(dim) - maxElement
         
@@ -90,10 +90,11 @@ def MakeCoulombCrystalFromGrid(nCrystal='25', trapParams=np.array([0, 0.4, 0])):
     system = MakeParticleSystem(n, 0)
     
     tmax = 2.5 * f2 / f1 
-    dt = 1/(200)  
+    dt = 1/(200)
     
-    tmax = 2*tmax
-    dt = 25*dt
+    
+    tmax = tmax*5e0
+    dt = dt*6e2
     
     def TotalVelocity(system):
         vTot = 0
@@ -103,22 +104,24 @@ def MakeCoulombCrystalFromGrid(nCrystal='25', trapParams=np.array([0, 0.4, 0])):
             
         return vTot/n
     
-    trasholdVel = TemperatureToVelocity(T=0.01, mass=ionMass)    
-    i = 0
-    while(i < 10):
-        """
-        if TotalVelocity(system) < trasholdVel:
+    trasholdVel = TemperatureToVelocity(T=0.1, mass=ionMass)   #povodne T=0.01 
+    i = -2
+    
+    nBoost = 10
+    while(i < nBoost):
+        
+        if (TotalVelocity(system) < trasholdVel) and (i < nBoost - 2):
             for particle in system:
                 particle[1] = RandomVelocity(T=10, mass=ionMass)
-        """
         
-        rs, vs, stepName, exeTime, energies, system, stability = ODEint(system, trapParams, tmax, dt, ODESystem=ODESystemEffectiveDamping,  Step=StepEulerAdvanced, freezeIons=False)
         
-        if i == 0:
+        rs, vs, stepName, exeTime, energies, system, stability = ODEint(system, trapParams, tmax, dt, ODESystem=ODESystemEffectiveDamping,  Step=StepVerlet, freezeIons=False)
+        
+        if i < 1:
             rsFinal = rs
             vsFinal = vs
             exeTimeFinal = 0
-            totalEnergyFinal, kineticEnergyFinal, potentialEnergyFinal = energies
+            totalEnergyFinal, kineticEnergyFinal, potentialEnergyFinal = [[],[],[]]
 
         else:
             rsFinal = np.hstack([rsFinal, rs])

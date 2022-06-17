@@ -22,13 +22,16 @@ V2 = 100 #fast ac potential 100
 Kb = 1.3806e-23#Boltzman constant
 
 #f1 = 3e6 * 2 * np.pi
-#f2 = 2.5e9 * 2 * np.pi
+f2 = 2.5e9 * 2 * np.pi
 
-f2 = 6e8 * 2 * np.pi#test
+#f2 = 6e8 * 2 * np.pi#test
 
 #f1 = f2 / 13#test stability diagram
 #f1 = f2 / 170#test trajectory
-f1 = f2 / 3#test stability diagram
+#f1 = f2 / 3#test stability diagram
+
+f1 = f2 // 833
+f2 = f1 * 833
 
 const = 1e-3 #constant for harmonic potential
-beta = 1e-2 #constant for damping force
+beta = 4e-2 #constant for damping force

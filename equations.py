@@ -45,8 +45,11 @@ def ODESystemExactSymmetric(rv, tau, aCoulomb, mass, charge, trapParams):
 def ODESystemEffective(rv, t, aCoulomb, mass, charge, trapParams):
     """Equations of motion devived from effective potential for ideal quadrupole trap""" 
  
-    a, q1, q2 = trapParams * (electronMass / mass)#trap parameters depend on charge to mass ration  
-    
+    if (mass == electronMass):        
+        a, q1, q2 = trapParams
+        q1 = 0
+    else:
+        a, q1, q2 = trapParams * (electronMass / mass)    
     r, v = rv
     x,y,z = r
     vx,vy,vz = v
@@ -68,8 +71,12 @@ def ODESystemEffective(rv, t, aCoulomb, mass, charge, trapParams):
 def ODESystemEffectiveSymmetric(rv, tau, aCoulomb, mass, charge, trapParams): 
     """Symmetrized equations of motion devived from effective potential for ideal quadrupole trap""" 
     
-    a, q1, q2 = trapParams * (electronMass / mass)#trap parameters depend on charge to mass ration  
-    
+    if (mass == electronMass):        
+        a, q1, q2 = trapParams
+        q1 = 0
+    else:
+        a, q1, q2 = trapParams * (electronMass / mass)
+        
     r, v = rv
 
     r1 = v

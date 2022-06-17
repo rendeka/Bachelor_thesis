@@ -48,10 +48,19 @@ def PlotODESolution(ODESolution):
     ax.xaxis.set_tick_params(labelsize=10)
     ax.yaxis.set_tick_params(labelsize=10)
     ax.zaxis.set_tick_params(labelsize=10)
+    
+    ax.auto_scale_xyz([-0.60, 0.60], [-0.60, 0.60], [-0.60, 0.60])
+
 
     plt.grid(b=None)
     #plt.legend()
-    plt.savefig(fname='pics/' + str(methodName), dpi=500)
+    
+    fileName = 'energies'
+    extensions = ['eps', 'png']
+    
+    for extension in extensions: #saving pictures 
+        plt.savefig('pics/crystal/' + fileName + str(methodName) + '.' + extension, dpi=500, format=extension)
+
     plt.show()   
     
 def PlotODESolution2D(ODESolution):
@@ -112,6 +121,12 @@ def PlotEnergy(ODESolution):
     plt.plot(np.arange(len(totalEnergy)),energies[2] ,label='Potential energy')
     
     plt.legend()
+    
+    fileName = 'energies'
+    extensions = ['eps', 'png']
+    
+    for extension in extensions: #saving pictures 
+        plt.savefig('pics/crystal/' + fileName + '.' + extension, format=extension)
 
     plt.show()
     
@@ -148,35 +163,131 @@ def PlotFinalPositions(ODESolution):
     ax.xaxis.set_tick_params(labelsize=10)
     ax.yaxis.set_tick_params(labelsize=10)
     ax.zaxis.set_tick_params(labelsize=10)
-
+    
+    ax.auto_scale_xyz([-0.06, 0.06], [-0.06, 0.06], [-0.06, 0.06])
+    
+    
     plt.grid(b=None)
     #plt.legend()
     #plt.savefig('pics/' + "final-positions", dpi=500)
-    plt.show()
-    
-def PlotStability(data, params, index=None):
-    
-    q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nParticles, time, f1, f2 = params
-        
-    fig = plt.figure()
-        
-    x_vals = np.linspace(q2Start, q2Stop, int(q2Resol))
-    y_vals = np.linspace(q1Start, q1Stop, int(q1Resol))
-    X, Y = np.meshgrid(x_vals, y_vals) 
-    
-    plt.xlabel('$q_{2}$')
-    plt.ylabel('$q_{1}$')
-    plt.contourf(X, Y, data)
-    
-    fileName = MakeFileName(params)
-    
-    if index != None:
-        fileName = fileName + '_' + str(index)
-        
+    fileName = 'final-positions'
     extensions = ['eps', 'png']
     
     for extension in extensions: #saving pictures 
-        plt.savefig('pics/stability_diagrams/' + fileName + '.' + extension, format=extension)
+        plt.savefig('pics/crystal/' + fileName + '.' + extension, dpi=500, format=extension)
+    plt.show()
+    
+def PlotStability(data=np.zeros((2,2)), params=np.zeros(10), index=None, fileName=None, velocityDiagram=False):
+    
+    if fileName is None:
+        q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nParticles, time, f1, f2 = params
+        fileName = MakeFileName(params)
+
+    else:
+        data, params = LoadStabilityDiagram(fileName)
+        q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nParticles, eta, f1, f2 = params
+                
+    x_vals = np.linspace(q2Start, q2Stop, int(q2Resol))
+    y_vals = np.linspace(q1Start, q1Stop, int(q1Resol))
+    X, Y = np.meshgrid(x_vals, y_vals) 
+            
+    if index != None:
+        fileName = fileName + '_' + str(index)
+            
+    path = 'pics/stability_diagrams/'
+    if velocityDiagram:
+        path = path + 'velocity/'
+        fig, ax = plt.subplots()
+        
+        vmin, vmax = 0, 40
+        levels = 1000
+        level_boundaries = np.linspace(vmin, vmax, levels + 1)
+        
+        quadcontourset = ax.contourf(
+            X, Y, data,
+            levels,
+            vmin=vmin, vmax=vmax
+        )
+        
+        
+        fig.colorbar(
+            ScalarMappable(norm=quadcontourset.norm, cmap=quadcontourset.cmap),
+            ticks=range(vmin, vmax+5, 5),
+            boundaries=level_boundaries,
+            values=(level_boundaries[:-1] + level_boundaries[1:]) / 2,
+            extend='max',
+        )
+        
+        
+    else:
+        fig = plt.figure()        
+        plt.contourf(X, Y, data)
+
+    
+    plt.xlabel('$q_{2}$')
+    plt.ylabel('$q_{1}$')
+    
+    extensions = ['eps', 'png']
+    
+    for extension in extensions: #saving pictures 
+        plt.savefig(path + fileName + '.' + extension, format=extension)
+    
+    plt.show()
+    
+def PlotStabilityRescaled(data=np.zeros((2,2)), params=np.zeros(10), index=None, fileName=None, velocityDiagram=False):
+        
+    if fileName is None:
+        q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nParticles, time, f1, f2 = params
+        fileName = MakeFileName(params)
+
+    else:
+        data, params = LoadStabilityDiagram(fileName)
+        q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nParticles, eta, f1, f2 = params
+                
+    x_vals = np.linspace(q2Start, q2Stop, int(q2Resol)) * 10 
+    y_vals = np.linspace(q1Start, q1Stop, int(q1Resol)) * 1000
+    X, Y = np.meshgrid(x_vals, y_vals) 
+            
+    if index != None:
+        fileName = fileName + '_' + str(index)
+            
+    path = 'pics/stability_diagrams/'
+    if velocityDiagram:
+        path = path + 'velocity/'
+        fig, ax = plt.subplots()
+        
+        vmin, vmax = 0, 40
+        levels = 1000
+        level_boundaries = np.linspace(vmin, vmax, levels + 1)
+        
+        quadcontourset = ax.contourf(
+            X, Y, data,
+            levels,
+            vmin=vmin, vmax=vmax
+        )
+        
+        
+        fig.colorbar(
+            ScalarMappable(norm=quadcontourset.norm, cmap=quadcontourset.cmap),
+            ticks=range(vmin, vmax+5, 5),
+            boundaries=level_boundaries,
+            values=(level_boundaries[:-1] + level_boundaries[1:]) / 2,
+            extend='max',
+        )
+        
+        
+    else:
+        fig = plt.figure()        
+        plt.contourf(X, Y, data)
+
+    
+    plt.xlabel('$q_{2} \ [10^{-1}]$')
+    plt.ylabel('$q_{1} \ [10^{-3}]$')
+    
+    extensions = ['eps', 'png']
+    
+    for extension in extensions: #saving pictures 
+        plt.savefig(path + fileName + '.' + extension, format=extension)
     
     plt.show()
     
@@ -195,7 +306,8 @@ def PlotStabilityVelocity(data=np.zeros((2,2)), params=np.zeros(10), index=None,
     
     fig, ax = plt.subplots()
     
-    vmin, vmax = 0, 40
+    #vmin, vmax = 0, 40
+    vmin, vmax = 0, 100
     levels = 1000
     level_boundaries = np.linspace(vmin, vmax, levels + 1)
     
@@ -230,7 +342,7 @@ def PlotStabilityVelocity(data=np.zeros((2,2)), params=np.zeros(10), index=None,
         plt.savefig('pics/stability_diagrams/' + fileName + '.' + extension, format=extension)
     """
     
-    #plt.show()
+    plt.show()
     
 def PlotCrystalTest(nCrystal='20'):
     s = LoadParticleSystem('coulomb_crystals/crystal-evolution_' + nCrystal) 
@@ -240,4 +352,31 @@ def PlotCrystalTest(nCrystal='20'):
 def PlotCrystal(nCrystal='20'):
     s = LoadParticleSystem('coulomb_crystals/' + nCrystal) 
     sol = ODEint(s, np.array([0,0,0]), 1e-10, 1e-10, ODESystem=ODESystemExact,  Step=StepEulerAdvanced, freezeIons=True)
-    PlotFinalPositions(sol)
+    PlotFinalPositions(sol)   
+    
+    
+def PlotStabilityDet(data, params):
+    
+    q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, eta = params
+                
+    x_vals = np.linspace(q2Start, q2Stop, int(q2Resol))
+    y_vals = np.linspace(q1Start, q1Stop, int(q1Resol))
+    X, Y = np.meshgrid(x_vals, y_vals)
+        
+    fileName = 'q1_' + str(q1Start) + '-' + str(q1Stop) + '_q2_' + str(q2Start) + '-' + str(q2Stop) + '_' + str(int(q2Resol)) + 'x' + str(int(q1Resol)) + '_' + str(eta)
+ 
+            
+    path = 'pics/stability_diagrams/determinant/'
+    
+    fig = plt.figure()        
+    plt.contourf(X, Y, data)
+    
+    plt.xlabel('$q_{2}$')
+    plt.ylabel('$q_{1}$')
+    
+    extensions = ['eps', 'png']
+    
+    for extension in extensions: #saving pictures 
+        plt.savefig(path + fileName + '.' + extension, format=extension)
+    
+    plt.show()

@@ -23,7 +23,6 @@ def SolveParticleSystem(nCrystal='20'):
     #initsystem = MakeParticleSystem(50,1)
     #initsystem = MakeParticleSystem(0,1)
     
-    #initsystem = np.array([], dtype=object)    
     #initsystem = LoadParticleSystem('test')
     
     #initsystem = LoadParticleSystem('coulomb_crystals/crystal-evolution_' + nCrystal)
@@ -52,14 +51,13 @@ def SolveParticleSystem(nCrystal='20'):
     PlotODESolution(ODESolution)
 
     
-def MakeStabilityDiagram(nCrystal='20', q1Start=0.0, q1Stop=0.1, q1Resol=9, q2Start=0.0, q2Stop=0.55, q2Resol=8, freezeIons=True):
+def MakeStabilityDiagram(nCrystal='20', q1Start=0.0, q1Stop=0.05, q1Resol=64, q2Start=0.0, q2Stop=0.55, q2Resol=64, freezeIons=True):
     
     #initsystem = LoadParticleSystem('1_170')
     
-    initsystem = LoadParticleSystem('wtf') 
+    initsystem = LoadParticleSystem('slowElectron') 
     
     #initsystem = MakeParticleSystem(0,1)
-    #SaveParticleSystem(initsystem, 'wtf')
     
     #electron = LoadParticleSystem('oneElectron')[0]
     
@@ -85,11 +83,11 @@ def MakeStabilityDiagram(nCrystal='20', q1Start=0.0, q1Stop=0.1, q1Resol=9, q2St
     """
     
     freezeIons = True
-    stability, plotParams = StabilityDiagram(initsystem, ODESystemExact, q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, endTime, timeStep, freezeIons)       
-    PlotStabilityVelocity(stability, plotParams)
-    #PlotStability(stability, plotParams)   
+    velocityDiagram = True
+    stability, plotParams = StabilityDiagram(initsystem, ODESystemExact, q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, endTime, timeStep, freezeIons, velocityDiagram)       
+    PlotStability(stability, plotParams, velocityDiagram=velocityDiagram)
     
-def MakeStabilityDiagramList(nCrystal='20', q1Start=0.0, q1Stop=0.05, q1Resol=12, q2Start=0.0, q2Stop=0.5, q2Resol=12, freezeIons=True):
+def MakeStabilityDiagramList(nCrystal='20', q1Start=0.0, q1Stop=0.05, q1Resol=40, q2Start=0.0, q2Stop=0.5, q2Resol=40, freezeIons=True):
     
     systems = CreateInitialSystems()
     
@@ -100,11 +98,12 @@ def MakeStabilityDiagramList(nCrystal='20', q1Start=0.0, q1Stop=0.05, q1Resol=12
         PlotStability(stability, plotParams, idx)   
     
     
-def MakeStabilityDiagramEdge(nCrystal='20', previousFileName=None, q1Start=0.0, q1Stop=0.1, q1Resol=12, q2Start=0.0, q2Stop=0.55, q2Resol=12, freezeIons=True):
+def MakeStabilityDiagramEdge(nCrystal='20', previousFileName=None, q1Start=0.0, q1Stop=0.1, q1Resol=50, q2Start=0.0, q2Stop=0.6, q2Resol=50, freezeIons=True):
     
-    initsystem = LoadParticleSystem('wtf')
+    #initsystem = LoadParticleSystem('slowElectron')
+    initsystem = LoadParticleSystem('thisOne')
     #initsystem = MakeParticleSystem(0,1)
-    #SaveParticleSystem(initsystem, 'wtf')
+    #SaveParticleSystem(initsystem, 'newSystem')
 
     #initsystem = LoadParticleSystem('coulomb_crystals/crystal-evolution_' + nCrystal)
     #initsystem = AddElectron(initsystem)
@@ -129,21 +128,23 @@ def MakeStabilityDiagramEdge(nCrystal='20', previousFileName=None, q1Start=0.0, 
     else:
         q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nIons, nElectrons, eta = ParseFileName(previousFileName)
         
-    for _ in range(6):
+    for _ in range(4):
         print('resolution: ' +  str(int(q1Resol)) + 'x' + str(int(q2Resol)))
-        for i in range(2):#after this loop resolution will be doubled in both coordinates q1 adn q2
+        for i in range(1):#after this loop resolution will be doubled in both coordinates q1 adn q2
             subStart = timer()
         
             params = q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, (nIons, nElectrons), int(f2/f1), f1, f2            
-            fileName = MakeFileName(params)
+            previousFileName = MakeFileName(params)
             
-            if i == 0: scaleFactor = 3/2 #we want to avoid scaling resolution by factor of 2, because in that case new points
-            if i == 1: scaleFactor = 4/3 #in the grid would be exactly between the old ones making unnecessarily big rounding errors
+            #if i == 0: scaleFactor = 3/2 #we want to avoid scaling resolution by factor of 2, because in that case new points
+            #if i == 1: scaleFactor = 4/3 #in the grid would be exactly between the old ones making unnecessarily big rounding errors
             
-            q1Resol = int(scaleFactor * q1Resol)# we must cast into integer in order to allow any racional number as scaleFactor
+            scaleFactor = 2
+            
+            q1Resol = int(scaleFactor * q1Resol)# we want to cast into integer in order to allow any racional number as scaleFactor
             q2Resol = int(scaleFactor * q2Resol)# but it's your responsibility to make sure that resolution has no decimal places for every interation
                     
-            stability, plotParams = StabilityDiagramEdge(initsystem, ODESystemExact, fileName, q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, endTime, timeStep, freezeIons)            
+            stability, plotParams = StabilityDiagramEdge(initsystem, ODESystemExact, previousFileName, q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, endTime, timeStep, freezeIons)            
             PlotStability(stability, plotParams)
             
             
@@ -198,12 +199,18 @@ def PlotStabilityEdge(fileName, plotParams=None):
     contourf_ = ax.contourf(X,Y,fMatrix, levels=levels, vmin=vmin, vmax=vmax)
     #cbar = fig.colorbar(contourf_)
     
-    #plt.show()
+    plt.show()
     
-def PlotSVelocityEdge(fileName1, fileName2):
-    fMatrix, _, _ = PrepForStabilityEdge(fileName2)
-    data, params = LoadStabilityDiagram(fileName1)
+def PlotVelocityEdge(fileNameVel, fileNameStability):
+    
+    fMatrix, _, _ = PrepForStabilityEdge(fileNameStability)
+    q1ResolF, q2ResolF = np.shape(fMatrix)
+    
+    data, params = LoadStabilityDiagram(fileNameVel, velocityDiagram=True)
     q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nParticles, eta, f1, f2 = params
+    
+    reshapeParams = [q1Start, q1Stop, q1Resol, q1ResolF, q2Start, q2Stop, q2Resol, q2ResolF]
+    reshapedData = ReshapeData(data, reshapeParams)
     
     for iX, fX in enumerate(fMatrix):
         for iY, fY in enumerate(fX):
@@ -212,18 +219,18 @@ def PlotSVelocityEdge(fileName1, fileName2):
             else:
                 fMatrix[iX,iY] = -1
         
-    x_vals = np.linspace(q2Start, q2Stop, int(q2Resol))
-    y_vals = np.linspace(q1Start, q1Stop, int(q1Resol))
+    x_vals = np.linspace(q2Start, q2Stop, int(q2ResolF))
+    y_vals = np.linspace(q1Start, q1Stop, int(q1ResolF))
     X, Y = np.meshgrid(x_vals, y_vals)
     
-    fig, (ax1, ax2) = plt.subplots(nrows=2)
+    fig, ax = plt.subplots()
     
-    vmin1, vmax1 = 0, 100
+    vmin1, vmax1 = 0, 50
     levels1= 1000
     level_boundaries = np.linspace(vmin1, vmax1, levels1 + 1)
     
-    quadcontourset = ax1.contourf(
-        X, Y, data,
+    quadcontourset = ax.contourf(
+        X, Y, reshapedData,
         levels1,
         vmin=vmin1, vmax=vmax1
     )
@@ -234,37 +241,40 @@ def PlotSVelocityEdge(fileName1, fileName2):
         ticks=range(vmin1, vmax1+5, 5),
         boundaries=level_boundaries,
         values=(level_boundaries[:-1] + level_boundaries[1:]) / 2,
+        extend='max',
     )
       
     vmin2 = 0
     vmax2 = 1000
     
     levels2 = np.linspace(vmin2, vmax2, 2+1)
-    contourf_ = ax2.contourf(X,Y,fMatrix, levels=levels2, vmin=vmin2, vmax=vmax2)
+    ax.contourf(X,Y,fMatrix, levels=levels2, vmin=vmin2, vmax=vmax2, cmap=plt.get_cmap('hot'))
+    #contourf_ = ax2.contourf(X,Y,fMatrix, levels=levels2, vmin=vmin2, vmax=vmax2)
     #cbar = fig.colorbar(contourf_)
     
     plt.xlabel('$q_{2}$')
     plt.ylabel('$q_{1}$')
     
-    plt.show()
     
-def ThePlot(fileName1, fileName2):
-    PlotStabilityVelocity(fileName=fileName1)
-    PlotStabilityEdge(fileName=fileName2)
-    plt.show()
-        
- 
+    fileName = fileNameStability + '_' + str(levels1)
+    path = 'pics/stability_diagrams/velocity_with_edge/'
+    extensions = ['eps', 'png']    
+    for extension in extensions: #saving pictures 
+        plt.savefig(path + fileName + '.' + extension, format=extension)
+    
+    plt.show()        
+
 if __name__ == '__main__':
     
     timeStep = 1/(200) #in normal time scale 1/(100 * f2) -> faster period divided into 100 segments 
-    endTime = 2*2.5 * f2 / f1 #in normal time scale 5 * (1 / f1) -> five slower periods
+    endTime = 5e1 * 2 * 2.5 * f2 / f1 #in normal time scale 10 * (1 / f1) -> ten slower periods
     
-    tp = np.array([0, 0.02, 0.35])
-    #MakeCoulombCrystal(nCrystal='20', trapParams=tp)
+    tp = np.array([0, 0.015, 0.35])
+    #MakeCoulombCrystal(nCrystal='1', trapParams=tp)
     #print('testing result')    
     #TestCoulombCrystal(nCrystal='20', trapParams=tp)   
     
-    #MakeCoulombCrystalFromGrid(nCrystal='19', trapParams=tp)
+    #MakeCoulombCrystalFromGrid(nCrystal='35', trapParams=tp)
     
     #PlotCrystalTest(nCrystal='20') 
     #PlotCrystal(nCrystal='5') 
@@ -274,10 +284,10 @@ if __name__ == '__main__':
     #MakeStabilityDiagram()  
     
     #PlotStabilityEdge(fileName='0_ions_1_electrons_q1_0.0-0.1_q2_0.0-0.55_768x897_3')
-    #PlotSVelocityEdge(fileName='0_ions_1_electrons_q1_0.0-0.05_q2_0.0-0.5_512x512_170')
-    #PlotStabilityVelocity(fileName='0_ions_1_electrons_q1_0.0-0.1_q2_0.0-0.55_8x9_3')
-    
-    PlotSVelocityEdge(fileName1='0_ions_1_electrons_q1_0.0-0.1_q2_0.0-0.55_192x192_3', fileName2='0_ions_1_electrons_q1_0.0-0.1_q2_0.0-0.55_768x897_3')
+    #PlotStabilityVelocity(fileName='0_ions_1_electrons_q1_0.0-0.1_q2_0.0-0.55_20x20_3')
+    #PlotVelocityEdge(fileNameVel='0_ions_1_electrons_q1_0.0-0.1_q2_0.0-0.55_160x160_3', 
+    #                    fileNameStability='0_ions_1_electrons_q1_0.0-0.1_q2_0.0-0.55_960x960_3')
+    #PlotStability(fileName='0_ions_1_electrons_q1_0.0-0.1_q2_0.0-0.55_768x897_3')
 
     #MakeStabilityDiagramList()
         
@@ -286,7 +296,9 @@ if __name__ == '__main__':
     
     #StabilityDiagramForCrystals()
     
-    #params = ClickStabilityRegions('0_ions_1_electrons_q1_0.0-0.04_q2_0.0-0.46_12x12_170')
+    #params = ClickStabilityRegions('0_ions_1_electrons_q1_0.00257-0.00316_q2_0.103-0.108_512x512_833')
     #unstableRegion, stableRegion = LoadTriangles(params)
 
     #SaveTriangles(triangleUnstable, triangleStable, params)
+    
+    StabilityDet(q1Start=0.0, q1Stop=0.045, q1Resol=300, q2Start=0.0, q2Stop=0.52, q2Resol=300, f1=f1, f2=f2)
