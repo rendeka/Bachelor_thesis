@@ -1,0 +1,41 @@
+\chapter{Using software}
+
+This appendix intends to explain to the reader how to use the python script. 
+
+\begin{Verbatim}
+apt-get install \
+  libsuperdependency-dev \
+  libanotherdependency-dev \
+  build-essential
+\end{Verbatim}
+
+To unpack and compile the software, proceed as follows:
+\begin{Verbatim}
+def StepVerlet(ODESystem, rv, t, dt, aCoulomb, mass, charge, trapParams):
+
+    r, v = rv
+    v, a = ODESystem(rv, t, aCoulomb, mass, charge, trapParams)
+    
+    r1 = r + v * dt + 0.5 * a * dt**2
+    
+    a1 = ODESystem(np.array([r1, v]), t, aCoulomb, mass, charge, trapParams)[1]    
+    
+    v1 = v + 0.5 * (a + a1) * dt
+    t1 = t + dt
+    
+    rv1 = np.array([r1, v1])
+    
+    return rv1, t1   
+\end{Verbatim}
+
+
+\begin{listing}
+\begin{lstlisting}
+if __name__ == '__main__':
+    
+    prayForItToWork()
+	    
+\end{lstlisting}
+\caption{Example program.}
+\label{lst:ex}
+\end{listing}
