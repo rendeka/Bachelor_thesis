@@ -1,0 +1,160 @@
+\chapter{Theoretical introduction}
+\label{chap:refs}
+
+In this chapter, we intend to introduce concepts essential for understanding this thesis's concerns. This chapter is divided into three subsections. In the first subsection, we are going to discuss the vital principles in plasma physics. In the following subsection, we will talk about the motion of a charged particle inside the Paul trap. Finally, in the last subsection, we will present our approach to simulating such a system, entering this thesis's practical component.
+
+\section{What is plasma?}
+
+\section{Ion trapping}
+	\subsection{Equation of motion}
+This section follows the derivation from \cite{gerlich1992inhomogeneous}.
+Let us consider a particle with mass $m$, charge $q$ with it's position denoted by vector $\vb{r}$. We insert such particle into the external time-dependent electromagnetic field described by $\vb{E}(t,\vb{r})$ and $\vb{B}(t,\vb{r})$. The Lorentz force gives the equation of motion:
+\begin{equation}
+	m \vb{\ddot{r}} = q \left(\vb{E}(t,\vb{r}) + \vb{\dot{r}} \times \vb{B}(t,\vb{r})\right).
+\end{equation}
+Since we are not using any external magnetic field, and while trapping a particle in a bounded space, we usually deal with small velocities. Therefore we can neglect the the effect of the term $\vb{\dot{r}} \times \vb{B}$, which means that equation of motion simplifies to:
+\begin{equation}
+	\label{equation of motion}
+	m \vb{\ddot{r}} = q \vb{E}(t,\vb{r}).
+\end{equation}
+We further assume that the electric field is composed of the static and time-dependent part. We are looking for periodic time-dependency; therefore, the obvious ansatz would be $\vb{E}(t) \sim cos(\Omega t)$, giving us:
+\begin{equation}
+	\vb{E}(t,\vb{r}) = \vb{E_s}(\vb{r}) + \vb{E_0}(\vb{r}) cos(\Omega t).
+\end{equation}
+	\subsection{Effective potential}
+Solving such a differential equation with a rapidly changing right-hand side can be troublesome, albeit not impossible. It will be examined in the next section of this chapter \ref{simulation}. When trapping ions, we are not always interested in exact trajectories. The relevance often lies in the time-averaged effect of a swiftly changing field. With that in mind, we will now try to derive \emph{effective potential} fulfilling precisely this role.
+Let's consider initial conditions: $\vb{r}(0) = \vb{r_0}$ and $\vb{\dot{r}}(0) = 0$. For the simplest case of homogeneous electric field $\vb{E_0}(\vb{r}) = const$, we obtain a trivial solution:
+\begin{equation}
+	\label{solution for homogenious field}
+	\vb{r}(t) = \vb{r_0} - \vb{A} cos(\Omega t),
+\end{equation}
+where the vector: 
+\begin{equation}
+	\label{oscillation amplitude}
+	\vb{A} \equiv \vb{A}(\vb{r}) = \frac{q \vb{E_0}(\vb{r})}{m \Omega^2},
+\end{equation}
+is an amplitude of oscillation around the initial position of the particle. The crucial consequence of this result is that we can further restrict the motion of a particle by increasing the frequency of field oscillation \footnote{Frequencies used for trapping ions (or even electrons) are in the range of radio frequencies (RF). Therefore, we can treat the electric field in the quasistatic approximation.}. Of course, the situation changes when we bring smooth inhomogeneity into the field. Here comes our first leap of fate by assuming that the amplitude of oscillation $\vb{A}$ won't be affected by this inhomogeneity. Instead, the particle will drift slowly towards the weaker field region. Motivated by this observation, we can try to find a solution to the equation of motion in the form:
+\begin{equation}
+	\label{motion separation}
+	\vb{r}(t) = \vb{R_0}(t) + \vb{R_1}(t),
+\end{equation}
+where $\vb{R_0}(t)$ represents consequence of smooth drift and $\vb{R_1}(t)$ stands for rapid oscillation, expressed as:
+\begin{equation}
+	\label{oscillation motion}
+	\vb{R_1}(t) = - \vb{A} cos(\Omega t).
+\end{equation}
+If the field amplitude $\vb{E_0}(\vb{r})$ won't change too quickly, we can get by just with its first order Taylor expansion:
+\begin{equation}
+	\label{field expansion}
+	\vb{E_0}(\vb{R_0}(t) - \vb{A} cos(\Omega t)) \approx \vb{E_0}(\vb{R_0}(t)) -(\vb{A} \cdot \nabla) \vb{E_0}(\vb{R_0}) cos(\Omega t) + \dots.
+\end{equation}
+Substituting \eqref{motion separation} and \eqref{field expansion} into equation of motion \eqref{equation of motion} \textit{(omitting currently uninteresting static term $\vb{E_s}$)}, we get:
+\begin{equation}
+	m \big( \vb{\ddot{R}_0(t)} + \vb{\ddot{R}_1(t)} \big) = q \ cos(\Omega t) \big[ \vb{E_0(\vb{R_0}(t))} - (\vb{A} \cdot \nabla) \vb{E_0(\vb{R_0}(t))} cos(\Omega t)  \big].
+\end{equation}
+
+Presuming slow spacial variation of vectorfield $\vb{E_0}(\vb{r})$ implies: \\ $|\vb{\ddot{A}}| \ll |\vb{\dot{A}}| \Omega \ll |\vb{A}| \Omega^2$, which we can exploit in time derivative of quickly oscillating term $\vb{R_0}(t)$ \eqref{oscillation motion}, giving us:
+\begin{equation}
+	\vb{\ddot{R}_1} = - \vb{\ddot{A}} cos(\Omega t) + 2 \Omega \vb{\dot{A}} sin(\Omega t) + \vb{A} \Omega^2 cos(\Omega t) \approx \vb{A} \Omega^2 cos(\Omega t)
+\end{equation}
+
+Further substituting for amplitude of oscillation $\vb{A}$ from \eqref{oscillation amplitude} continuing in the spirit of time-averaging:
+\begin{equation}
+	\vb{A} = \frac{q \vb{E_0}(\vb{r})}{m \Omega^2} \approx \frac{q \vb{E_0}(\vb{R_0}(t))}{m \Omega^2},
+\end{equation}
+which transfers into $\vb{R_1}$ as:
+\begin{equation}
+	\vb{R_1}(t) = - \frac{q \vb{E_0}(\vb{R_0}(t))}{m \Omega^2} cos(\Omega t), 
+\end{equation}
+terms with dependence on $cos(\Omega t)$ cancel each other out and by using a vector identity:
+\begin{equation}
+	(\vb{E_0} \cdot \nabla) \vb{E_0} = \frac{1}{2} \nabla E_0^2 - \vb{E_0} \times (\nabla \times \vb{E_0}) = \frac{1}{2} \nabla E_0^2,
+\end{equation}
+where the second equality follows from Maxwell equation for quasistatic field: \\ $\nabla \times \vb{E_0} = 0$. By replacing term $cos^2(\Omega t)$ with its mean value $\overline{cos^2(\Omega t)} = \nicefrac{1}{2}$ we finally obtain:
+\begin{equation}
+	m \vb{\ddot{R}_0} = \frac{q^2}{4 m \Omega^2} \nabla E_0^2.
+\end{equation}
+Now by resurrecting the static field term as $\vb{E_s} = - \nabla \Phi_s$, we can define effective potential:
+\begin{equation}
+	\label{effective potential}
+	V^*(\vb{R_0}) = \frac{q^2 E_0^2(\vb{R_0})}{4 m \Omega^2} + q \Phi_s, 
+\end{equation}
+describing the time-averaged force on a charged particle:
+\begin{equation}
+	\label{effective equation of motion}
+	m \vb{\ddot{R}_0} = - \nabla V^*(\vb{R_0}). 
+\end{equation}
+This equation is much easier to solve than the original equation of motion \eqref{equation of motion} as it does not involve any explicit time-dependency. 
+
+	\subsection{Stability}
+	
+\section{Simulation}
+\label{simulation}
+
+	\subsection{Laser cooling} 
+
+Let us begin this section by summarising our approximations (inspired by \cite{Friedman_1982}) when deriving the equation of motion—starting with insignificant ones. 
+\begin{description}
+	\item[Gravitational interaction:] we the neglecting completely since gravitational effects are several orders of magnitudes smaller then electrostatic.
+	\item[Induced charge on the electrodes:] charged particles will induce surface charge density on the electrodes made from electrically conductive material. This causes attraction of a particle toward the electrode, which can contribute to vacation of the particle from the trap. We will neglect this effect since our definition of stable trajectory does not allow the particle to approach to the electrode close enough for this effect to by significant.
+	\item[Relativistic effects:] while trapping particles we are dealing with velocities of orders $\nicefrac{v}{c} \approx 10^{-something}$ making relativistic effects irrelevant.
+	\item[Ion radiation:] well know consequence of Maxwell equations is that accelerating charged emits electromagnetic radiation, effectively loosing energy that we will not account for.
+\end{description}
+
+
+	
+Here ends the list of phenomena whose oversight should not have any significant effect on our results
+
+
+\begin{comment}
+First chapter usually builds the theoretical background necessary for readers to understand the rest of the thesis. You should summarize and reference a lot of existing literature and research.
+
+You should use the standard \emph{citations}\todo{Use \textbackslash{}emph command like this, to highlight the first occurrence of an important word or term. Reader will notice it, and hopefully remember the importance.}.
+
+\begin{description}
+\item[Obtaining bibTeX citation] Go to Google Scholar\footnote{\url{https://scholar.google.com}}\todo{This footnote is an acceptable way to `cite' webpages or URLs. Documents without proper titles, authors and publishers generally do not form citations. For this reason, avoid citations of wikipedia pages.}, find the relevant literature, click the tiny double-quote button below the link, and copy the bibTeX entry.
+\item[Saving the citation] Insert the bibTeX entry to the file \texttt{refs.bib}. On the first line of the entry you should see the short reference name --- from Scholar, it usually looks like \texttt{author2015title} --- you will use that to refer to the citation.
+\item[Using the citation] Use the \verb|\cite| command to typeset the citation number correctly in the text; a long citation description will be automaticaly added to the bibliography at the end of the thesis. Always use a non-breakable space before the citing parenthesis to avoid unacceptable line breaks:
+\begin{Verbatim}
+Trees utilize gravity to invade ye
+noble sires~\cite{newton1666apple}.
+\end{Verbatim}
+\item[Why should I bother with citations at all?] For two main reasons:
+\begin{itemize}
+\item You do not have to explain everything in the thesis; instead you send the reader to refer to details in some other literature. Use citations to simplify the detailed explanations.
+\item If you describe something that already exists without using a citation, the reviewer may think that you \emph{claim} to have invented it. Expectably, he will demand academic correctness, and, from your perspective, being accused of plagiarism is not a good starting point for a successful defense. Use citations to identify the people who invented the ideas that you build upon.
+\end{itemize}
+\item[How many citations should I use?]
+Cite any non-trivial building block or assumption that you use, if it is published in the literature. You do not have to cite trivia, such as the basic definitions taught in the introductory courses.
+
+The rule of thumb is that you should read, understand and briefly review at least around 4 scientific papers. A thesis that contains less than 3 sound citations will spark doubt in reviewers.
+\end{description}
+
+There are several main commands for inserting citations, used as follows:
+\begin{itemize}
+\item \citet{knuth1979tex} described a great system for typesetting theses.
+\item We are typesetting this thesis with \LaTeX, which is based on \TeX{} and METAFONT~\cite{knuth1979tex}.
+\item \TeX{} was expanded to \LaTeX{} by \citet{lamport1994latex}, hence the name.
+\item Revered are the authors of these systems!~\cite{knuth1979tex,lamport1994latex}
+\end{itemize}
+
+\section{Some extra assorted hints before you start writing English}
+
+Strictly adhere to the English word order rules. The sentences follow a fixed structure with subject followed by a verb and an object (in this order). Exceptions to this rule must be handled specially, and usually separated by commas.
+
+Mind the rules for placing commas:
+\begin{itemize}
+\item Use the \emph{Oxford comma} before `and' and `or' at the end of a longer, comma-separated list of items. Certainly use it to disambiguate any possible mixtures of conjunctions: \textit{`The car is available in red, red and green, and green versions.'}
+\item Do not use the comma before subordinate clauses that begin with `that' (like this one). English does not use subordinate clauses as often as Slavic languages because the lack of a suitable word inflection method makes them hard to understand. In scientific English, try to avoid them as much as possible. Ask doubtfully whether each `which' and `when' is necessary --- most of these helper conjunctions can be removed by converting the clause to non-subordinate.
+
+As an usual example, \xxx{\textit{`The sentence, which I wrote, seemed ugly.'}} is perfectly bad; slightly improved by \xxx{\textit{`The sentence that I wrote seemed ugly.'}}, which can be easily reduced to \textit{`The sentence I wrote seemed ugly.'}. A final version with added storytelling value could say \textit{`I wrote a sentence but it seemed ugly.'}
+\item Consider placing extra commas around any parts of the sentence that break the usual word order, especially if they are longer than a single word.
+\end{itemize}
+
+Do not write long sentences. One sentence should contain exactly one fact. Multiple facts should be grouped in a paragraph to communicate one coherent idea. Paragraphs are grouped in labeled sections for a sole purpose of making the navigation in the thesis easier. Do not use the headings as `names for paragraphs' --- the text should make perfect sense even if all headings are removed. If a section of your text contains one paragraph per heading, you might have wanted to write an explicit list instead.
+
+Every noun needs a determiner (`a', `the', `my', `some', \dots); the exceptions to this rule, such as non-adjectivized names and indeterminate plural, are relatively scarce. Without a determiner, a noun can be easily mistaken for something completely different, such as an adjective or a verb.
+
+Consult the books by \citet{glasman2010science} and \citet{sparling1989english} for more useful details.
+
+\end{comment}

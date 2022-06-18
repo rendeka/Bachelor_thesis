@@ -30,8 +30,8 @@ pdfa.xmpi
 
 **/wtf
 
-build/
-docker/
+/build
+/docker
 
 program/pics
 program/__pycache__
