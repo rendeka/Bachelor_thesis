@@ -1,6 +1,7 @@
 *.aux
 *.pdf
 !thesis.pdf
+!logo-en.pdf
 *.bbl
 *.bcf
 *.blg
@@ -30,8 +31,8 @@ pdfa.xmpi
 
 **/wtf
 
-/build
-/docker
+**/build
+**/docker
 
 program/pics
 program/__pycache__
