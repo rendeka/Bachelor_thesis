@@ -1,8 +1,0 @@
-
-\ifEN
-\chapwithtoc{Bibliography}
-\else
-\chapwithtoc{Seznam použité literatury}
-\fi
-
-\printbibliography[heading=none]
