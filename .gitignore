@@ -1,7 +1,4 @@
 *.aux
-*.pdf
-!thesis.pdf
-!logo-en.pdf
 *.bbl
 *.bcf
 *.blg

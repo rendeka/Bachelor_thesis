@@ -1,4 +1,4 @@
-\documentclass[12pt,a4paper,twoside,openright]{report}
+\documentclass[12pt,a4paper,twoside,openright]{report} %deleting opentight solves black rectangle on the end of overfull lines
 \let\openright=\cleardoublepage
 
 \input{metadata}
@@ -46,9 +46,13 @@
 \usepackage{xcolor}
 \usepackage{booktabs}
 \usepackage{caption}
+\usepackage{subcaption}
 \usepackage{floatrow}
+\usepackage{float} %figures on exact spots
 \usepackage{nicefrac, xfrac}
 \usepackage{verbatim}
+\usepackage{siunitx}
+\usepackage{hyperref}
 
 % load bibliography tools
 \usepackage[backend=bibtex,natbib,style=numeric,sorting=none]{biblatex}
@@ -121,6 +125,7 @@
 \include{ch1}
 \include{ch2}
 \include{ch3}
+\include{future}
 \include{conclusion}
 \include{bibliography}
 

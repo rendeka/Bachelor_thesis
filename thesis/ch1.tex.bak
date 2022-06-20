@@ -1,12 +1,13 @@
 \chapter{Theoretical introduction}
 \label{chap:refs}
 
-In this chapter, we intend to introduce concepts essential for understanding this thesis's concerns. This chapter is divided into three subsections. In the first subsection, we are going to discuss the vital principles in plasma physics. In the following subsection, we will talk about the motion of a charged particle inside the Paul trap. Finally, in the last subsection, we will present our approach to simulating such a system, entering this thesis's practical component.
+In this chapter, we intend to introduce concepts essential for understanding this thesis's concerns. This chapter is divided into several subsections. \footnote{\xxx{In the first subsection, we are going to discuss the basic principles of plasma physics. In the following subsection, we will talk about the motion of a charged particle inside the Paul trap. Next, we will introduce the idea of laser cooling. And finally, in the last subsection, we will present our approach to simulating such a system, entering this thesis's practical component.}} \todo{the sections in the first two chapters will probably be rearranged}
 
 \section{What is plasma?}
+\xxx{definition of plasma, characteristic parameters, coupling parameter $\Gamma$, characterisation of Coulomb crystal, strongly coupled plasma in the nature}
 
 \section{Ion trapping}
-	\subsection{Equation of motion}
+\subsection{Equation of motion}
 This section follows the derivation from \cite{gerlich1992inhomogeneous}.
 Let us consider a particle with mass $m$, charge $q$ with it's position denoted by vector $\vb{r}$. We insert such particle into the external time-dependent electromagnetic field described by $\vb{E}(t,\vb{r})$ and $\vb{B}(t,\vb{r})$. The Lorentz force gives the equation of motion:
 \begin{equation}
@@ -17,12 +18,12 @@ Since we are not using any external magnetic field, and while trapping a particl
 	\label{equation of motion}
 	m \vb{\ddot{r}} = q \vb{E}(t,\vb{r}).
 \end{equation}
-We further assume that the electric field is composed of the static and time-dependent part. We are looking for periodic time-dependency; therefore, the obvious ansatz would be $\vb{E}(t) \sim cos(\Omega t)$, giving us:
+We further assume that the electric field is composed of static and time-dependent parts. We are looking for a simple periodic time-dependency. A typical way to model such behavior would be $\vb{E}(t) \sim cos(\Omega t)$, giving us:
 \begin{equation}
 	\vb{E}(t,\vb{r}) = \vb{E_s}(\vb{r}) + \vb{E_0}(\vb{r}) cos(\Omega t).
 \end{equation}
 	\subsection{Effective potential}
-Solving such a differential equation with a rapidly changing right-hand side can be troublesome, albeit not impossible. It will be examined in the next section of this chapter \ref{simulation}. When trapping ions, we are not always interested in exact trajectories. The relevance often lies in the time-averaged effect of a swiftly changing field. With that in mind, we will now try to derive \emph{effective potential} fulfilling precisely this role.
+Solving such a differential equation with a rapidly changing right-hand side can be troublesome, albeit not impossible. It will be examined in the section \ref{sec:floquet}. When trapping ions, we are not always interested in exact trajectories. The relevance often lies in the time-averaged effect of a swiftly changing field. With that in mind, we will now try to derive \emph{effective potential} fulfilling precisely this role.
 Let's consider initial conditions: $\vb{r}(0) = \vb{r_0}$ and $\vb{\dot{r}}(0) = 0$. For the simplest case of homogeneous electric field $\vb{E_0}(\vb{r}) = const$, we obtain a trivial solution:
 \begin{equation}
 	\label{solution for homogenious field}
@@ -86,75 +87,47 @@ describing the time-averaged force on a charged particle:
 \end{equation}
 This equation is much easier to solve than the original equation of motion \eqref{equation of motion} as it does not involve any explicit time-dependency. 
 
-	\subsection{Stability}
+\subsection{Real geometry of our trap}
+Since we want to implement laser cooling in our experiment, the linear Paul trap is not a viable option, as this apparatus would stand in the way. For this reason, we will use surface electrodes where particles will levitate above the trap so that we can access the ions with laser beams. Nevertheless, we will start our research by examining the situation with the geometry of the ideal linear Paul trap.
+
+\subsection{Linear multipole Paul trap}
+\xxx{main source  \cite{gerlich1992inhomogeneous}}
+
+\subsection{Stability}
+\xxx{The concept of stability is not straightforward to define for our system. We have Lagrange stability, Liapunov stability\dots}
+
+The linear Paul trap has its characteristic length $r_0$ defined by the distance from the middle of the trap to the electrode. We will use criterion of stability established in \cite{gerlich1992inhomogeneous} stating that solutions that satisfy $max_{x \in \mathcal{L}} \leq 0.8 \ r_0$, where $\mathcal{L}$ is the whole trajectory of a particle, is declared stable. The drawback of this definition is that we must keep the simulation going long enough to account for the slowly diverging particles.
+
+\section{Laser cooling} 
+
+The Ca+ ion has an energy gap between the ground and one of its excited states with the value corresponding to the wavelength of \SI{397}{\nano\meter} \cite{urabe1993laser}. By tuning the wavelength of our laser slightly below this transition energy, we can exploit the Doppler effect so that only ions moving towards the laser can experience radiation with the right frequency to excite them. After a brief time, the atom will deexcite, emitting a photon in a random direction. The only way the ion would still have the same momentum as before the absorption is if the photon was emitted exactly in the same direction as it was absorbed (as if the photon did not interact with the atom at all). But since the photon emission is isotropic, the ion will effectively slow down. Making this arrangement in all three directions creates so-called optical molasses. This type of laser cooling is also known as \emph{Doppler cooling}. More detailed explanation can be found in \cite{alma990008711500106986}.  
+ 
 	
 \section{Simulation}
 \label{simulation}
 
-	\subsection{Laser cooling} 
+Let us begin this section by summarising our approximations (inspired by \cite{Friedman_1982}) already used when deriving the equation of motion—starting with insignificant ones. 
 
-Let us begin this section by summarising our approximations (inspired by \cite{Friedman_1982}) when deriving the equation of motion—starting with insignificant ones. 
 \begin{description}
-	\item[Gravitational interaction:] we the neglecting completely since gravitational effects are several orders of magnitudes smaller then electrostatic.
+	\item[Gravitational interaction:] neglecting gravitational interaction goes without saying since, for Ca+ ions, it is weaker than electrostatic force by order of $\sim 10^{32}$.
 	\item[Induced charge on the electrodes:] charged particles will induce surface charge density on the electrodes made from electrically conductive material. This causes attraction of a particle toward the electrode, which can contribute to vacation of the particle from the trap. We will neglect this effect since our definition of stable trajectory does not allow the particle to approach to the electrode close enough for this effect to by significant.
-	\item[Relativistic effects:] while trapping particles we are dealing with velocities of orders $\nicefrac{v}{c} \approx 10^{-something}$ making relativistic effects irrelevant.
-	\item[Ion radiation:] well know consequence of Maxwell equations is that accelerating charged emits electromagnetic radiation, effectively loosing energy that we will not account for.
-\end{description}
-
-
-	
-Here ends the list of phenomena whose oversight should not have any significant effect on our results
-
-
-\begin{comment}
-First chapter usually builds the theoretical background necessary for readers to understand the rest of the thesis. You should summarize and reference a lot of existing literature and research.
-
-You should use the standard \emph{citations}\todo{Use \textbackslash{}emph command like this, to highlight the first occurrence of an important word or term. Reader will notice it, and hopefully remember the importance.}.
-
+	\item[Relativistic effects:] we did not involve any relativistic corrections since while trapping particles we are dealing with small velocities.
+	\item[Ion radiation:] well known consequence of Maxwell equations is that accelerating charged particle emits electromagnetic radiation. We did not account for this energetic loss.
+	\item[Magnetic field:] created by presence of quickly changing electric field and moving charges is neglected since we work with weak fields and slow particles. 
+\end{description}	
+Here ends the list of phenomena whose oversight should not have any significant effect on our results. It could be the case that to get realistic results we might need to account for some of the following effects.
 \begin{description}
-\item[Obtaining bibTeX citation] Go to Google Scholar\footnote{\url{https://scholar.google.com}}\todo{This footnote is an acceptable way to `cite' webpages or URLs. Documents without proper titles, authors and publishers generally do not form citations. For this reason, avoid citations of wikipedia pages.}, find the relevant literature, click the tiny double-quote button below the link, and copy the bibTeX entry.
-\item[Saving the citation] Insert the bibTeX entry to the file \texttt{refs.bib}. On the first line of the entry you should see the short reference name --- from Scholar, it usually looks like \texttt{author2015title} --- you will use that to refer to the citation.
-\item[Using the citation] Use the \verb|\cite| command to typeset the citation number correctly in the text; a long citation description will be automaticaly added to the bibliography at the end of the thesis. Always use a non-breakable space before the citing parenthesis to avoid unacceptable line breaks:
-\begin{Verbatim}
-Trees utilize gravity to invade ye
-noble sires~\cite{newton1666apple}.
-\end{Verbatim}
-\item[Why should I bother with citations at all?] For two main reasons:
-\begin{itemize}
-\item You do not have to explain everything in the thesis; instead you send the reader to refer to details in some other literature. Use citations to simplify the detailed explanations.
-\item If you describe something that already exists without using a citation, the reviewer may think that you \emph{claim} to have invented it. Expectably, he will demand academic correctness, and, from your perspective, being accused of plagiarism is not a good starting point for a successful defense. Use citations to identify the people who invented the ideas that you build upon.
-\end{itemize}
-\item[How many citations should I use?]
-Cite any non-trivial building block or assumption that you use, if it is published in the literature. You do not have to cite trivia, such as the basic definitions taught in the introductory courses.
-
-The rule of thumb is that you should read, understand and briefly review at least around 4 scientific papers. A thesis that contains less than 3 sound citations will spark doubt in reviewers.
+	\item[Collisions with neutrals:] \xxx{we will be able to make a vacuum with pressure of (no idea and not sure it it can produce significant problems)} 
+	\item[Phase shift:] induced by the finite speed of electrons inside an electrode and the final speed of light since we will use quite a small trap and high frequencies. \xxx{not sure if it can bring significant complications}
 \end{description}
 
-There are several main commands for inserting citations, used as follows:
+\subsection{The code}
+The practical part of this thesis consists of developing the code simulating the motion of ions and electrons in two frequency Paul trap. We have chosen the programming language python for its current popularity allied with an abundance of highly optimized libraries and a good combination of computational and development costs. The source code \xxx{(will probably be free to use)} can be found at \href{https://github.com/rendeka/Bachelor_thesis.git}{github\footnote{$https://github.com/rendeka/Bachelor\_thesis.git$}.} \xxx{Main features of the program are:
 \begin{itemize}
-\item \citet{knuth1979tex} described a great system for typesetting theses.
-\item We are typesetting this thesis with \LaTeX, which is based on \TeX{} and METAFONT~\cite{knuth1979tex}.
-\item \TeX{} was expanded to \LaTeX{} by \citet{lamport1994latex}, hence the name.
-\item Revered are the authors of these systems!~\cite{knuth1979tex,lamport1994latex}
+	\item Creating a Coulomb crystal.
+	\item Making stability diagram in dependence on $q_1$ and $q_2$ parameters.
+	\item Parallelizing the computation of stability diagram. 
+	\item Optimizing the algorithm to compute stability only on the edge of stability regions.
+	\item Tracking the information about the system:(positions, velocities, energies)
 \end{itemize}
-
-\section{Some extra assorted hints before you start writing English}
-
-Strictly adhere to the English word order rules. The sentences follow a fixed structure with subject followed by a verb and an object (in this order). Exceptions to this rule must be handled specially, and usually separated by commas.
-
-Mind the rules for placing commas:
-\begin{itemize}
-\item Use the \emph{Oxford comma} before `and' and `or' at the end of a longer, comma-separated list of items. Certainly use it to disambiguate any possible mixtures of conjunctions: \textit{`The car is available in red, red and green, and green versions.'}
-\item Do not use the comma before subordinate clauses that begin with `that' (like this one). English does not use subordinate clauses as often as Slavic languages because the lack of a suitable word inflection method makes them hard to understand. In scientific English, try to avoid them as much as possible. Ask doubtfully whether each `which' and `when' is necessary --- most of these helper conjunctions can be removed by converting the clause to non-subordinate.
-
-As an usual example, \xxx{\textit{`The sentence, which I wrote, seemed ugly.'}} is perfectly bad; slightly improved by \xxx{\textit{`The sentence that I wrote seemed ugly.'}}, which can be easily reduced to \textit{`The sentence I wrote seemed ugly.'}. A final version with added storytelling value could say \textit{`I wrote a sentence but it seemed ugly.'}
-\item Consider placing extra commas around any parts of the sentence that break the usual word order, especially if they are longer than a single word.
-\end{itemize}
-
-Do not write long sentences. One sentence should contain exactly one fact. Multiple facts should be grouped in a paragraph to communicate one coherent idea. Paragraphs are grouped in labeled sections for a sole purpose of making the navigation in the thesis easier. Do not use the headings as `names for paragraphs' --- the text should make perfect sense even if all headings are removed. If a section of your text contains one paragraph per heading, you might have wanted to write an explicit list instead.
-
-Every noun needs a determiner (`a', `the', `my', `some', \dots); the exceptions to this rule, such as non-adjectivized names and indeterminate plural, are relatively scarce. Without a determiner, a noun can be easily mistaken for something completely different, such as an adjective or a verb.
-
-Consult the books by \citet{glasman2010science} and \citet{sparling1989english} for more useful details.
-
-\end{comment}
+} 

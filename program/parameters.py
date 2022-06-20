@@ -10,9 +10,9 @@ def Norm(position):
 electronMass = 9.109e-31
 electronCharge = -1.602e-19
 mu = 1.66e-27
-#ionMass = 40.08 * mu#calcium
+ionMass = 40.08 * mu#calcium
 #ionMass = mu#hydrogen
-ionMass = electronMass#positron
+#ionMass = electronMass#positron
 
 r0 = 0.5e-3
 V0 = 0 #dc potential
@@ -30,8 +30,8 @@ f2 = 2.5e9 * 2 * np.pi
 #f1 = f2 / 170#test trajectory
 #f1 = f2 / 3#test stability diagram
 
-f1 = f2 // 833
-f2 = f1 * 833
+f1 = f2 // 170
+f2 = f1 * 170
 
 const = 1e-3 #constant for harmonic potential
 beta = 4e-2 #constant for damping force

@@ -1,4 +1,69 @@
-\chapter{Applying theory from the first chapter}
+\chapter{More advanced chapter}
 \label{chap:math}
 
-\xxx{explain my choices while writing the python script}
+\xxx{Applying theory from the first chapter}
+
+\section{Two frequency linear Paul trap}
+
+\cite{leefer2017investigation}
+\cite{FOOT2018117}
+
+\section{Floquet theory}
+\label{sec:floquet}
+
+
+\section{Simulation}
+\label{simulation}
+
+\subsection{Choice of time-step}
+
+We have tried several integration methods when numerically solving our equations of motion, whether with exact or effective potential.
+Choice of time-step is always a delicate issue. For the case of solving the Mathieu-type equation, we followed the Nyquist criterion \xxx{\cite{1697831}}. Nyquist criterion is used mainly in signal processing for compact signals with convergent Fourier series. It states that for the signal with the highest frequency $f$, the largest possible sample size so that the discretization of the signal will carry equivalent information as the continuous one is $\nicefrac{1}{(2 \ f)}$. We started numerically solving the equation of motion with this time step, gradually increasing its size until the numerical solution with the denser sampling would give us the same result for the given tolerance. Repeating this process for several methods \footnote{All tried methods can be found in the file \textit{intMethods.py}} for numerical solving of ODEs \cite{teukolsky1992numerical}. For the case of a single electron in the trap with the expected initial conditions \textit{thisOne.dat} had the best performance a predictor-corrector method, which we have defined as \textit{StepEulerAdvanced}. The sufficient time-step for this method was $\Delta t = \nicefrac{1}{(10 \ f)}$. \todo{verb doesn't work for some reason that's why are names of the files are currently in italics}
+
+
+\subsection{Treatment of laser cooling}
+In our simulation, we treated the effect of laser cooling of ions by introducing a new frictional force, meaning it is proportional to $\propto - \vb{\dot{r}}$. The strength of this force is characterized by the parameter $\beta \in (0,1)$. 
+Let us begin this section by summarising our approximations (inspired by \cite{Friedman_1982}) when deriving the equation of motion. 
+
+\subsection{Simulating Coulomb crystal}
+We simulated Coulomb crystal by molecular dynamics, meaning we solved the equation of motion for each ion in effective potential with Coulomb interaction. 
+We simulated the creation of a Coulomb crystal by molecular dynamics while keeping an eye on the total potential energy. We solved an equation of motion for each ion in effective potential with Coulomb interaction and laser cooling represented by the damping factor. We have used damping parameter $\beta$ large enough to decelerate the particles within a computationally reasonable time. To ensure that the ions had enough time to find a potential minimum, they were given a synthetic boost in kinetic energy every time they were slowed down to the minimal temperature, which can be obtained by laser cooling (about \SI{0.01}{Kelvin}). \xxx{could have implemented some simplex based algorithm with the molecular dynamics}
+
+\begin{listing}[H]
+\begin{lstlisting}
+	def ODESystemEffectiveDamping(rv, aCoulomb, mass, charge, trapParams):
+
+    if (mass == electronMass):        
+        a, q1, q2 = trapParams
+        q1 = 0
+    else:
+        a, q1, q2 = trapParams * (electronMass / mass)
+    
+	    
+    # unpacking position and velocity components
+    r, v = rv
+    x,y,z = r
+    vx,vy,vz = v
+    
+    # defining the system of first order ODEs
+    x1 = vx
+    vx1 = aCoulomb[0] - x / 4 * (a + 2 * q1**2 / 2 * (f2 / f1)**2 
+    	+ q2**2 / 2) - 2 * beta * vx
+    
+    y1 = vy
+    vy1 = aCoulomb[1] - y / 4 * (a + 2 * q1**2 / 2 * (f2 / f1)**2 
+    	+ q2**2 / 2) - 2 * beta * vy
+    
+    z1 = vz
+    vz1 = aCoulomb[2] - z / 2 * (a + 2 * q1**2 / 2 * (f2 / f1)**2 
+    	+ q2**2 / 2) - 2 * beta * vz
+    
+	# defining derivatives of position and velocity 
+    r1 = np.array([x1, y1, z1])
+    v1 = np.array([vx1, vy1, vz1])
+
+    return np.array([r1, v1])	    
+\end{lstlisting}
+\caption{The system of ODEs used for creating Coulomb crystal.}
+\label{lst:crystal}
+\end{listing}
