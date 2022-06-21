@@ -173,8 +173,11 @@ def ClickStabilityRegions(fileName='0_ions_1_electrons_q1_0-0.06_q2_0-0.48_700x7
     def SaveTriang(tStable=triangleStable, tUnstable=triangleUnstable, parameters=params):
         SaveTriangles(tUnstable, tStable, parameters)  
         
-    q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nParticles, eta, f1, f2 = params
-    
+    if fileName[0] == 'd':
+        q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, eta = ParseFileNameDet(fileName)
+    else:
+        q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nIons, nElectrons, eta = ParseFileName(fileName)
+
     fig = plt.figure()
         
     x_vals = np.linspace(q2Start, q2Stop, int(q2Resol))
@@ -294,7 +297,7 @@ def StabilityDiagramEdge(system, ODESystem, previousFile, q1Start=0.0, q1Stop=0.
     return stability, params   
 
 
-def PrepForStabilityEdge(fileName):
+def PrepForStabilityEdge(fileName, needComputationValue=-1):
     """
     Function PrepForStabilityEdge() loads the stability diagram which is represented by AxB matrix filled with stability values.
     It returns same AxB matrix but if some value of stability isn't the same as values of it's closest neighbours,
@@ -314,23 +317,23 @@ def PrepForStabilityEdge(fileName):
     
     def TalkToRightNeighbour(i, j):
         if stability[i,j] != stability[i,j+1]:
-            needComputation[i,j] = -1
-            needComputation[i,j+1] = -1
+            needComputation[i,j] = needComputationValue
+            needComputation[i,j+1] = needComputationValue
             
     def TalkToTopNeighbour(i, j):
         if stability[i,j] != stability[i+1,j]:
-            needComputation[i,j] = -1
-            needComputation[i+1,j] = -1
+            needComputation[i,j] = needComputationValue
+            needComputation[i+1,j] = needComputationValue
             
     def TalkToUpperDiagonalNeighbour(i, j):
         if stability[i,j] != stability[i+1,j+1]:
-            needComputation[i,j] = -1
-            needComputation[i+1,j+1] = -1
+            needComputation[i,j] = needComputationValue
+            needComputation[i+1,j+1] = needComputationValue
     
     def TalkToLowerDiagonalNeighbour(i, j):
         if stability[i,j] != stability[i-1,j+1]:
-            needComputation[i,j] = -1
-            needComputation[i-1,j+1] = -1
+            needComputation[i,j] = needComputationValue
+            needComputation[i-1,j+1] = needComputationValue
             
     
     
@@ -376,15 +379,6 @@ def StabilityMatrix(trapParams, f1, f2):
     
     a, q1, q2 = trapParams
     
-    """
-    F1 = f1 / (2*np.pi)
-    F2 = f2 / (2*np.pi)
-    
-    gcd = np.gcd(int(F1),int(F2))
-    m = int(F2 // gcd)
-    n = int(F1 // gcd)
-    """
-    
     gcd = np.gcd(int(f1),int(f2))
     m = int(f2 // gcd)
     n = int(f1 // gcd)
@@ -419,6 +413,11 @@ def MakePoolListDet(q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, f1, f2):
     q1Step = (q1Stop - q1Start) / q1Resol
     q2Step = (q2Stop - q2Start) / q2Resol
     
+    eta = int(f2/f1)
+    
+    loadParams = q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, eta, f1, f2
+    unstableRegion, stableRegion = LoadTriangles(loadParams)
+
     args = []
     
     a = 0    
@@ -426,37 +425,30 @@ def MakePoolListDet(q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, f1, f2):
     for i in range(q1Resol):
         q2 = q2Start
         for j in range(q2Resol):
+            
+            p = np.array([q2, q1])            
+            if InTriangle(p, unstableRegion):# here we decide whether we need to compute the stability value or whether we already know it for given parameters
+                stabilityValue = 1
+            elif InTriangle(p, stableRegion):
+                stabilityValue = -1
+            else:
+                stabilityValue = 0            
                 
             trapParams = np.array([a,q1,q2])
-            args.append(tuple([trapParams, i, j, f1, f2]))
+            args.append(tuple([trapParams, i, j, stabilityValue, f1, f2]))
             
             q2 = q2 + q2Step
         q1 = q1 + q1Step
         
     return np.array(args, dtype=object)
 
-def IntWrapperDet(trapParams, i, j, f1, f2):
+def IntWrapperDet(trapParams, i, j, stabilityValue, f1, f2):
     """
     Function IntWrapper returns stability value for given set of trapping paramaters.
     """
-        
-    matrix = StabilityMatrix(trapParams, f1, f2)            
-    #det = np.linalg.det(matrix)
-    stabilityValue = -np.linalg.slogdet(matrix)[0]
-    
-    #rank = np.linalg.matrix_rank(matrix)
-    #eigVals = eig(matrix, k=rank-1)[0] #need to import scipy
-    #det = np.prod(eigVals)
-    
-    """
-    if det > 0:
-        stabilityValue = -1
-    elif det == 0:
-        stabilityValue = 0
-    else:
-        stabilityValue = 1
-    """
-            
+    if stabilityValue == 0:    
+        matrix = StabilityMatrix(trapParams, f1, f2)            
+        stabilityValue = -np.linalg.slogdet(matrix)[0]           
         
     result = np.array([IsStable(stabilityValue), i, j])
     return result

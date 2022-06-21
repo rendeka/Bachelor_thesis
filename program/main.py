@@ -296,9 +296,8 @@ if __name__ == '__main__':
     
     #StabilityDiagramForCrystals()
     
-    #params = ClickStabilityRegions('0_ions_1_electron_q1_0.0072-0.0084_q2_0.1205-0.1363_100x100_833')
-    #unstableRegion, stableRegion = LoadTriangles(params)
-
+    #params = ClickStabilityRegions(fileName='det_q1_0.0-0.055_q2_0.0-0.55_300x300_170')
+    """left-click unstable, right-click stable. After you choose triangles you must save them with SaveTriangles"""
     #SaveTriangles(triangleUnstable, triangleStable, params)
     
-    StabilityDet(q1Start=0.0, q1Stop=0.005, q1Resol=300, q2Start=0.0, q2Stop=0.14, q2Resol=300, f1=f1, f2=f2)
+    StabilityDet(q1Start=0.0, q1Stop=0.06, q1Resol=400, q2Start=0.0, q2Stop=0.48, q2Resol=400, f1=f1, f2=f2)

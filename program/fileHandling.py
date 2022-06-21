@@ -14,6 +14,7 @@ Function ParseFileName() extracts this information. Its single argument is the n
 we want to get information about.
 """
 def ParseFileName(fileName):
+   
     parseFileName = fileName.split('_')
     
     nIons = int(parseFileName[0])
@@ -35,22 +36,45 @@ def ParseFileName(fileName):
     
     return np.array([q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nIons, nElectrons, eta],dtype=object)
 
-
+def ParseFileNameDet(fileName):
+    parseFileName = fileName.split('_')
+    
+    parseQ1 = parseFileName[2].split('-')
+    q1Start = float(parseQ1[0])
+    q1Stop = float(parseQ1[1])
+    
+    parseQ2 = parseFileName[4].split('-')
+    q2Start = float(parseQ2[0])
+    q2Stop = float(parseQ2[1])
+    
+    parseResol = parseFileName[5].split('x')
+    q1Resol = int(parseResol[1])
+    q2Resol = int(parseResol[0])
+    
+    eta = int(parseResol[-1])
+    
+    return np.array([q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, eta],dtype=object)
 """
 Function MakeFileName() returns a string, which is a name of a file in a format compatible with the function ParseFileName().
 We set its second argument withResolution to False if we don't want to have resolution in the name of the file.
 We use this option when computing stability diagram just on the edge of the stability region.
 """
-def MakeFileName(params, withResolution=True):
+def MakeFileName(params, withResolution=True, det=False):
     
-    q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nParticles, time, f1, f2 = params
-    nIons, nElectrons = nParticles
+    if det:
+        q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, eta, f1, f2 = params
+
+    else:   
+        q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nParticles, time, f1, f2 = params
+        nIons, nElectrons = nParticles
     
     if((f1 == None)or(f2 == None)):
         f2 = 1337
         f1 = 1
     
-    if withResolution:
+    if det:
+        fileName = 'det_q1_' + str(q1Start) + '-' + str(q1Stop) + '_q2_' + str(q2Start) + '-' + str(q2Stop) + '_' + str(int(f2/f1))
+    elif withResolution:
         fileName = str(int(nIons)) + '_ions_' + str(int(nElectrons)) + '_electrons_' + 'q1_' + str(q1Start) + '-' + str(q1Stop) + '_q2_' + str(q2Start) + '-' + str(q2Stop) + '_' + str(int(q2Resol)) + 'x' + str(int(q1Resol)) + '_' + str(int(f2/f1))
     else:
         fileName = str(int(nIons)) + '_ions_' + str(int(nElectrons)) + '_electrons_' + 'q1_' + str(q1Start) + '-' + str(q1Stop) + '_q2_' + str(q2Start) + '-' + str(q2Stop) + '_' + str(int(f2/f1))
@@ -135,11 +159,21 @@ LoadStabilityDiagram() loads stability matrix from a file
 """            
 def LoadStabilityDiagram(fileName, velocityDiagram=False):
     
-    q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nIons, nElectrons, eta = ParseFileName(fileName)
+    if fileName[0] == 'd':
+        q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, eta = ParseFileNameDet(fileName)
+        path = 'stability_diagrams/determinant/'
+        params = np.array([q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, eta, f1, f2], dtype=object)
+
+
+    else:
+        q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nIons, nElectrons, eta = ParseFileName(fileName)
+        path = 'stability_diagrams/'
+        params = np.array([q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, np.array([nIons, nElectrons]), eta, f1, f2], dtype=object)
+
+
     
     stability = np.zeros((q1Resol,q2Resol))
 
-    path = 'stability_diagrams/'
     
     if velocityDiagram:
         path = path + 'velocity/'    
@@ -169,8 +203,6 @@ def LoadStabilityDiagram(fileName, velocityDiagram=False):
                 
             i = i + 1
             
-    params = np.array([q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, np.array([nIons, nElectrons]), eta, f1, f2], dtype=object)
-
     return stability, params
 """
 To reduce time needed for making a diagram of stability, we can choose the regions in which we are certain stability (or instability)
@@ -180,28 +212,35 @@ It has three arguments: first -> triangleUnstable is the list all triangles in u
 """    
 def SaveTriangles(triangleUnstable, triangleStable, params):
     
-    q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nParticles, eta, f1, f2 = params
-    nIons, nElectrons = nParticles
-    #n = nIons + nElectrons
-    #for freezed ions we are interested only in syability of electrons
+    if len(params) == 10:#distinguishing the data from simulation and determinant    
+        q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nParticles, eta, f1, f2 = params
+        nIons, nElectrons = nParticles
+        fileNameStable = 'stable_' + MakeFileName(params, withResolution=False)
+        fileNameUnstable = 'unstable_' + MakeFileName(params, withResolution=False)
+        stableValue = 0
+        unstableValue = nElectrons
+    else:
+        q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, eta, f1, f2 = params
+        nIons, nElectrons = (0,1)
+        fileNameStable = 'stable_' + MakeFileName(params, withResolution=False, det=True)
+        fileNameUnstable = 'unstable_' + MakeFileName(params, withResolution=False, det=True)
+        stableValue = -1
+        unstableValue = 1
+        
     
     nUnstable = len(triangleUnstable) // 3
     unstables = []
     for i in range(nUnstable):
-        unstables.append([triangleUnstable[i*3:i*3 + 3], nElectrons])#saves 3 points unambiguously defining a triangle and saving number of unstable particles aswell
+        unstables.append([triangleUnstable[i*3:i*3 + 3], unstableValue])#saves 3 points unambiguously defining a triangle and saving number of unstable particles aswell
         
     
     nStable = len(triangleStable) // 3
     stables = []
     for i in range(nStable):
-        stables.append([triangleStable[i*3:i*3 + 3], 0])#saves 3 points unambiguously defining a triangle and saving number of unstable particles which is zero
-    
-    fileNameStable = 'stable_' + MakeFileName(params, withResolution=False)
-    fileNameUnstable = 'unstable_' + MakeFileName(params, withResolution=False)
+        stables.append([triangleStable[i*3:i*3 + 3], stableValue])#saves 3 points unambiguously defining a triangle and saving number of unstable particles which is zero
     
     with open(r"data/triangles/" + fileNameUnstable + ".dat","w", newline="") as csvFile:
         csvWriter = csv.writer(csvFile, delimiter = "\t")
-        #csvWriter.writerow("Ta toto su nejake data")          
         for unstable in unstables:
 
             unstable = str(unstable)
@@ -211,7 +250,6 @@ def SaveTriangles(triangleUnstable, triangleStable, params):
             
     with open(r"data/triangles/" + fileNameStable + ".dat","w", newline="") as csvFile:
         csvWriter = csv.writer(csvFile, delimiter = "\t")
-        #csvWriter.writerow("Ta toto su nejake data")
         for stable in stables:
 
             stable = str(stable)
@@ -223,9 +261,16 @@ def SaveTriangles(triangleUnstable, triangleStable, params):
 Function LoadTriangles() returns unstable and stable regions loaded from a file
 """            
 def LoadTriangles(params):
+    
+    if len(params) == 10:#distinguishing the data from simulation and determinant    
+        q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nParticles, eta, f1, f2 = params
+        fileNameStable = 'stable_' + MakeFileName(params, withResolution=False)
+        fileNameUnstable = 'unstable_' + MakeFileName(params, withResolution=False)
 
-    fileNameStable = 'stable_' + MakeFileName(params, withResolution=False)
-    fileNameUnstable = 'unstable_' + MakeFileName(params, withResolution=False)
+    else:
+        q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, eta, f1, f2 = params
+        fileNameStable = 'stable_' + MakeFileName(params, withResolution=False, det=True)
+        fileNameUnstable = 'unstable_' + MakeFileName(params, withResolution=False, det=True)
         
     unstableTriangles = []
     
@@ -299,7 +344,7 @@ def SaveStabilityDiagramDet(stability, params):
     
     q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, eta = params
     
-    fileName = 'q1_' + str(q1Start) + '-' + str(q1Stop) + '_q2_' + str(q2Start) + '-' + str(q2Stop) + '_' + str(int(q2Resol)) + 'x' + str(int(q1Resol)) + '_' + str(eta)
+    fileName = 'det_q1_' + str(q1Start) + '-' + str(q1Stop) + '_q2_' + str(q2Start) + '-' + str(q2Stop) + '_' + str(int(q2Resol)) + 'x' + str(int(q1Resol)) + '_' + str(eta)
        
     path = 'stability_diagrams/determinant/'
     
