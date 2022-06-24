@@ -84,7 +84,7 @@ def Recombine(system, i, o):
     """marking recombined particles by setting their charge to zero. Later these particles will be removed from the system"""
     system[(i,o),3] = 0   
 
-def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,  Step=StepRungaKutta, freezeIons=False, velocityDiagram=False):
+def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,  Step=StepEulerAdvanced, freezeIons=False, velocityDiagram=False):
     """
     integrating equations of motion
     """

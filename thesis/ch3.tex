@@ -9,13 +9,13 @@ We will start by looking at the stability diagrams for different $\nicefrac{\Ome
 \begin{figure}[H]
 \begin{subfigure}{.5\textwidth}
   \centering
-  \includegraphics[width=\linewidth]{img/q1_0.0-0.1_q2_0.0-0.6_500x500_3.eps}
+  \includegraphics[width=\linewidth]{img/q1_0.0-0.1_q2_0.0-0.5_1200x1200_3.eps}
   \caption{Determinant}
   \label{fig:det_3}
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
   \centering
-  \includegraphics[width=\linewidth]{img/0_ions_1_electrons_q1_0.0-0.1_q2_0.0-0.55_960x960_3_400.eps}  
+  \includegraphics[width=\linewidth]{img/velocity_edge_3.eps}  
   \caption{Simulation}
   \label{fig:sim_3}
 \end{subfigure}
@@ -23,20 +23,20 @@ We will start by looking at the stability diagrams for different $\nicefrac{\Ome
 \label{fig:stabil-eta=3}
 \end{figure}
 
-In the sub-figure \ref{fig:det_3} we can see stable\textit{(dark)} and unstable\textit{(light)} regions of the studied differential equation. The image \ref{fig:sim_3} combines two pictures. The red curve indicates the edge of stability regions $\rightarrow$ the region under the curve is stable. In the background is a contour plot of the average electron velocity throughout the trajectory relative to the initial velocity. The color bar to the right indicates the value of this ratio.
+In the sub-figure \ref{fig:det_3} we can see stable\textit{(dark)} and unstable\textit{(light)} regions of the studied differential equation. The image \ref{fig:sim_3} combines two pictures. The white curve indicates the edge of stability regions $\rightarrow$ the region under the curve is stable. In the background is a contour plot of the average electron velocity throughout the trajectory relative to the initial velocity. The color bar to the right indicates the value of this ratio. The figures such as \ref{fig:sim_3} can help us find the stable trap parameters while keeping electron temperature as low as possible, which is our ultimate goal.
 
 Moving to larger frequency ratio $\rightarrow \nicefrac{\Omega_2}{\Omega_1} = 13$ we can start to notice some patterns.
 
 \begin{figure}[H]
 \begin{subfigure}{.5\textwidth}
   \centering
-  \includegraphics[width=\linewidth]{img/q1_0.0-0.14_q2_0.0-1.0_400x400_13.eps}
+  \includegraphics[width=\linewidth]{img/q1_0.0-0.07_q2_0.0-0.5_400x400_13.eps}
   \caption{Determinant}
   \label{fig:det_13}
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
   \centering
-  \includegraphics[width=\linewidth]{img/0_ions_1_electrons_q1_0.0-0.14_q2_0.0-0.9_1296x1296_13.eps}  
+  \includegraphics[width=\linewidth]{img/0_ions_1_electrons_q1_0.0-0.05_q2_0.0-0.5_640x640_13.eps}  
   \caption{Simulation}
   \label{fig:sim_13}
 \end{subfigure}
@@ -44,12 +44,50 @@ Moving to larger frequency ratio $\rightarrow \nicefrac{\Omega_2}{\Omega_1} = 13
 \label{fig:stabil-eta=13}
 \end{figure}
 
+There emerges one stable triangle with many tongues of instability. With an increasing ratio $\nicefrac{\Omega_2}{\Omega_1}$ we can see a gain in the number of these tongues, but their width promptly shrinks as well. We expect that by further increasing the frequency ratio, the unstable tongues will be realistically affecting only the regions near the edge of stability, leaving the regions further inside a stable triangle safe to work with.
+
+\xxx{Continuing to the frequency ratio compatible for trapping electrons and Ca+ ions}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{img/0_ions_1_electrons_q1_0.0-0.04_q2_0.0-0.5_240x240_833.eps}
+	\caption{Stability diagrams for $\nicefrac{\Omega_2}{\Omega_1} = 833$}
+	\label{fig:stabil-eta=833}
+\end{figure}
 
 \subsection{Dependence on initial conditions}
 
+\begin{figure}[H]
+\begin{subfigure}{.3\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{img/0_ions_1_electrons_q1_0.0-0.1_q2_0.0-0.5_1280x1280_3.eps}
+  \caption{Normal initial conditions}
+  \label{fig:normal_conds-3}
+\end{subfigure}%
+\begin{subfigure}{.3\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{img/high_velocity_3.eps}
+  \caption{High velocity}
+  \label{fig:high_velocity-3}
+\end{subfigure}%
+\begin{subfigure}{.3\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{img/large_radius.eps}  
+  \caption{Further away from center}
+  \label{fig:large_radius-3}
+\end{subfigure}
+\caption{$\nicefrac{\Omega_2}{\Omega_1} = 3$, different initial conditions}
+\label{fig:init-conds-eta=3}
+\end{figure}
+
+High initial velocity \ref{fig:high_velocity-3} makes the region with the weakest field (around $q_1 \approx q_2 \approx 0$) unstable, which is understandable since the stability condition \xxx{reference} is not satisfied. A wider distance from the trap's center combined with the initial velocity pointing away from the trap \ref{fig:large_radius-3} distorts the stability diagram's shape significantly.  
+
 \section{Creating a Coulomb crystal}
+\xxx{currently making some useable pictures}
 
 \section{Stability of electron in Coulomb crystal}
 \subsection{One electron - one ion}
 \subsection{One electron - twenty ions}
 \subsection{One electron - a hundred ions}
+
+\section{Design of the experiment}

@@ -4,11 +4,11 @@
 In this chapter, we intend to introduce concepts essential for understanding this thesis's concerns. This chapter is divided into several subsections. \footnote{\xxx{In the first subsection, we are going to discuss the basic principles of plasma physics. In the following subsection, we will talk about the motion of a charged particle inside the Paul trap. Next, we will introduce the idea of laser cooling. And finally, in the last subsection, we will present our approach to simulating such a system, entering this thesis's practical component.}} \todo{the sections in the first two chapters will probably be rearranged}
 
 \section{What is plasma?}
-\xxx{definition of plasma, characteristic parameters, coupling parameter $\Gamma$, characterisation of Coulomb crystal, strongly coupled plasma in the nature}
+\xxx{Things to write about: definition of plasma, characteristic parameters, coupling parameter $\Gamma$, better characterization of Coulomb crystal, point of crystallization, strongly coupled plasma in the nature}
 
 \section{Ion trapping}
+Here we will introduce the concept of trapping a single ion by a quickly oscillating field. We will tightly follow a classic textbook \cite{gerlich1992inhomogeneous} in the whole section, starting by writing the equation of motion.
 \subsection{Equation of motion}
-This section follows the derivation from \cite{gerlich1992inhomogeneous}.
 Let us consider a particle with mass $m$, charge $q$ with it's position denoted by vector $\vb{r}$. We insert such particle into the external time-dependent electromagnetic field described by $\vb{E}(t,\vb{r})$ and $\vb{B}(t,\vb{r})$. The Lorentz force gives the equation of motion:
 \begin{equation}
 	m \vb{\ddot{r}} = q \left(\vb{E}(t,\vb{r}) + \vb{\dot{r}} \times \vb{B}(t,\vb{r})\right).
@@ -34,7 +34,7 @@ where the vector:
 	\label{oscillation amplitude}
 	\vb{A} \equiv \vb{A}(\vb{r}) = \frac{q \vb{E_0}(\vb{r})}{m \Omega^2},
 \end{equation}
-is an amplitude of oscillation around the initial position of the particle. The crucial consequence of this result is that we can further restrict the motion of a particle by increasing the frequency of field oscillation \footnote{Frequencies used for trapping ions (or even electrons) are in the range of radio frequencies (RF). Therefore, we can treat the electric field in the quasistatic approximation.}. Of course, the situation changes when we bring smooth inhomogeneity into the field. Here comes our first leap of fate by assuming that the amplitude of oscillation $\vb{A}$ won't be affected by this inhomogeneity. Instead, the particle will drift slowly towards the weaker field region. Motivated by this observation, we can try to find a solution to the equation of motion in the form:
+is an amplitude of oscillation around the initial position of the particle. The crucial consequence of this result is that we can further restrict the motion of a particle by increasing the frequency of field oscillation \footnote{Frequencies used for trapping ions (or even electrons) are in the range of radio frequencies (RF). Therefore, we can treat the electric field in the quasistatic approximation.}. Of course, the situation changes when we bring a small inhomogeneity into the field. Here comes our first leap of fate by assuming that the amplitude of oscillation $\vb{A}$ won't be affected by this inhomogeneity. Instead, the particle will drift slowly towards the weaker field region. Motivated by this observation, we can try to find a solution to the equation of motion in the form:
 \begin{equation}
 	\label{motion separation}
 	\vb{r}(t) = \vb{R_0}(t) + \vb{R_1}(t),
@@ -44,7 +44,8 @@ where $\vb{R_0}(t)$ represents consequence of smooth drift and $\vb{R_1}(t)$ sta
 	\label{oscillation motion}
 	\vb{R_1}(t) = - \vb{A} cos(\Omega t).
 \end{equation}
-If the field amplitude $\vb{E_0}(\vb{r})$ won't change too quickly, we can get by just with its first order Taylor expansion:
+If the field amplitude $\vb{E_0}(\vb{r})$
+ varies smoothly with regards to the space dimension, we can get by just with its first-order Taylor expansion:
 \begin{equation}
 	\label{field expansion}
 	\vb{E_0}(\vb{R_0}(t) - \vb{A} cos(\Omega t)) \approx \vb{E_0}(\vb{R_0}(t)) -(\vb{A} \cdot \nabla) \vb{E_0}(\vb{R_0}) cos(\Omega t) + \dots.
@@ -54,7 +55,7 @@ Substituting \eqref{motion separation} and \eqref{field expansion} into equation
 	m \big( \vb{\ddot{R}_0(t)} + \vb{\ddot{R}_1(t)} \big) = q \ cos(\Omega t) \big[ \vb{E_0(\vb{R_0}(t))} - (\vb{A} \cdot \nabla) \vb{E_0(\vb{R_0}(t))} cos(\Omega t)  \big].
 \end{equation}
 
-Presuming slow spacial variation of vectorfield $\vb{E_0}(\vb{r})$ implies: \\ $|\vb{\ddot{A}}| \ll |\vb{\dot{A}}| \Omega \ll |\vb{A}| \Omega^2$, which we can exploit in time derivative of quickly oscillating term $\vb{R_0}(t)$ \eqref{oscillation motion}, giving us:
+Presuming slow spacial variation of vectorfield $\vb{E_0}(\vb{r})$ implies: \\ $|\vb{\ddot{A}}| \ll |\vb{\dot{A}}| \Omega \ll |\vb{A}| \Omega^2$, which we can exploit in time derivative of quickly oscillating term $\vb{R_1}(t)$ \eqref{oscillation motion}, giving us:
 \begin{equation}
 	\vb{\ddot{R}_1} = - \vb{\ddot{A}} cos(\Omega t) + 2 \Omega \vb{\dot{A}} sin(\Omega t) + \vb{A} \Omega^2 cos(\Omega t) \approx \vb{A} \Omega^2 cos(\Omega t)
 \end{equation}
@@ -65,9 +66,10 @@ Further substituting for amplitude of oscillation $\vb{A}$ from \eqref{oscillati
 \end{equation}
 which transfers into $\vb{R_1}$ as:
 \begin{equation}
-	\vb{R_1}(t) = - \frac{q \vb{E_0}(\vb{R_0}(t))}{m \Omega^2} cos(\Omega t), 
+	\label{oscillation motion approx}
+	\vb{R_1}(t) = - \frac{q \vb{E_0}(\vb{R_0}(t))}{m \Omega^2} cos(\Omega t). 
 \end{equation}
-terms with dependence on $cos(\Omega t)$ cancel each other out and by using a vector identity:
+Terms in the equation of motion with dependence on $cos(\Omega t)$ cancel each other out and by using a vector identity:
 \begin{equation}
 	(\vb{E_0} \cdot \nabla) \vb{E_0} = \frac{1}{2} \nabla E_0^2 - \vb{E_0} \times (\nabla \times \vb{E_0}) = \frac{1}{2} \nabla E_0^2,
 \end{equation}
@@ -75,7 +77,7 @@ where the second equality follows from Maxwell equation for quasistatic field: \
 \begin{equation}
 	m \vb{\ddot{R}_0} = \frac{q^2}{4 m \Omega^2} \nabla E_0^2.
 \end{equation}
-Now by resurrecting the static field term as $\vb{E_s} = - \nabla \Phi_s$, we can define effective potential:
+Now by resurrecting the static field term as $\vb{E_s} = - \nabla \Phi_s$, we can define the effective potential:
 \begin{equation}
 	\label{effective potential}
 	V^*(\vb{R_0}) = \frac{q^2 E_0^2(\vb{R_0})}{4 m \Omega^2} + q \Phi_s, 
@@ -85,28 +87,34 @@ describing the time-averaged force on a charged particle:
 	\label{effective equation of motion}
 	m \vb{\ddot{R}_0} = - \nabla V^*(\vb{R_0}). 
 \end{equation}
-This equation is much easier to solve than the original equation of motion \eqref{equation of motion} as it does not involve any explicit time-dependency. 
+This equation is much easier to solve and study than the original equation of motion \eqref{equation of motion} as it does not involve any explicit time-dependency. After solving it, we can quickly obtain the term $\vb{R_1}(t)$ from \eqref{oscillation motion approx} and get an approximative solution to the original equation of motion. From the Fourier analyses of numerically exact solutions \cite{gerlich1992inhomogeneous} we know about the presence of higher-order terms: $$\vb{r}(t) = \vb{R_0}(t) + \vb{R_1}(t) + \vb{R_2}(t) + \dots$$, where $\vb{R_2}(t) + \dots$ are referred to as micro oscillations. We must be careful about keeping the space variation of $\vb{E_0}(\vb{r})$ sufficiently small. Otherwise, these micro oscillations can become large enough to disturb the trajectory of a particle significantly.
+
+\subsection{Adiabacity}
+
+\xxx{\dots}
 
 \subsection{Real geometry of our trap}
-Since we want to implement laser cooling in our experiment, the linear Paul trap is not a viable option, as this apparatus would stand in the way. For this reason, we will use surface electrodes where particles will levitate above the trap so that we can access the ions with laser beams. Nevertheless, we will start our research by examining the situation with the geometry of the ideal linear Paul trap.
+\todo{need to add pictures throughout the whole thesis}
+Since we want to implement laser cooling in our experiment, the linear Paul trap is not a viable option, as its apparatus would stand in the way of laser beams. For this reason, we will use surface electrodes where the particles levitate above the trap so that the ions will be accessible to us. Nevertheless, we will start our research by examining the situation with the geometry of the ideal linear Paul trap.
+
 
 \subsection{Linear multipole Paul trap}
-\xxx{main source  \cite{gerlich1992inhomogeneous}}
+\xxx{continue with \cite{gerlich1992inhomogeneous}}
 
 \subsection{Stability}
-\xxx{The concept of stability is not straightforward to define for our system. We have Lagrange stability, Liapunov stability\dots}
+\xxx{The concept of stability is not straightforward to define for our system. We have Lagrange stability, Liapunov stability\dots First, we want to be working within the condition for adiabaticity so that the dynamic field will not augment the particle's energy. Inside this restriction, we will further search for characterization of stability.}
 
-The linear Paul trap has its characteristic length $r_0$ defined by the distance from the middle of the trap to the electrode. We will use criterion of stability established in \cite{gerlich1992inhomogeneous} stating that solutions that satisfy $max_{x \in \mathcal{L}} \leq 0.8 \ r_0$, where $\mathcal{L}$ is the whole trajectory of a particle, is declared stable. The drawback of this definition is that we must keep the simulation going long enough to account for the slowly diverging particles.
+The linear Paul trap has its characteristic length $\mathcal{R}_0$ defined by the distance from the middle of the trap to the electrode. We will use a criterion of stability established in \cite{gerlich1992inhomogeneous} declaring a solution stable if it satisfies the condition: \\ $\max\limits_{x \in \mathcal{L}}(r) \leq 0.8 \ \mathcal{R}_0$, where $\mathcal{L}$ is the whole trajectory of a particle, is declared stable. The drawback of this definition is that we must keep the simulation going long enough to account for the slowly diverging particles.
 
 \section{Laser cooling} 
 
-The Ca+ ion has an energy gap between the ground and one of its excited states with the value corresponding to the wavelength of \SI{397}{\nano\meter} \cite{urabe1993laser}. By tuning the wavelength of our laser slightly below this transition energy, we can exploit the Doppler effect so that only ions moving towards the laser can experience radiation with the right frequency to excite them. After a brief time, the atom will deexcite, emitting a photon in a random direction. The only way the ion would still have the same momentum as before the absorption is if the photon was emitted exactly in the same direction as it was absorbed (as if the photon did not interact with the atom at all). But since the photon emission is isotropic, the ion will effectively slow down. Making this arrangement in all three directions creates so-called optical molasses. This type of laser cooling is also known as \emph{Doppler cooling}. More detailed explanation can be found in \cite{alma990008711500106986}.  
+The Ca+ ion has an energy gap between the ground and one of its excited states with the value corresponding to the wavelength of \SI{397}{\nano\meter} \cite{urabe1993laser}. By tuning the wavelength of our laser slightly below this transition energy, we can exploit the Doppler effect so that only ions moving towards the laser can experience radiation with the right frequency to excite them. After a brief time, the atom will deexcite, emitting a photon in a random direction. The only way the ion would still have the same momentum as before the absorption is if the photon was emitted exactly in the same direction \todo{rephrase this sentence} as it was absorbed (as if the photon did not interact with the atom at all). But since the photon emission is isotropic, the ion will effectively slow down. Making this arrangement in all three directions creates so-called optical molasses. This type of laser cooling is also known as \emph{Doppler cooling}. More detailed explanation can be found in \cite{alma990008711500106986}.  
  
 	
 \section{Simulation}
 \label{simulation}
 
-Let us begin this section by summarising our approximations (inspired by \cite{Friedman_1982}) already used when deriving the equation of motion—starting with insignificant ones. 
+Let us begin this section by summarizing our approximations (inspired by \cite{Friedman_1982}) already used when deriving the equation of motion $\rightarrow$ starting with insignificant ones. 
 
 \begin{description}
 	\item[Gravitational interaction:] neglecting gravitational interaction goes without saying since, for Ca+ ions, it is weaker than electrostatic force by order of $\sim 10^{32}$.
@@ -118,7 +126,7 @@ Let us begin this section by summarising our approximations (inspired by \cite{F
 Here ends the list of phenomena whose oversight should not have any significant effect on our results. It could be the case that to get realistic results we might need to account for some of the following effects.
 \begin{description}
 	\item[Collisions with neutrals:] \xxx{we will be able to make a vacuum with pressure of (no idea and not sure it it can produce significant problems)} 
-	\item[Phase shift:] induced by the finite speed of electrons inside an electrode and the final speed of light since we will use quite a small trap and high frequencies. \xxx{not sure if it can bring significant complications}
+	\item[Phase shift:] induced by the finite speed of electrons inside an electrode and the final speed of light since we will use quite a small trap and high frequencies. \xxx{not sure if it can bring significant complications} \todo{if I have understood from today's meeting correctly, then we handle this problem by dividing our electrodes into eight sections, each with its own feeding.}
 \end{description}
 
 \subsection{The code}
@@ -128,6 +136,7 @@ The practical part of this thesis consists of developing the code simulating the
 	\item Making stability diagram in dependence on $q_1$ and $q_2$ parameters.
 	\item Parallelizing the computation of stability diagram. 
 	\item Optimizing the algorithm to compute stability only on the edge of stability regions.
-	\item Tracking the information about the system:(positions, velocities, energies)
+	\item Tracking the information about the system: positions, velocities, energies
 \end{itemize}
+I think it would be beneficial to explain, for example what I mean by "optimizing," but I do not think it belongs here. I will probably put it into the appendix.
 } 

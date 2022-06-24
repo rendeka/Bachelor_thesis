@@ -199,8 +199,8 @@ def PlotStability(data=np.zeros((2,2)), params=np.zeros(10), index=None, fileNam
         path = path + 'velocity/'
         fig, ax = plt.subplots()
         
-        vmin, vmax = 0, 40
-        levels = 1000
+        vmin, vmax = 0, 50
+        levels = 100
         level_boundaries = np.linspace(vmin, vmax, levels + 1)
         
         quadcontourset = ax.contourf(

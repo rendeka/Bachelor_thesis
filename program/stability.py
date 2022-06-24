@@ -77,6 +77,8 @@ def MakePoolList(system, ODESystem, q1Start, q1Stop, q1Resol, q2Start, q2Stop, q
     argument for function IntWrapper().
     """
     
+    allowDitching = False
+    
     q1Step = (q1Stop - q1Start) / q1Resol
     q2Step = (q2Stop - q2Start) / q2Resol
     
@@ -102,11 +104,14 @@ def MakePoolList(system, ODESystem, q1Start, q1Stop, q1Resol, q2Start, q2Stop, q
                 stabilityValue = -1
             
             else:
-                p = np.array([q2, q1])
-                if InTriangle(p, unstableRegion):# here we decide whether we need to compute the stability value or whether we already know it for given parameters
-                    stabilityValue = n
-                elif InTriangle(p, stableRegion):
-                    stabilityValue = 0
+                if allowDitching:
+                    p = np.array([q2, q1])
+                    if InTriangle(p, unstableRegion):# here we decide whether we need to compute the stability value or whether we already know it for given parameters
+                        stabilityValue = n
+                    elif InTriangle(p, stableRegion):
+                        stabilityValue = 0
+                    else:
+                        stabilityValue = -1
                 else:
                     stabilityValue = -1
                 

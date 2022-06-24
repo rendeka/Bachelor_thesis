@@ -10,7 +10,7 @@ from fileHandling import *
 
 from copy import copy
 
-def RandomVelocity(T=10, mass=ionMass, dim=3):
+def RandomVelocity(T=1, mass=ionMass, dim=3):
     maxElement = np.sqrt((Kb*T)/(mass))
     vector = 2 * maxElement * np.random.rand(dim) - maxElement
         
@@ -20,7 +20,7 @@ def TemperatureToVelocity(T=4, mass=ionMass):
     
     return np.sqrt((8 * Kb * T)/(mass * np.pi)) * (2/f2)
 
-def RandomPosition(maxRadius=0.6 * r0, dim=3):
+def RandomPosition(maxRadius=0.4 * r0, dim=3):
     
     vector = 2 * maxRadius * np.random.rand(dim) - maxRadius
     
@@ -40,7 +40,7 @@ def MakeParticleSystem(n=1, m=1, dimension=3):#system with n ions and m electron
         
     for i in range(m):
         position = RandomPosition()
-        velocity = RandomVelocity(T=4, mass=electronMass)
+        velocity = RandomVelocity(mass=electronMass)
         mass = electronMass
         charge = electronCharge
         
