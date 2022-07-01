@@ -30,7 +30,7 @@ Moving to larger frequency ratio $\rightarrow \nicefrac{\Omega_2}{\Omega_1} = 13
 \begin{figure}[H]
 \begin{subfigure}{.5\textwidth}
   \centering
-  \includegraphics[width=\linewidth]{img/q1_0.0-0.07_q2_0.0-0.5_400x400_13.eps}
+  \includegraphics[width=\linewidth]{img/det_q1_0.0-0.07_q2_0.0-0.5_960x960_13.eps}
   \caption{Determinant}
   \label{fig:det_13}
 \end{subfigure}%
@@ -50,7 +50,7 @@ There emerges one stable triangle with many tongues of instability. With an incr
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=\linewidth]{img/0_ions_1_electrons_q1_0.0-0.04_q2_0.0-0.5_240x240_833.eps}
+	\includegraphics[width=\linewidth]{img/0_ions_1_electrons_q1_0.0-0.04_q2_0.0-0.5_897x897_833.eps}
 	\caption{Stability diagrams for $\nicefrac{\Omega_2}{\Omega_1} = 833$}
 	\label{fig:stabil-eta=833}
 \end{figure}

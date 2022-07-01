@@ -220,8 +220,8 @@ def PlotVelocityEdge(fileNameVel, fileNameStability):
             else:
                 fMatrix[iX,iY] = -1
         
-    x_vals = np.linspace(q2Start, q2Stop, int(q2ResolF))
-    y_vals = np.linspace(q1Start, q1Stop, int(q1ResolF))
+    x_vals = np.linspace(q2Start, q2Stop, int(q2ResolF)) * 10
+    y_vals = np.linspace(q1Start, q1Stop, int(q1ResolF)) * 10
     X, Y = np.meshgrid(x_vals, y_vals)
     
     fig, ax = plt.subplots()
@@ -237,13 +237,15 @@ def PlotVelocityEdge(fileNameVel, fileNameStability):
     )
     
     
-    fig.colorbar(
+    cbar = fig.colorbar(
         ScalarMappable(norm=quadcontourset.norm, cmap=quadcontourset.cmap),
         ticks=range(vmin1, vmax1+5, 5),
         boundaries=level_boundaries,
         values=(level_boundaries[:-1] + level_boundaries[1:]) / 2,
         extend='max',
     )
+    
+    cbar.ax.tick_params(labelsize=11)
       
     vmin2 = 0
     vmax2 = 1000
@@ -253,8 +255,11 @@ def PlotVelocityEdge(fileNameVel, fileNameStability):
     #contourf_ = ax2.contourf(X,Y,fMatrix, levels=levels2, vmin=vmin2, vmax=vmax2)
     #cbar = fig.colorbar(contourf_)
     
-    plt.xlabel('$q_{2}$')
-    plt.ylabel('$q_{1}$')
+    plt.xticks(fontsize=11)    
+    plt.yticks(fontsize=11)    
+    plt.xlabel('$q_{2} \ [10^{-1}]$', fontsize=14)
+    plt.ylabel('$q_{1} \ [10^{-1}]$', fontsize=14)
+    plt.tight_layout()
     
     
     fileName = fileNameStability + '_' + str(levels1)
@@ -288,8 +293,8 @@ if __name__ == '__main__':
     
     #PlotStabilityEdge(fileName='0_ions_1_electrons_q1_0.0-0.1_q2_0.0-0.55_768x897_3')
     #PlotStabilityVelocity(fileName='0_ions_1_electrons_q1_0.0-0.1_q2_0.0-0.5_200x200_3')
-    #PlotVelocityEdge(fileNameVel='0_ions_1_electrons_q1_0.0-0.1_q2_0.0-0.5_300x300_3', 
-    #                    fileNameStability='0_ions_1_electrons_q1_0.0-0.1_q2_0.0-0.5_960x960_3')
+    PlotVelocityEdge(fileNameVel='0_ions_1_electrons_q1_0.0-0.1_q2_0.0-0.5_300x300_3', 
+                        fileNameStability='0_ions_1_electrons_q1_0.0-0.1_q2_0.0-0.5_960x960_3')
     #PlotStability(fileName='0_ions_1_electrons_q1_0.0-0.1_q2_0.0-0.55_768x897_3')
 
     #MakeStabilityDiagramList()
@@ -303,4 +308,4 @@ if __name__ == '__main__':
     """left-click unstable, right-click stable. After you choose triangles you must save them with SaveTriangles"""
     #SaveTriangles(triangleUnstable, triangleStable, params)
     
-    StabilityDet(q1Start=0.0, q1Stop=0.07, q1Resol=960, q2Start=0.0, q2Stop=0.5, q2Resol=960, f1=f1, f2=f2)
+    #StabilityDet(q1Start=0.0, q1Stop=0.06, q1Resol=300, q2Start=0.0, q2Stop=0.5, q2Resol=300, f1=f1, f2=f2)

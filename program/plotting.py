@@ -234,18 +234,21 @@ def PlotStability(data=np.zeros((2,2)), params=np.zeros(10), index=None, fileNam
     
     plt.show()
     
-def PlotStabilityRescaled(data=np.zeros((2,2)), params=np.zeros(10), index=None, fileName=None, velocityDiagram=False):
+def PlotStabilityRescaled(data=np.zeros((2,2)), params=[], index=None, fileName=None, velocityDiagram=False):
         
     if fileName is None:
-        q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nParticles, time, f1, f2 = params
+        q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nParticles, f1, f2 = params
         fileName = MakeFileName(params)
 
     else:
-        data, params = LoadStabilityDiagram(fileName)
-        q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nParticles, eta, f1, f2 = params
+        data, params = LoadStabilityDiagram(fileName, velocityDiagram=velocityDiagram)
+        if fileName[0] == 'd':            
+            q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, eta, f1, f2 = params
+        else:
+            q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nParticles, eta, f1, f2 = params            
                 
     x_vals = np.linspace(q2Start, q2Stop, int(q2Resol)) * 10 
-    y_vals = np.linspace(q1Start, q1Stop, int(q1Resol)) * 1000
+    y_vals = np.linspace(q1Start, q1Stop, int(q1Resol)) * 100
     X, Y = np.meshgrid(x_vals, y_vals) 
             
     if index != None:
@@ -253,7 +256,7 @@ def PlotStabilityRescaled(data=np.zeros((2,2)), params=np.zeros(10), index=None,
             
     path = 'pics/stability_diagrams/'
     if velocityDiagram:
-        path = path + 'velocity/'
+        #path = path + 'velocity/'
         fig, ax = plt.subplots()
         
         vmin, vmax = 0, 40
@@ -279,15 +282,18 @@ def PlotStabilityRescaled(data=np.zeros((2,2)), params=np.zeros(10), index=None,
     else:
         fig = plt.figure()        
         plt.contourf(X, Y, data)
-
-    
-    plt.xlabel('$q_{2} \ [10^{-1}]$')
-    plt.ylabel('$q_{1} \ [10^{-3}]$')
+        
+        
+    plt.xticks(fontsize=11)    
+    plt.yticks(fontsize=11)    
+    plt.xlabel('$q_{2} \ [10^{-1}]$', fontsize=14)
+    plt.ylabel('$q_{1} \ [10^{-2}]$', fontsize=14)
+    plt.tight_layout()
     
     extensions = ['eps', 'png']
     
     for extension in extensions: #saving pictures 
-        plt.savefig(path + fileName + '.' + extension, format=extension)
+        plt.savefig(path + 'rescaled/' + fileName + '.' + extension, format=extension)
     
     plt.show()
     

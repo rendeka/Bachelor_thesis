@@ -1,19 +1,20 @@
 \chapter{Theoretical introduction}
 \label{chap:refs}
 
-In this chapter, we intend to introduce concepts essential for understanding this thesis's concerns. This chapter is divided into several subsections. \footnote{\xxx{In the first subsection, we are going to discuss the basic principles of plasma physics. In the following subsection, we will talk about the motion of a charged particle inside the Paul trap. Next, we will introduce the idea of laser cooling. And finally, in the last subsection, we will present our approach to simulating such a system, entering this thesis's practical component.}} \todo{the sections in the first two chapters will probably be rearranged}
+In this chapter, we introduce concepts essential for understanding this thesis's concerns. This chapter is divided into several subsections. \footnote{\xxx{In the first subsection, we are going to discuss the basic principles of plasma physics. In the following subsection, we will talk about the motion of a charged particle inside the Paul trap. Next, we will introduce the idea of laser cooling. And finally, in the last subsection, we will present our approach to simulating such a system, entering this thesis's practical component.}} \todo{the sections in the first two chapters will probably be rearranged}
 
 \section{What is plasma?}
 \xxx{Things to write about: definition of plasma, characteristic parameters, coupling parameter $\Gamma$, better characterization of Coulomb crystal, point of crystallization, strongly coupled plasma in the nature}
 
 \section{Ion trapping}
-Here we will introduce the concept of trapping a single ion by a quickly oscillating field. We will tightly follow a classic textbook \cite{gerlich1992inhomogeneous} in the whole section, starting by writing the equation of motion.
+Here we introduce the concept of trapping a single ion by a quickly oscillating field. We will tightly follow a classic textbook \cite{gerlich1992inhomogeneous} in the whole section, starting by writing the equation of motion.
 \subsection{Equation of motion}
-Let us consider a particle with mass $m$, charge $q$ with it's position denoted by vector $\vb{r}$. We insert such particle into the external time-dependent electromagnetic field described by $\vb{E}(t,\vb{r})$ and $\vb{B}(t,\vb{r})$. The Lorentz force gives the equation of motion:
+Let us consider a particle with mass $m$, charge $q$ with it's position denoted by vector $\vb{r}$. We insert such a particle into the external time-dependent electromagnetic field described by $\vb{E}(t,\vb{r})$ and $\vb{B}(t,\vb{r})$. The Lorentz force gives the equation of motion:
 \begin{equation}
 	m \vb{\ddot{r}} = q \left(\vb{E}(t,\vb{r}) + \vb{\dot{r}} \times \vb{B}(t,\vb{r})\right).
 \end{equation}
-Since we are not using any external magnetic field, and while trapping a particle in a bounded space, we usually deal with small velocities. Therefore we can neglect the the effect of the term $\vb{\dot{r}} \times \vb{B}$, which means that equation of motion simplifies to:
+Since we are not using any external magnetic field, and while trapping a particle in a compact space, we usually deal with small velocities. Therefore we can neglect the effect of the term $\vb{\dot{r}} \times \vb{B}$, which means that the equation of motion simplifies to:
+
 \begin{equation}
 	\label{equation of motion}
 	m \vb{\ddot{r}} = q \vb{E}(t,\vb{r}).
@@ -93,6 +94,13 @@ This equation is much easier to solve and study than the original equation of mo
 
 \xxx{\dots}
 
+\subsection{Mathieu equation}
+\xxx{should cite \cite{trypogeorgos2016cotrapping} as well}
+The equation similar to our equation of motion \eqref{equation of motion} was first excessively studied by Mathieu in 1868. The secular frequency is proportional to the driving frequency as:
+\begin{equation}
+	\omega \approx \frac{\Omega}{2} \sqrt{a + \frac{q_1^2}{2}}
+\end{equation}
+
 \subsection{Real geometry of our trap}
 \todo{need to add pictures throughout the whole thesis}
 Since we want to implement laser cooling in our experiment, the linear Paul trap is not a viable option, as its apparatus would stand in the way of laser beams. For this reason, we will use surface electrodes where the particles levitate above the trap so that the ions will be accessible to us. Nevertheless, we will start our research by examining the situation with the geometry of the ideal linear Paul trap.
@@ -108,7 +116,7 @@ The linear Paul trap has its characteristic length $\mathcal{R}_0$ defined by th
 
 \section{Laser cooling} 
 
-The Ca+ ion has an energy gap between the ground and one of its excited states with the value corresponding to the wavelength of \SI{397}{\nano\meter} \cite{urabe1993laser}. By tuning the wavelength of our laser slightly below this transition energy, we can exploit the Doppler effect so that only ions moving towards the laser can experience radiation with the right frequency to excite them. After a brief time, the atom will deexcite, emitting a photon in a random direction. The only way the ion would still have the same momentum as before the absorption is if the photon was emitted exactly in the same direction \todo{rephrase this sentence} as it was absorbed (as if the photon did not interact with the atom at all). But since the photon emission is isotropic, the ion will effectively slow down. Making this arrangement in all three directions creates so-called optical molasses. This type of laser cooling is also known as \emph{Doppler cooling}. More detailed explanation can be found in \cite{alma990008711500106986}.  
+The Ca+ ion has an energy gap between the ground and one of its excited states with the value corresponding to the wavelength of \SI{397}{\nano\meter} \cite{urabe1993laser}. By tuning the wavelength of our laser slightly below this transition energy, we can exploit the Doppler effect so that only ions moving towards the laser can experience radiation with the right frequency to excite them. After a brief time, the atom will deexcite, emitting a photon in a random direction. The only way the ion would still have the same momentum as before the absorption is if the photon was emitted exactly in the same direction \todo{rephrase this sentence} as it was absorbed (as if the photon did not interact with the atom at all). But since the photon emission is isotropic, the ion will effectively slow down. This type of laser cooling is also known as \emph{Doppler cooling}. More detailed explanation can be found in \cite{alma990008711500106986}.  
  
 	
 \section{Simulation}

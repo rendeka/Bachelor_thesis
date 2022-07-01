@@ -15,9 +15,9 @@ In the case of a linear quadrupole with perfectly hyperbolical electrodes with c
 where $V_0$ is an amplitude of static potential, $V_1$ of slower potential and $V_2$ is an amplitude of rapidly oscillating potential on the electrode. The equations of motion for a particle in such potential, after change of variable: $\tau = \nicefrac{t}{(2 \Omega_1)}$ are:
 
 \begin{eqnarray*}
-	\ddot{x}(\tau) &=& x(\tau) \bigg[ a - 2 q_1 cos\left(\frac{\Omega_1}{\Omega_2} \tau \right) - 2 q_2 cos(\tau) \bigg], \\
-	\ddot{y}(\tau) &=& y(\tau) \bigg[ a - 2 q_1 cos\left(\frac{\Omega_1}{\Omega_2} \tau \right) - 2 q_2 cos(\tau) \bigg], \\
-	\ddot{z}(\tau) &=& -2z(\tau) \bigg[ a - 2 q_1 cos\left(\frac{\Omega_1}{\Omega_2} \tau \right) - 2 q_2 cos(\tau) \bigg],
+	\ddot{x}(\tau) &=& x(\tau) \bigg[ a - 2 q_1 cos\left(2\frac{\Omega_1}{\Omega_2} \tau \right) - 2 q_2 cos(2\tau) \bigg], \\
+	\ddot{y}(\tau) &=& y(\tau) \bigg[ a - 2 q_1 cos\left(2\frac{\Omega_1}{\Omega_2} \tau \right) - 2 q_2 cos(2\tau) \bigg], \\
+	\ddot{z}(\tau) &=& -2z(\tau) \bigg[ a - 2 q_1 cos\left(2\frac{\Omega_1}{\Omega_2} \tau \right) - 2 q_2 cos(2\tau) \bigg],
 \end{eqnarray*}
 where $a$, $q_1$ and $q_2$ are dimensionless parameters:
 \begin{eqnarray*}
@@ -29,9 +29,38 @@ where $a$, $q_1$ and $q_2$ are dimensionless parameters:
 \section{Floquet theory}
 \label{sec:floquet}
 
-Since the particle experiences the weakest confinement in the z-direction, we will now examine the properties of that equation. 
+Since the particle experiences the weakest confinement in the z-direction, we will examine this equation's properties. Floquet theory is a theory covering linear first-order ODEs with periodic coefficients. These are equations of the form:
+\begin{equation}
+	\dot{u}(\tau) = \mathcal{F}(\tau) u(\tau),
+\end{equation}
+where $\mathcal{F}$ is a periodic function. Let's illustrate it in the case of our differential equation. We begin by rewriting the equation \xxx{eqref} as a system of two first-order differential equations written in the matrix form:
+\begin{align}
+\label{matrix mathieu}
+	\frac{d}{d \tau}
+	\begin{bmatrix}
+		z(\tau) \\
+		\dot{z}(\tau)
+	\end{bmatrix}	
+	&=
+	\begin{bmatrix}
+		0 & 1 \\
+		-2\bigg( a - 2 q_1 cos\left(2\frac{\Omega_1}{\Omega_2} \tau \right) - 2 q_2 cos(2\tau) \bigg) & 0	
+	\end{bmatrix}
+	\begin{bmatrix}
+		z(\tau) \\
+		\dot{z}(\tau)
+	\end{bmatrix}.
+\end{align}
+
+Without the necessity of finding a solution to this system, Floquet theory can give us information about its stability. The information we are interested in is whether a solution is bounded for a given set of parameters or not. At least while working with the computer, because of finite precision of floating-point, we can always denote $\nicefrac{\Omega_2}{\Omega_1} \equiv \nicefrac{m}{n}$, where $m$ and $n$ are integers and $\nicefrac{m}{n}$ is an irreducible fraction. Then the matrix in equation \eqref{matrix mathieu} is $T = m \pi$ periodic. Inspired by \cite{leefer2017investigation} we declare all solutions to our problem \eqref{matrix mathieu} with $T$ or $2T$ periodicity as stable\footnote{Note that this stability condition differs from the one we demand while numerically simulating the motion of a particle. The periodic solution implies boundedness, but the value of this boundary might lie outside the physical dimensions of the trap. That is why we should not be surprised when we find some differences in stability diagrams, even for the simplest case of a single particle in the trap. 
+}. Since all solutions with a $2T$ period contain the $T$ periodic ones, we will seek a solution to our problem with the ansatz:
+\begin{equation}
+	\label{Floquet ansatz}
+	z(\tau) = \sum_{k=-\infty}^{\infty} c_k e^{i\frac{k}{m}\tau}
+\end{equation}
 
 
+	
 \section{Simulation}
 \label{sec:simulation}
 
