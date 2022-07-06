@@ -10,30 +10,36 @@ In the case of a linear quadrupole with perfectly hyperbolical electrodes with c
 :
 
 \begin{equation}
-	V(t, \vb{r}) = \bigg[ V_0 + V_1 cos(\Omega_1 t) + V_2 cos(\Omega_2 t) \bigg] \frac{x^2 + y^2 - 2 z^2 }{2 \mathcal{R}_0^2},
+	V(t, \vb{r}) = \bigg[ V_0 + V_1 cos(\Omega_1 t) + V_2 \cos(\Omega_2 t) \bigg] \frac{x^2 + y^2 - 2 z^2 }{2 l_0^2},
 \end{equation}
 where $V_0$ is an amplitude of static potential, $V_1$ of slower potential and $V_2$ is an amplitude of rapidly oscillating potential on the electrode. The equations of motion for a particle in such potential, after change of variable: $\tau = \nicefrac{t}{(2 \Omega_1)}$ are:
 
-\begin{eqnarray*}
-	\ddot{x}(\tau) &=& x(\tau) \bigg[ a - 2 q_1 cos\left(2\frac{\Omega_1}{\Omega_2} \tau \right) - 2 q_2 cos(2\tau) \bigg], \\
-	\ddot{y}(\tau) &=& y(\tau) \bigg[ a - 2 q_1 cos\left(2\frac{\Omega_1}{\Omega_2} \tau \right) - 2 q_2 cos(2\tau) \bigg], \\
-	\ddot{z}(\tau) &=& -2z(\tau) \bigg[ a - 2 q_1 cos\left(2\frac{\Omega_1}{\Omega_2} \tau \right) - 2 q_2 cos(2\tau) \bigg],
-\end{eqnarray*}
+\begin{subequations}
+\begin{align}
+	& \ddot{x}(\tau) = x(\tau) \bigg[ a - 2 q_1 \cos\left(2\frac{\Omega_1}{\Omega_2} \tau \right) - 2 q_2 \cos(2\tau) \bigg], \\
+	& \ddot{y}(\tau) = y(\tau) \bigg[ a - 2 q_1 \cos\left(2\frac{\Omega_1}{\Omega_2} \tau \right) - 2 q_2 \cos(2\tau) \bigg], \\
+	\label{studied eq of motion}
+	& \ddot{z}(\tau) = -2z(\tau) \bigg[ a - 2 q_1 \cos\left(2\frac{\Omega_1}{\Omega_2} \tau \right) - 2 q_2 \cos(2\tau) \bigg],
+\end{align}
+\end{subequations}
 where $a$, $q_1$ and $q_2$ are dimensionless parameters:
-\begin{eqnarray*}
-	a &=& 4 Q_m \frac{V_0}{\Omega_2^2 \mathcal{R}_0^2}, \\
-	q_1 &=& -2 Q_m \frac{V_1}{\Omega_2^2 \mathcal{R}_0^2}, \\
-	q_2 &=& -2 Q_m \frac{V_2}{\Omega_2^2 \mathcal{R}_0^2}.
-\end{eqnarray*}
+\begin{subequations}
+\begin{align}
+	& a = 4 Q_m \dfrac{V_0}{\Omega_2^2 l_0^2}, \\
+	& q_1 = -2 Q_m \dfrac{V_1}{\Omega_2^2 l_0^2}, \\
+	& q_2 = -2 Q_m \dfrac{V_2}{\Omega_2^2 l_0^2}.
+\end{align}
+\end{subequations}
 
 \section{Floquet theory}
 \label{sec:floquet}
 
 Since the particle experiences the weakest confinement in the z-direction, we will examine this equation's properties. Floquet theory is a theory covering linear first-order ODEs with periodic coefficients. These are equations of the form:
 \begin{equation}
-	\dot{u}(\tau) = \mathcal{F}(\tau) u(\tau),
+	\label{Floquet structure}
+	\dot{\vb{u}}(\tau) = \tensorq{F}(\tau) \vb{u}(\tau),
 \end{equation}
-where $\mathcal{F}$ is a periodic function. Let's illustrate it in the case of our differential equation. We begin by rewriting the equation \xxx{eqref} as a system of two first-order differential equations written in the matrix form:
+where $\tensorq{F}$ is a matrix valued function with minimal period $T$. Let's illustrate this theory for the case of our differential equation. We begin by rewriting the equation \eqref{studied eq of motion} as a system of two first-order differential equations written in the matrix form:
 \begin{align}
 \label{matrix mathieu}
 	\frac{d}{d \tau}
@@ -44,23 +50,55 @@ where $\mathcal{F}$ is a periodic function. Let's illustrate it in the case of o
 	&=
 	\begin{bmatrix}
 		0 & 1 \\
-		-2\bigg( a - 2 q_1 cos\left(2\frac{\Omega_1}{\Omega_2} \tau \right) - 2 q_2 cos(2\tau) \bigg) & 0	
+		-2\bigg( a - 2 q_1 \cos\left(2\dfrac{\Omega_1}{\Omega_2} \tau \right) - 2 q_2 \cos(2\tau) \bigg) & 0	
 	\end{bmatrix}
 	\begin{bmatrix}
 		z(\tau) \\
 		\dot{z}(\tau)
-	\end{bmatrix}.
+	\end{bmatrix},
 \end{align}
-
-Without the necessity of finding a solution to this system, Floquet theory can give us information about its stability. The information we are interested in is whether a solution is bounded for a given set of parameters or not. At least while working with the computer, because of finite precision of floating-point, we can always denote $\nicefrac{\Omega_2}{\Omega_1} \equiv \nicefrac{m}{n}$, where $m$ and $n$ are integers and $\nicefrac{m}{n}$ is an irreducible fraction. Then the matrix in equation \eqref{matrix mathieu} is $T = m \pi$ periodic. Inspired by \cite{leefer2017investigation} we declare all solutions to our problem \eqref{matrix mathieu} with $T$ or $2T$ periodicity as stable\footnote{Note that this stability condition differs from the one we demand while numerically simulating the motion of a particle. The periodic solution implies boundedness, but the value of this boundary might lie outside the physical dimensions of the trap. That is why we should not be surprised when we find some differences in stability diagrams, even for the simplest case of a single particle in the trap. 
-}. Since all solutions with a $2T$ period contain the $T$ periodic ones, we will seek a solution to our problem with the ansatz:
+which already has a structure of \eqref{Floquet structure}. Without the necessity of finding a solution to this system, we can acquire knowledge about its stability. The information we are interested in is whether a solution is bounded for a given set of parameters or not. At least while working with the computer, because of finite precision of floating-point, we can always denote $\nicefrac{\Omega_2}{\Omega_1} \equiv \nicefrac{m}{n}$, where $m$ and $n$ are integers and $\nicefrac{m}{n}$ is an irreducible fraction. Then the matrix in equation \eqref{matrix mathieu} is $T = m \pi$ periodic. As in \cite{leefer2017investigation}, we identify the edge of stability regions with the $2T$ periodic solutions\footnote{Note that such stability condition differs from the one we demand while numerically simulating the motion of a particle. The periodic solution of equation of motion implies boundedness, but the value of this boundary might lie outside the physical dimensions of the trap. That is why we ought not to be surprised when we find some differences in stability diagrams, even for the simplest case of a single particle in the trap. \label{foot: different stability condition}} to our problem \eqref{matrix mathieu}. This allows us to seek a solution to our problem in the form:
 \begin{equation}
 	\label{Floquet ansatz}
-	z(\tau) = \sum_{k=-\infty}^{\infty} c_k e^{i\frac{k}{m}\tau}
+	z(\tau) = \sum_{k=-\infty}^{\infty} c_k \exp(i\frac{k}{m}\tau),
 \end{equation}
+where $c_k$ are constant coefficients. Substituting this into equation \eqref{matrix mathieu} yields an identity:
 
+\begin{multline}
+	\sum_{k=-\infty}^{\infty}\left[ \left(a - \dfrac{k^2}{m^2} \right)c_k - q_1 \left(c_{k-2n} + c_{k+2n} \right) - q_2 \left(c_{k-2m} + c_{k+2m} \right)  \right] \\ \exp(i\frac{k}{m}\tau) = 0,
+\end{multline}
+which holds for every $\tau$ only if each element of the sum is equal to zero. This relation can be written as:
 
-	
+\begin{equation}
+	\label{Floquet edge eq}
+	\tensorq{F} \cdot \begin{bmatrix}
+	\vdots \\
+	c_{k-1} \\
+	c_{k} \\
+	c_{k+1} \\
+	\vdots
+	\end{bmatrix} = \vb{0},
+\end{equation}
+where $\tensorq{F}$ is an infinite matrix with elements:
+
+\begin{equation}
+	\tensorq{F}_{i j} = \left[ \left(a - \dfrac{k^2}{m^2} \right)\delta_{i j} - q_1 \left(\delta_{i j-2n} + \delta_{i j+2n} \right) - q_2 \left(\delta_{i j-2m} + \delta_{i j+2m} \right)  \right],
+\end{equation} 
+where:
+\begin{equation}
+	\delta_{ij} = 
+	\begin{cases}
+		1 & i=j, \\
+		0 & i \neq j.
+	\end{cases}	
+\end{equation}
+The equation \eqref{Floquet edge eq} is equivalent to:
+\begin{equation}
+	\label{Floquet determinant}
+	det(\tensorq{F}) = 0.
+\end{equation}
+So the determination of stability boils down to computing a determinant of a matrix $\tensorq{F}$. We approximate $\tensorq{F}$ by sufficiently large $\rightarrow (10m+1) \times (10m+1)$ finite matrix. For the index $k$ in previous equations it means: $$k \in \{ -5m, \ -5m+1, \  \cdots, \ 5m-1, \ 5m \} \subset \Z,$$ neglecting solutions with smaller periods. Parameters for which $det(\tensorq{F}) > 0$ were identified as stable, otherwise unstable.
+ 	
 \section{Simulation}
 \label{sec:simulation}
 

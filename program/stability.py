@@ -77,7 +77,7 @@ def MakePoolList(system, ODESystem, q1Start, q1Stop, q1Resol, q2Start, q2Stop, q
     argument for function IntWrapper().
     """
     
-    allowDitching = False
+    allowDitching = True
     
     q1Step = (q1Stop - q1Start) / q1Resol
     q2Step = (q2Stop - q2Start) / q2Resol
@@ -88,6 +88,9 @@ def MakePoolList(system, ODESystem, q1Start, q1Stop, q1Resol, q2Start, q2Stop, q
         if(system[i,3] > 0):
             m = m + 1
     nParticles = (m, n-m)#numer of (ions, electrons)
+    
+    if freezeIons:
+        n = n-m
 
     loadParams = np.array([q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nParticles, int(f2/f1), f1, f2],dtype=object)  
     unstableRegion, stableRegion = LoadTriangles(loadParams)

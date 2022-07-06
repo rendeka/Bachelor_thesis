@@ -100,7 +100,10 @@ def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,  
     start = timer()#to track real time of the computation
     
     t = np.zeros(n)
-    iterations = int((tmax - t[0]) / dt) + 1 #this is number of steps that will by saved in an array
+    iterations = int(tmax / dt) + 1 #this is number of steps that will by saved in an array
+    #iterations = iterations // 10
+    #iterations = iterations * 10
+    
     
     rs = np.zeros((n,iterations,3)) #array of positions in time for all particles
     vs = np.zeros((n,iterations,3)) #array of velocities in time for all particles
@@ -136,6 +139,8 @@ def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,  
             
             if(Norm(r) > rMax[i]): #tracking the most distant point in trajectory
                 rMax[i] = Norm(r)
+                #if rMax[i] > r0: #temporary for making coulomb crystal
+                #    particles[i,3] = 0
                             
             kineticEnergy[k] = kineticEnergy[k] + 0.5 * mass[i] * Norm(v)**2 * (f2/2)**2
             potentialFromTrap = trapEnergy(ODESystem, trapParams, r, mass[i], t[i]) 
@@ -152,21 +157,21 @@ def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,  
                 for o in range(i + 1, n):#another loop throughout particles -> checking for recombination
                 
                     finerDt = dt
-                    howMuchFiner = 1
+                    howMuchFiner = 1#now for skipping data saving
                 
                     rCMS = rMatrix[i,o] #CMS -> central mass system(different for every pair of particles)
                     vCMS = vMatrix[i,0] + (aCoulomb[i] - aCoulomb[o]) * dt
                     massCMS = (mass[i] * mass[o]) / (mass[i] + mass[o])
-
+                    #"""
                     if NeedFinerTimeStep(rCMS, vCMS, dt):
                         howMuchFiner = 100
                         finerDt = dt / howMuchFiner
+                    #"""
+                    CMSKineticEnergy = 0.5 * massCMS * Norm(vCMS)**2 * np.sign(charge[i] * charge[o])
                     
-                    if(charge[i] * charge[o] < 0):
-                        CMSKineticEnergy = 0.5 * CMSmass * Norm(CMSv)**2
+                    #if((Norm(rCMS) < recombinationRadius) and (CMSKineticEnergy < recombinationEnergy)):
+                    #    particles = Recombine(particles,i,o)
                         
-                        if((rCMS < recombinationRadius) and (CMSKineticEnergy < recombinationEnergy)):
-                            particles = Recombine(particles,i,o)
                     
                 for _ in range(howMuchFiner):
                     rv, t[i] = Step(ODESystem, rv, t[i], finerDt, aCoulomb[i], mass[i], charge[i], trapParams)
@@ -194,6 +199,8 @@ def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,  
             
         if allowRecombination:
             particles, n, rs, vs, rMax = DeleteRecombinedParticles(particles, rs, vs, rMax)
+            if len(particles) == 0:
+                return rs, vs, Step.__name__, timer()-start, [[],[],[]], particles, 1000
             
         velFinal = velFinal + TotVel(particles, nElectrons)
 
@@ -214,9 +221,8 @@ def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,  
     else:
         stability = 0
         
-        stability = 0
         for i in range(n):
-            if(rMax[i] > 0.8 * r0) and (charge[i] < 0): # condition (charge[i] < 0) is here for the case of freezed ions
+            if(rMax[i] > 5*0.8 * r0) and (charge[i] < 0): # condition (charge[i] < 0) is here for the case of freezed ions
                 stability = stability + 1
         
         
@@ -229,7 +235,7 @@ def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,  
     """WARNING! other parts of the program expects that the last value that this function (ODEint) returns is the stability parameter"""    
     return rs, vs, Step.__name__, exeTime, energies, particles, stability
 
-
+"""
 def PlotPotential(ODESystem=ODESystemExact, trapParams=np.array([0, 0.14, 0.37]), m=electronMass, t=2.2):
     import matplotlib.pyplot as plt
     from matplotlib.cm import ScalarMappable
@@ -245,9 +251,9 @@ def PlotPotential(ODESystem=ODESystemExact, trapParams=np.array([0, 0.14, 0.37])
     
     fig = plt.figure()        
     plt.contourf(X, Z, Phi(X, Z))
+"""    
     
-    
-    """
+"""
     fig, ax = plt.subplots()
     
     vmin, vmax = 0, 1
@@ -268,6 +274,7 @@ def PlotPotential(ODESystem=ODESystemExact, trapParams=np.array([0, 0.14, 0.37])
         values=(level_boundaries[:-1] + level_boundaries[1:]) / 2,
         extend='max',
     )
-    """
+
     
     plt.show()
+"""

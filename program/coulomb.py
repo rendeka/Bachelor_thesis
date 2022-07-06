@@ -71,7 +71,7 @@ def NeedFinerTimeStep(r, v, dt):
     a = np.dot(v,r)
     b = np.dot(r,r)
 
-    if(a * dt > 0.9 * b): 
+    if(a * dt > 0.7 * b): 
         return True
     else:
         return False     

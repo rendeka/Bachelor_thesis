@@ -49,7 +49,9 @@ def PlotODESolution(ODESolution):
     ax.yaxis.set_tick_params(labelsize=10)
     ax.zaxis.set_tick_params(labelsize=10)
     
-    ax.auto_scale_xyz([-0.60, 0.60], [-0.60, 0.60], [-0.60, 0.60])
+    framesize = 0.3
+    
+    ax.auto_scale_xyz([-framesize, framesize], [-framesize, framesize], [-framesize, framesize])
 
 
     plt.grid(b=None)
@@ -184,7 +186,7 @@ def PlotStability(data=np.zeros((2,2)), params=np.zeros(10), index=None, fileNam
         fileName = MakeFileName(params)
 
     else:
-        data, params = LoadStabilityDiagram(fileName)
+        data, params = LoadStabilityDiagram(fileName=fileName, velocityDiagram=velocityDiagram)
         q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nParticles, eta, f1, f2 = params
                 
     x_vals = np.linspace(q2Start, q2Stop, int(q2Resol))
@@ -199,8 +201,8 @@ def PlotStability(data=np.zeros((2,2)), params=np.zeros(10), index=None, fileNam
         path = path + 'velocity/'
         fig, ax = plt.subplots()
         
-        vmin, vmax = 0, 50
-        levels = 100
+        vmin, vmax = 0, 120
+        levels = 80 
         level_boundaries = np.linspace(vmin, vmax, levels + 1)
         
         quadcontourset = ax.contourf(
@@ -242,6 +244,7 @@ def PlotStabilityRescaled(data=np.zeros((2,2)), params=[], index=None, fileName=
 
     else:
         data, params = LoadStabilityDiagram(fileName, velocityDiagram=velocityDiagram)
+        data = data / 1
         if fileName[0] == 'd':            
             q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, eta, f1, f2 = params
         else:
@@ -259,7 +262,7 @@ def PlotStabilityRescaled(data=np.zeros((2,2)), params=[], index=None, fileName=
         #path = path + 'velocity/'
         fig, ax = plt.subplots()
         
-        vmin, vmax = 0, 40
+        vmin, vmax = 0, 100
         levels = 1000
         level_boundaries = np.linspace(vmin, vmax, levels + 1)
         
@@ -270,13 +273,15 @@ def PlotStabilityRescaled(data=np.zeros((2,2)), params=[], index=None, fileName=
         )
         
         
-        fig.colorbar(
+        cbar = fig.colorbar(
             ScalarMappable(norm=quadcontourset.norm, cmap=quadcontourset.cmap),
-            ticks=range(vmin, vmax+5, 5),
+            ticks=range(vmin, vmax+5, 10),
             boundaries=level_boundaries,
             values=(level_boundaries[:-1] + level_boundaries[1:]) / 2,
             extend='max',
         )
+        
+        cbar.ax.tick_params(labelsize=12)
         
         
     else:
@@ -284,10 +289,10 @@ def PlotStabilityRescaled(data=np.zeros((2,2)), params=[], index=None, fileName=
         plt.contourf(X, Y, data)
         
         
-    plt.xticks(fontsize=11)    
-    plt.yticks(fontsize=11)    
-    plt.xlabel('$q_{2} \ [10^{-1}]$', fontsize=14)
-    plt.ylabel('$q_{1} \ [10^{-2}]$', fontsize=14)
+    plt.xticks(fontsize=12)    
+    plt.yticks(fontsize=12)    
+    plt.xlabel('$q_{2} \ [10^{-1}]$', fontsize=15)
+    plt.ylabel('$q_{1} \ [10^{-2}]$', fontsize=15)
     plt.tight_layout()
     
     extensions = ['eps', 'png']
@@ -296,7 +301,8 @@ def PlotStabilityRescaled(data=np.zeros((2,2)), params=[], index=None, fileName=
         plt.savefig(path + 'rescaled/' + fileName + '.' + extension, format=extension)
     
     plt.show()
-    
+
+"""    
 def PlotStabilityVelocity(data=np.zeros((2,2)), params=np.zeros(10), index=None, fileName=None):
     
     if fileName is None:
@@ -335,8 +341,8 @@ def PlotStabilityVelocity(data=np.zeros((2,2)), params=np.zeros(10), index=None,
     plt.xlabel('$q_{2}$')
     plt.ylabel('$q_{1}$')
     
-    
-    """
+"""
+"""
     fileName = MakeFileName(params)
     
     if index != None:
@@ -346,10 +352,10 @@ def PlotStabilityVelocity(data=np.zeros((2,2)), params=np.zeros(10), index=None,
     
     for extension in extensions: #saving pictures 
         plt.savefig('pics/stability_diagrams/' + fileName + '.' + extension, format=extension)
-    """
     
-    plt.show()
-    
+    plt.show()    
+"""
+
 def PlotCrystalTest(nCrystal='20'):
     s = LoadParticleSystem('coulomb_crystals/crystal-evolution_' + nCrystal) 
     sol = ODEint(s, np.array([0,0,0]), 1e-10, 1e-10, ODESystem=ODESystemExact,  Step=StepEulerAdvanced, freezeIons=True)

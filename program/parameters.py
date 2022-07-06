@@ -30,8 +30,8 @@ f2 = 2.5e9 * 2 * np.pi
 #f1 = f2 / 170#test trajectory
 #f1 = f2 / 3#test stability diagram
 
-f1 = f2 // 833
-f2 = f1 * 833
+f1 = f2 // 31
+f2 = f1 * 31
 
 const = 1e-3 #constant for harmonic potential
-beta = 4e-2 #constant for damping force
+beta = 1e-5 #constant for damping force
