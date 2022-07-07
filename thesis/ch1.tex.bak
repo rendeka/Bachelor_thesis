@@ -1,5 +1,5 @@
 \chapter{Theoretical introduction}
-\label{chap:refs}
+\label{chap:intro}
 
 In this chapter, we introduce concepts essential for understanding this thesis's concerns. This chapter is divided into several subsections. \footnote{\xxx{In the first subsection, we are going to discuss the basic principles of plasma physics. In the following subsection, we will talk about the motion of a charged particle inside the Paul trap. Next, we will introduce the idea of laser cooling. And finally, in the last subsection, we will present our approach to simulating such a system, entering this thesis's practical component.}} \todo{the sections in the first two chapters will probably be rearranged}
 
@@ -9,31 +9,31 @@ In this chapter, we introduce concepts essential for understanding this thesis's
 \section{Ion trapping}
 Here we introduce the concept of trapping a single ion by a quickly oscillating field. We will tightly follow a classic textbook \cite{gerlich1992inhomogeneous} in the whole section, starting by writing the equation of motion.
 \subsection{Equation of motion}
-Let us consider a particle with mass $m$, charge $q$ with it's position denoted by vector $\vb{r}$. We insert such a particle into the external time-dependent electromagnetic field described by $\vb{E}(t,\vb{r})$ and $\vb{B}(t,\vb{r})$. The Lorentz force gives the equation of motion:
+Let us consider a particle with mass $m$, charge $Q$ with it's position denoted by vector $\vb{r}$. We insert such a particle into the external time-dependent electromagnetic field described by $\vb{E}(t,\vb{r})$ and $\vb{B}(t,\vb{r})$. The Lorentz force gives the equation of motion:
 \begin{equation}
-	m \vb{\ddot{r}} = q \left(\vb{E}(t,\vb{r}) + \vb{\dot{r}} \times \vb{B}(t,\vb{r})\right).
+	m \vb{\ddot{r}} = Q \left(\vb{E}(t,\vb{r}) + \vb{\dot{r}} \times \vb{B}(t,\vb{r})\right).
 \end{equation}
 Since we are not using any external magnetic field, and while trapping a particle in a compact space, we usually deal with small velocities. Therefore we can neglect the effect of the term $\vb{\dot{r}} \times \vb{B}$, which means that the equation of motion simplifies to:
 
 \begin{equation}
 	\label{equation of motion}
-	m \vb{\ddot{r}} = q \vb{E}(t,\vb{r}).
+	m \vb{\ddot{r}} = Q \vb{E}(t,\vb{r}).
 \end{equation}
-We further assume that the electric field is composed of static and time-dependent parts. We are looking for a simple periodic time-dependency. A typical way to model such behavior would be $\vb{E}(t) \sim \cos(\Omega t)$, giving us:
+We further assume that the electric field is composed of static and time-dependent parts. We are looking for a simple periodic time-dependency. A typical way to model such behavior would be $\vb{E}(t) \sim \cos(\Omega_1 t)$, giving us:
 \begin{equation}
-	\vb{E}(t,\vb{r}) = \vb{E_s}(\vb{r}) + \vb{E_0}(\vb{r}) \cos(\Omega t).
+	\vb{E}(t,\vb{r}) = \vb{E_s}(\vb{r}) + \vb{E_0}(\vb{r}) \cos(\Omega_1 t).
 \end{equation}
 	\subsection{Effective potential}
 Solving such a differential equation with a rapidly changing right-hand side can be troublesome, albeit not impossible. It will be examined in the section \ref{sec:floquet}. When trapping ions, we are not always interested in exact trajectories. The relevance often lies in the time-averaged effect of a swiftly changing field. With that in mind, we will now try to derive \emph{effective potential} fulfilling precisely this role.
 Let's consider initial conditions: $\vb{r}(0) = \vb{r_0}$ and $\vb{\dot{r}}(0) = 0$. For the simplest case of homogeneous electric field $\vb{E_0}(\vb{r}) = const$, we obtain a trivial solution:
 \begin{equation}
 	\label{solution for homogenious field}
-	\vb{r}(t) = \vb{r_0} - \vb{A} \cos(\Omega t),
+	\vb{r}(t) = \vb{r_0} - \vb{A} \cos(\Omega_1 t),
 \end{equation}
 where the vector: 
 \begin{equation}
 	\label{oscillation amplitude}
-	\vb{A} \equiv \vb{A}(\vb{r}) = \frac{q \vb{E_0}(\vb{r})}{m \Omega^2},
+	\vb{A} \equiv \vb{A}(\vb{r}) = \frac{Q \vb{E_0}(\vb{r})}{m \Omega_1^2},
 \end{equation}
 is an amplitude of oscillation around the initial position of the particle. The crucial consequence of this result is that we can further restrict the motion of a particle by increasing the frequency of field oscillation \footnote{Frequencies used for trapping ions (or even electrons) are in the range of radio frequencies (RF). Therefore, we can treat the electric field in the quasistatic approximation.}. Of course, the situation changes when we bring a small inhomogeneity into the field. Here comes our first leap of fate by assuming that the amplitude of oscillation $\vb{A}$ won't be affected by this inhomogeneity. Instead, the particle will drift slowly towards the weaker field region. Motivated by this observation, we can try to find a solution to the equation of motion in the form:
 \begin{equation}
@@ -43,117 +43,193 @@ is an amplitude of oscillation around the initial position of the particle. The 
 where $\vb{R_0}(t)$ represents consequence of smooth drift and $\vb{R_1}(t)$ stands for rapid oscillation, expressed as:
 \begin{equation}
 	\label{oscillation motion}
-	\vb{R_1}(t) = - \vb{A} \cos(\Omega t).
+	\vb{R_1}(t) = - \vb{A} \cos(\Omega_1 t).
 \end{equation}
 If the field amplitude $\vb{E_0}(\vb{r})$
- varies smoothly with regards to the space dimension, we can get by just with its first-order Taylor expansion:
+ varies smoothly with regards to the space dimension, we can get by just with its first-order Taylor expansion around $\vb{R_0}$:
 \begin{equation}
 	\label{field expansion}
-	\vb{E_0}(\vb{R_0}(t) - \vb{A} \cos(\Omega t)) \approx \vb{E_0}(\vb{R_0}(t)) -(\vb{A} \cdot \nabla) \vb{E_0}(\vb{R_0}) \cos(\Omega t) + \dots.
+	\vb{E_0}(\vb{R_0}(t) - \vb{A} \cos(\Omega_1 t)) \approx \vb{E_0}(\vb{R_0}(t)) -(\vb{A} \cdot \nabla) \vb{E_0}(\vb{R_0}(t)) \cos(\Omega_1 t) + \dots.
 \end{equation}
 Substituting \eqref{motion separation} and \eqref{field expansion} into equation of motion \eqref{equation of motion} \textit{(omitting currently uninteresting static term $\vb{E_s}$)}, we get:
 \begin{equation}
-	m \big( \vb{\ddot{R}_0(t)} + \vb{\ddot{R}_1(t)} \big) = q \ \cos(\Omega t) \big[ \vb{E_0(\vb{R_0}(t))} - (\vb{A} \cdot \nabla) \vb{E_0(\vb{R_0}(t))} \cos(\Omega t)  \big].
+	m \big( \vb{\ddot{R}_0(t)} + \vb{\ddot{R}_1(t)} \big) = Q \cos(\Omega_1 t) \big[ \vb{E_0(\vb{R_0}(t))} - (\vb{A} \cdot \nabla) \vb{E_0(\vb{R_0}(t))} \cos(\Omega_1 t)  \big].
 \end{equation}
 
-Presuming slow spacial variation of vectorfield $\vb{E_0}(\vb{r})$ implies: \\ $|\vb{\ddot{A}}| \ll |\vb{\dot{A}}| \Omega \ll |\vb{A}| \Omega^2$, which we can exploit in time derivative of quickly oscillating term $\vb{R_1}(t)$ \eqref{oscillation motion}, giving us:
+Presuming slow spacial variation of vectorfield $\vb{E_0}(\vb{r})$ implies: \\ $|\vb{\ddot{A}}| \ll |\vb{\dot{A}}| \Omega_1 \ll |\vb{A}| \Omega_1^2$, which we can exploit in time derivative of quickly oscillating term $\vb{R_1}(t)$ \eqref{oscillation motion}, giving us:
 \begin{equation}
-	\vb{\ddot{R}_1} = - \vb{\ddot{A}} \cos(\Omega t) + 2 \Omega \vb{\dot{A}} \sin(\Omega t) + \vb{A} \Omega^2 \cos(\Omega t) \approx \vb{A} \Omega^2 \cos(\Omega t)
+	\vb{\ddot{R}_1} = - \vb{\ddot{A}} \cos(\Omega_1 t) + 2 \Omega_1 \vb{\dot{A}} \sin(\Omega_1 t) + \vb{A} \Omega_1^2 \cos(\Omega_1 t) \approx \vb{A} \Omega_1^2 \cos(\Omega_1 t)
 \end{equation}
 
 Further substituting for amplitude of oscillation $\vb{A}$ from \eqref{oscillation amplitude} continuing in the spirit of time-averaging:
 \begin{equation}
-	\vb{A} = \frac{q \vb{E_0}(\vb{r})}{m \Omega^2} \approx \frac{q \vb{E_0}(\vb{R_0}(t))}{m \Omega^2},
+	\vb{A} = \frac{q \vb{E_0}(\vb{r})}{m \Omega_1^2} \approx \frac{q \vb{E_0}(\vb{R_0}(t))}{m \Omega_1^2},
 \end{equation}
 which transfers into $\vb{R_1}$ as:
 \begin{equation}
 	\label{oscillation motion approx}
-	\vb{R_1}(t) = - \frac{q \vb{E_0}(\vb{R_0}(t))}{m \Omega^2} \cos(\Omega t). 
+	\vb{R_1}(t) = - \frac{Q \vb{E_0}(\vb{R_0}(t))}{m \Omega_1^2} \cos(\Omega_1 t). 
 \end{equation}
-Terms in the equation of motion with dependence on $cos(\Omega t)$ cancel each other out and by using a vector identity:
+Terms in the equation of motion with dependence on $cos(\Omega_1 t)$ cancel each other out and by using a vector identity:
 \begin{equation}
 	(\vb{E_0} \cdot \nabla) \vb{E_0} = \frac{1}{2} \nabla E_0^2 - \vb{E_0} \times (\nabla \times \vb{E_0}) = \frac{1}{2} \nabla E_0^2,
 \end{equation}
-where the second equality follows from Maxwell equation for quasistatic field: \\ $\nabla \times \vb{E_0} = 0$. By replacing term $\cos^2(\Omega t)$ with its mean value $\overline{\cos^2(\Omega t)} = \nicefrac{1}{2}$ we finally obtain:
+where the second equality follows from Maxwell equation for quasistatic field: \\ $\nabla \times \vb{E_0} = 0$. By replacing term $\cos^2(\Omega_1 t)$ with its mean value $\overline{\cos^2(\Omega_1 t)} = \nicefrac{1}{2}$ we finally obtain:
 \begin{equation}
-	m \vb{\ddot{R}_0} = \frac{q^2}{4 m \Omega^2} \nabla E_0^2.
+	m \vb{\ddot{R}_0} = \frac{Q^2}{4 m \Omega_1^2} \nabla E_0^2.
 \end{equation}
 Now by resurrecting the static field term as $\vb{E_s} = - \nabla \Phi_s$, we can define the effective potential:
 \begin{equation}
 	\label{effective potential}
-	V^*(\vb{R_0}) = \frac{q^2 E_0^2(\vb{R_0})}{4 m \Omega^2} + q \Phi_s, 
+	V^*(\vb{R_0}) = \frac{Q^2 E_0^2(\vb{R_0})}{4 m \Omega_1^2} + q \Phi_s, 
 \end{equation}
 describing the time-averaged force on a charged particle:
 \begin{equation}
 	\label{effective equation of motion}
 	m \vb{\ddot{R}_0} = - \nabla V^*(\vb{R_0}). 
 \end{equation}
-This equation is much easier to solve and study than the original equation of motion \eqref{equation of motion} as it does not involve any explicit time-dependency. After solving it, we can quickly obtain the term $\vb{R_1}(t)$ from \eqref{oscillation motion approx} and get an approximative solution to the original equation of motion. From the Fourier analyses of numerically exact solutions \cite{gerlich1992inhomogeneous} we know about the presence of higher-order terms: $$\vb{r}(t) = \vb{R_0}(t) + \vb{R_1}(t) + \vb{R_2}(t) + \dots,$$ where $\vb{R_2}(t) + \dots$ are referred to as micro oscillations. We must be careful about keeping the space variation of $\vb{E_0}(\vb{r})$ sufficiently small. Otherwise, these micro oscillations can become large enough to disturb the trajectory of a particle significantly.
+This equation is much easier to solve and discuss than the original equation of motion \eqref{equation of motion} as it does not involve any explicit time-dependency. After solving it, we can quickly obtain the term $\vb{R_1}(t)$ from \eqref{oscillation motion approx} and get an approximative solution to the original equation of motion. From the Fourier analyses of numerically exact solutions \cite{gerlich1992inhomogeneous} we know about the presence of higher-order terms: $$\vb{r}(t) = \vb{R_0}(t) + \vb{R_1}(t) + \vb{R_2}(t) + \dots,$$ where $\vb{R_2}(t) + \dots$ are referred to as micro oscillations. We must be careful about keeping the space variation of $\vb{E_0}(\vb{r})$ sufficiently small. Otherwise, these micro oscillations can become large enough to disturb the trajectory of a particle significantly.
 
-\subsection{Geometry of the trap}
+\subsection{Adiabacity}
 
-Previously derived equations indirectly feature the potential $\Phi = \Phi_{rf} + \Phi_s$ as the dynamic and static electric intensities are $\vb{E_0}\cos(\Omega t) = -\nabla \Phi_{rf}$ and $\vb{E_s} = -\nabla \Phi_s$. So to give these general equations some concrete shape, we need to find this potential. In our quasistationary treatment of the electric field, it means solving the Laplace equation for a given boundary condition. Writing a general solution to the Laplace equation is possible only for certain symmetries. One of them is cylindrical symmetry, for which we get a solution by a Fourier method of separation of variables in polar coordinates as:
+Let us examine the motion of a charged particle in derived effective potential. The first integral of the equation \eqref{effective equation of motion} is:
+
+\begin{equation}
+	\label{first integral of motion}
+	\dfrac{1}{2}m R_0^2 + \dfrac{Q^2 E_0^2}{4 m \Omega_1^2} + Q\Phi_s = E_m.
+\end{equation}
+Furthermore, if we consider the average kinetic energy of the rapidly oscillatory motion:
+\begin{equation}
+	\left\langle \dfrac{1}{2} m R_1^2 \right\rangle = \dfrac{Q^2 E_0^2}{4 m \Omega_1^2},
+\end{equation}
+we see that equation \eqref{first integral of motion} implies:
+\begin{equation}
+	\dfrac{1}{2}m R_0^2 + \left\langle \dfrac{1}{2} m R_1^2 \right\rangle + Q\Phi_s = E_m,
+\end{equation}
+which means that if the necessary assumptions in the derivation of the effective potential are met, then the total time-averaged energy of the system is an adiabatic constant.
+\subsection{Trap geometry}
+
+Previously derived equations indirectly feature the potential $\Phi = \Phi_{rf} + \Phi_s$ as the dynamic and static electric intensities are $\vb{E_0}\cos(\Omega_1 t) = -\nabla \Phi_{rf}$ and $\vb{E_s} = -\nabla \Phi_s$. So to give these general equations some concrete shape, we need to find this potential. In our quasistationary treatment of the electric field, it means solving the Laplace equation for a given boundary condition. Writing a general solution to the Laplace equation is possible only for certain symmetries. One of them is cylindrical symmetry, for which we get a solution by a Fourier method of separation of variables in polar coordinates as:
 \begin{multline}
 	\label{cylindrical symmetry potential}
-	\Phi(r, \varphi) = C_0 + D_0 \ln(r) + \sum_{n \in \N} \left(\left[A_n r^{n} + B_n r^{-n}\right] \\ \left[C_n \sin(n\varphi) + D_n \cos(n\varphi)\right]\right),
+	\Phi(r, \varphi) = C_0 + D_0 \ln(r) + \sum_{n \in \N} \big( \left[A_n r^{n} + B_n r^{-n} \right] \\ 
+	\left[ C_n \sin(n\varphi) + D_n \cos(n\varphi) \right] \big),
 \end{multline}
-where $C_0$, $D_0$, $A_n$, $B_n$, $C_n$ and $D_n$ are constant coefficients, which need to be determined from boundary condition. 
+where $C_0$, $D_0$, $A_n$, $B_n$, $C_n$ and $D_n$ are coefficients that need to be determined from boundary conditions. 
 
 \subsubsection{Multipole trap}
 
-A multipole is one of an RF trap's classical, well-studied geometries used mainly for two-dimensional confinement. N-th order multipole consists of 2n linear electrodes arranged in a discretely symmetrical manner. We can obtain a potential of an ideal multipole with infinitely long electrodes by substituting a boundary conditions \eqref{boundary condition n-pole} into a solution of Laplace equation with cylindrical symmetry \eqref{cylindrical symmetry potential}.
+A multipole is one of an RF trap's classical, well-studied geometries used mainly for two-dimensional confinement. N-th order multipole consists of 2n linear electrodes arranged in a discretely symmetrical manner. We can obtain a potential of an ideal multipole with infinitely long electrodes by applying boundary conditions \eqref{boundary condition n-pole} to a solution of Laplace equation with cylindrical symmetry \eqref{cylindrical symmetry potential}.
 \begin{subequations}
 \label{boundary condition n-pole}
 \begin{align}
-	&\Phi(r,\varphi)\vert_{r=0}=0, \\
-	&\Phi(r,\varphi)\vert_{r=l_0}=\Phi_0 \cos(n\varphi),
+	\Phi(r,\varphi)\vert_{r=0}&=0, \\
+	\Phi(r,\varphi)\vert_{r=\ell_0}&=\Phi_0 \cos(n\varphi),
 \end{align}
 \end{subequations}
-where $\Phi_0 = const$. Most of the coefficients in \eqref{cylindrical symmetry potential} get wiped out, and we end up with the potential of n-th order multipole, for $n > 0$:
+where $\Phi_0 = V_0 + V_1 \cos(\Omega_1 t)$ is a potential applied on electrodes. Most of the coefficients in \eqref{cylindrical symmetry potential} get wiped out, and we end up with the potential of n-th order multipole $(n > 0)$ as:
 \begin{equation}
 	\label{potential n-pole}
 	\Phi(r,\varphi) = \Phi_0 \hat{r}^n \cos(n\varphi),	
 \end{equation}
-where $\hat{r} = \nicefrac{r}{l_0}$.
+where $\hat{r} = \nicefrac{r}{\ell_0}$. We get an electric intensity in polar coordinates as: 
+\begin{equation}
+	\vb{E}(r,\varphi) = -\nabla_{r\varphi} \Phi(r,\varphi),
+\end{equation}
+where $\nabla_{r\varphi} = \left[\dfrac{\partial}{\partial r}, \dfrac{1}{r} \dfrac{\partial}{\partial \varphi}\right]^\top$. We get:
+\begin{equation}
+\label{need this for norm(E_0)}
+\vb{E}(r,\varphi) = \dfrac{\Phi_0}{\ell_0} n \hat{r}^{n-1} 
+\begin{bmatrix}
+	-\cos(n\varphi) \\
+	\sin(n\varphi)
+\end{bmatrix},
+\end{equation}
+which in the Cartesian representation takes the form \cite{gerlich1992inhomogeneous}:
+\begin{equation}
+\begin{bmatrix}
+	E_x \\
+	E_y
+\end{bmatrix}
+ = \dfrac{\Phi_0}{\ell_0} n \hat{r}^{n-1} 
+\begin{bmatrix}
+	-\cos\big((n-1)\varphi\big) \\
+	\sin\big((n-1)\varphi\big)
+\end{bmatrix}.
+\end{equation}
+After substituting for $\Phi_0$ we get equation of motion in variable $\vb{\hat{r}} = [\nicefrac{x}{\ell_0},\nicefrac{y}{\ell_0}]^\top$:
+\begin{equation}
+	\label{eq of motion multipole}
+	\dfrac{d^2\vb{\hat{r}}}{dt^2} + F(t) \hat{r}^{n-1}
+	\begin{bmatrix}
+		-\cos\big((n-1)\varphi\big) \\
+		\sin\big((n-1)\varphi\big)
+	\end{bmatrix} = \vb{0},
+\end{equation}
+where we introduce the function:
+\begin{equation}
+	F(t) = n\dfrac{Q V_0}{m \ell_0^2} + n\dfrac{Q V_1}{m \ell_0^2} \cos(\Omega_1 t).
+\end{equation}
+We see that for $n = 2$ the equation of motion \eqref{eq of motion multipole} is linear, and motion in the x and y directions stays decoupled. The same is clearly not true for the case of $n > 2$. That is why the motion in a quadrupole trap is easiest to describe, and we chose this geometry to study simultaneous electron-ion trapping in this thesis.
+
 \subsubsubsection{Quadrupole trap}
 \label{sec:quadrupole trap}
-\xxx{continue with \cite{gerlich1992inhomogeneous}}
+
+We have already derived a equation of motion for single charged particle in a quadrupole trap $\rightarrow$ substitute $n = 2$ in \eqref{eq of motion multipole}. This equation can be simplified further by replacing linear electrodes with perfect hyperbolical ones. With this change, the potential loses the spatial dependence on the angle, and we obtain an equation of motion in the x-y direction for an idealized quadrupole trap:
+\begin{equation}
+	\label{eq of motion hyperbolic electrodes}
+	\vb{\ddot{r}} = -\dfrac{2Q}{m \ell_0^2} \big[V_0 + V_1 \cos(\Omega_1 t)\big] \vb{r}.
+\end{equation}
+The same equation describes motion in the z-direction with rescaled right-hand side by a factor of $-2$. We will take a closer look at this equation in the section \ref{sec:mathieu equation}. Another essential subject we in is an effective potential for this geometry. For that, we need to substitute for something in the equation. Another essential subject is the effective potential for this geometry. For that, we need to substitute for $E_0$ in the equation \eqref{effective potential}. Where we can get the norm of $\vb{E_0}$ for example from \eqref{need this for norm(E_0)} as:
+\begin{equation}
+	\label{norm(E_0)}
+	E_0 = 2 \dfrac{V_1}{\ell_0}\hat{r},
+\end{equation}
+which means that the effective potential is:
+
+\begin{equation}
+	\label{effective potential hyperbolic}
+	V^*(\vb{r}) = \dfrac{Q^2 V_1^2}{\ell_0^4 m \Omega_1^2} r^2 + q\Phi_s.
+\end{equation}
 
 \subsubsection{Real geometry of our trap}
 \todo{need to add pictures throughout the whole thesis}
-Since we want to implement laser cooling in our experiment, the linear Paul trap is not a viable option, as its apparatus would stand in the way of laser beams. For this reason, we will use surface electrodes where the particles levitate above the trap so that the ions will be accessible to us. Nevertheless, we will start our research by examining the situation with the geometry of the ideal quadrupole trap \ref{sec:quadrupole trap}.
+Since we want to implement laser cooling in our experiment, the linear Paul trap is not a viable option, as its apparatus would stand in the way of laser beams. For this reason, we will use surface electrodes where the particles levitate above the trap so that the ions will be accessible to us. Nevertheless, we will conduct our research in this thesis by examining the situation with the geometry of the ideal quadrupole trap with hyperbolic electrodes.
 
 \subsection{Spring constant}
 
-If we omit the static component again, then \eqref{effective potential} is a potential of a harmonic oscillator\footnote{Meaning a potential in the form: $V(\xi) = \dfrac{\kappa}{2} \xi^2$} in a variable $\vb{E_0}$. This encourages us to define a spring constant $\kappa \sim \nicefrac{q^2}{(2 m \Omega^2)}$, characterizing the strength of trapping potential. The good news is that the spring constant does not depend on the charge sign, making it possible to trap electrons as well as ions. The bad news is that the spring constant depends on the charge-to-mass ratio, making it practically difficult to trap electrons and ions simultaneously. For our case of trapping Ca+ ions together with electrons, we get $\nicefrac{\kappa_{electron}}{\kappa_{ion}} \approx 73000$ while we would like to achieve $\nicefrac{\kappa_{electron}}{\kappa_{ion}} \approx 1$. It seems that we have hit a huge snag with our approach. Fortunately this does not mean we have to abandon the idea of RF trapping itself. Instead, we can improve on it by adding a second frequency giving us the freedom to look at the stability of both species individually. Making it possible to manage $\nicefrac{\kappa_{electron}(\Omega_2)}{\kappa_{ion}(\Omega_1)} \approx 1$. Two frequency Paul trap will be further discussed in section \ref{sec:two frequency trap}
-\subsection{Adiabacity}
-
-\xxx{\dots}
+If we focus on the dynamic component of an effective potential\eqref{effective potential hyperbolic}, we can see that it is formally equivalent a potential of a harmonic oscillator\footnote{Meaning a potential in the form: $V(\xi) = \dfrac{\kappa}{2} \xi^2$}. This encourages us to define a spring constant $\kappa \equiv \nicefrac{2 Q^2 V_1^2}{(\ell_0^4 m \Omega_1^2)}$, characterizing the strength of trapping potential. The good news is that the spring constant does not depend on the charge sign, making it possible to trap electrons as well as ions. The bad news is that the spring constant depends on the charge-to-mass ratio $\nicefrac{Q}{m} \equiv Q_m$, making it practically very difficult to trap electrons and ions simultaneously. For our case of trapping Ca+ ions together with electrons, we get $\nicefrac{\kappa_{electron}}{\kappa_{ion}} = \nicefrac{m_ion}{m_electron} \approx 73000$ while we would like to achieve $\nicefrac{\kappa_{electron}}{\kappa_{ion}} \approx 1$ so that trapped electrons occupy on average a similar region as ions. It seems that we have hit upon a huge snag with our approach. Fortunately this does not mean we have to abandon the idea of RF trapping itself. Instead, we can improve on it by adding a second frequency giving us the freedom to look at the stability of both species individually. Making it possible to manage the desired ratio of spring constants. Two frequency Paul trap will be further discussed in section \ref{sec:two frequency trap}. The spring constant is closely related to a frequency of oscillation in a harmonic potential. Such frequency is called secular, denoted $\omega \approx \sqrt{\nicefrac{\kappa}{m}} = \sqrt{2} \nicefrac{Q V_1}{\ell_0^2 m \Omega_1}$.
 
 \subsection{Mathieu equation}
+\label{sec:mathieu equation}
 \xxx{should cite \cite{trypogeorgos2016cotrapping} as well}
-Let us reexamine our original equation of motion \eqref{equation of motion} for the case of a quadrupole trap with ideal hyperbolical electrodes:
-\begin{equation}
-	\ddot{r}(t) = \dfrac{q}{m} \left( E_s(r) + E_0(r) cos(\Omega t) \right).
-\end{equation}
-After time transformation $\tau = \nicefrac{\Omega t}{2}$, this equation molds into:
+Let us reexamine our original equation of motion \eqref{equation of motion} for the case of a quadrupole trap with ideal hyperbolical electrodes. After time transformation $\tau = \nicefrac{\Omega_1 t}{2}$, the equation \eqref{eq of motion hyperbolic electrodes} molds into:
 
 \begin{equation}
-	\label{eq:mathieu equation}
-	\ddot{r}(\tau) = a - 2 q_1 \cos(2 \tau),
+	\label{mathieu equation}
+	\ddot{\vb{r}}(\tau) = \left[a - 2 q_1 \cos(2 \tau)\right] \vb{r},
 \end{equation}
-where $a = \nicefrac{4 q E_s}{m \Omega^2}$ and $q_1 = -\nicefrac{2 q E_s}{m \Omega^2}$
-\begin{
-
- \eqref{equation of motion} was first excessively studied by Mathieu in 1868. The secular frequency is proportional to the driving frequency as:
+where:
+\begin{subequations}
+\begin{align}
+	a &= \dfrac{8 Q V_0}{m \ell_0^2 \Omega_1^2}, \\
+	q_1 &= -\dfrac{4 Q V_1}{m \ell_0^2 \Omega_1^2}.
+\end{align}
+\end{subequations}
+The equation \eqref{mathieu equation} bears a name after E.L. Mathieu, who was the first to extensively study it in the context of vibrating membranes. It has an analytical solution \cite{5416839} in terms of special functions called Mathieu functions, denoted $ce_n$ and $se_n$, sometimes referred to as cosine-elliptic and sine-elliptic. The secular is given by the Dehmelt approximation:
 \begin{equation}
-	\omega \approx \frac{\Omega}{2} \sqrt{a + \frac{q_1^2}{2}}
+	\omega \approx \frac{\Omega_1}{2} \sqrt{a + \frac{q_1^2}{2}}.
 \end{equation}
+When $a \approx 0$ the secular frequency is:
+\begin{equation}
+	\omega \approx \frac{\Omega_1}{2} \sqrt{\dfrac{q_1^2}{2}} = \dfrac{\sqrt{2} Q V_1}{\ell_0^2 m \Omega_1},
+\end{equation}
+which is in accordance with the result we attained by the spring constant of the harmonic pseudopotential.
 
 \subsection{Stability}
 \xxx{The concept of stability is not straightforward to define for our system. We have Lagrange stability, Liapunov stability\dots First, we want to be working within the condition for adiabaticity so that the dynamic field will not augment the particle's energy. Inside this restriction, we will further search for characterization of stability.}
 
-The linear Paul trap has its characteristic length $l_0$ defined by the distance from the middle of the trap to the electrode. We will use a criterion of stability established in \cite{gerlich1992inhomogeneous} declaring a solution stable if it satisfies the condition: \\ $\max\limits_{x \in \mathcal{L}}(r) \leq 0.8 \ l_0$, where $\mathcal{L}$ is the whole trajectory of a particle, is declared stable. The drawback of this definition is that we must keep the simulation going long enough to account for the slowly diverging particles.
+The linear Paul trap has its characteristic length $\ell_0$ defined by the distance from the middle of the trap to the electrode. We will use a criterion of stability established in \cite{gerlich1992inhomogeneous} declaring a solution stable if it satisfies the condition: \\ $\max\limits_{x \in \mathcal{L}}(r) \leq 0.8 \ \ell_0$, where $\mathcal{L}$ is the whole trajectory of a particle, is declared stable. The drawback of this definition is that we must keep the simulation going long enough to account for the slowly diverging particles.
 
 \section{Laser cooling} 
 

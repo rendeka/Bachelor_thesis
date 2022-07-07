@@ -30,7 +30,7 @@
 % Optionally choose a custom sans-serif fonts (e.g. for figures and tables).
 % Default sans-serif font is usually Latin Modern Sans. Some font packages
 % (e.g. libertinus) replace that with a better matching sans-serif font.
-%\usepackage{tgheros} % recommended and very readable (Helvetica-like)
+\usepackage{tgheros} % recommended and very readable (Helvetica-like)
 %\usepackage{FiraSans} % looks great
 % DO NOT typeset the main text in sans-serif font!
 % The serifs make the text easily readable on the paper.

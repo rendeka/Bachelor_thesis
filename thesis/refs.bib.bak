@@ -118,6 +118,6 @@ abstract = {We describe the operation of an electrodynamic ion trap in which the
   year={2016},
   publisher={APS}
 }
-
+@INPROCEEDINGS{5416839,  author={Coïsson, Roberto and Vernizzi, Graziano and Yang, Xiaoke},  booktitle={2009 IEEE International Workshop on Open-source Software for Scientific Computation (OSSC)},   title={Mathieu functions and numerical solutions of the Mathieu equation},   year={2009},  volume={},  number={},  pages={3-10},  doi={10.1109/OSSC.2009.5416839}}
 
 

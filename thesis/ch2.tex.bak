@@ -3,31 +3,31 @@
 
 \xxx{In this chapter we will build on theory from the first chapter and introduce some new theory as well}
 
-\section{Two frequency linear Paul trap}
+\section{Two frequency quadrupole Paul trap}
 \label{sec:two frequency trap}
 \xxx{\dots build a little bridge from the section explaining a single frequency trap. We need two frequencies for particles with widely different charge to mass ratios: $Q_m \equiv \nicefrac{Q}{m}$ \cite{FOOT2018117}.}
 In the case of a linear quadrupole with perfectly hyperbolical electrodes with cylindrical symmetry we have a electric potential in the form \cite{leefer2017investigation}
 :
 
 \begin{equation}
-	V(t, \vb{r}) = \bigg[ V_0 + V_1 cos(\Omega_1 t) + V_2 \cos(\Omega_2 t) \bigg] \frac{x^2 + y^2 - 2 z^2 }{2 l_0^2},
+	V(t, \vb{r}) = \bigg[ V_0 + V_1 cos(\Omega_1 t) + V_2 \cos(\Omega_2 t) \bigg] \frac{x^2 + y^2 - 2 z^2 }{2 \ell_0^2},
 \end{equation}
 where $V_0$ is an amplitude of static potential, $V_1$ of slower potential and $V_2$ is an amplitude of rapidly oscillating potential on the electrode. The equations of motion for a particle in such potential, after change of variable: $\tau = \nicefrac{t}{(2 \Omega_1)}$ are:
 
 \begin{subequations}
 \begin{align}
-	& \ddot{x}(\tau) = x(\tau) \bigg[ a - 2 q_1 \cos\left(2\frac{\Omega_1}{\Omega_2} \tau \right) - 2 q_2 \cos(2\tau) \bigg], \\
-	& \ddot{y}(\tau) = y(\tau) \bigg[ a - 2 q_1 \cos\left(2\frac{\Omega_1}{\Omega_2} \tau \right) - 2 q_2 \cos(2\tau) \bigg], \\
+	\ddot{x}(\tau) & = x(\tau) \bigg[ a - 2 q_1 \cos\left(2\frac{\Omega_1}{\Omega_2} \tau \right) - 2 q_2 \cos(2\tau) \bigg], \\
+	\ddot{y}(\tau) & = y(\tau) \bigg[ a - 2 q_1 \cos\left(2\frac{\Omega_1}{\Omega_2} \tau \right) - 2 q_2 \cos(2\tau) \bigg], \\
 	\label{studied eq of motion}
-	& \ddot{z}(\tau) = -2z(\tau) \bigg[ a - 2 q_1 \cos\left(2\frac{\Omega_1}{\Omega_2} \tau \right) - 2 q_2 \cos(2\tau) \bigg],
+	\ddot{z}(\tau) & = -2z(\tau) \bigg[ a - 2 q_1 \cos\left(2\frac{\Omega_1}{\Omega_2} \tau \right) - 2 q_2 \cos(2\tau) \bigg],
 \end{align}
 \end{subequations}
 where $a$, $q_1$ and $q_2$ are dimensionless parameters:
 \begin{subequations}
 \begin{align}
-	& a = 4 Q_m \dfrac{V_0}{\Omega_2^2 l_0^2}, \\
-	& q_1 = -2 Q_m \dfrac{V_1}{\Omega_2^2 l_0^2}, \\
-	& q_2 = -2 Q_m \dfrac{V_2}{\Omega_2^2 l_0^2}.
+	a & = 4 Q_m \dfrac{V_0}{\Omega_2^2 \ell_0^2}, \\
+	q_1 & = -2 Q_m \dfrac{V_1}{\Omega_2^2 \ell_0^2}, \\
+	q_2 & = -2 Q_m \dfrac{V_2}{\Omega_2^2 \ell_0^2}.
 \end{align}
 \end{subequations}
 
@@ -57,7 +57,7 @@ where $\tensorq{F}$ is a matrix valued function with minimal period $T$. Let's i
 		\dot{z}(\tau)
 	\end{bmatrix},
 \end{align}
-which already has a structure of \eqref{Floquet structure}. Without the necessity of finding a solution to this system, we can acquire knowledge about its stability. The information we are interested in is whether a solution is bounded for a given set of parameters or not. At least while working with the computer, because of finite precision of floating-point, we can always denote $\nicefrac{\Omega_2}{\Omega_1} \equiv \nicefrac{m}{n}$, where $m$ and $n$ are integers and $\nicefrac{m}{n}$ is an irreducible fraction. Then the matrix in equation \eqref{matrix mathieu} is $T = m \pi$ periodic. As in \cite{leefer2017investigation}, we identify the edge of stability regions with the $2T$ periodic solutions\footnote{Note that such stability condition differs from the one we demand while numerically simulating the motion of a particle. The periodic solution of equation of motion implies boundedness, but the value of this boundary might lie outside the physical dimensions of the trap. That is why we ought not to be surprised when we find some differences in stability diagrams, even for the simplest case of a single particle in the trap. \label{foot: different stability condition}} to our problem \eqref{matrix mathieu}. This allows us to seek a solution to our problem in the form:
+which already has a structure of \eqref{Floquet structure}. Without the necessity of finding a solution to this system, we can acquire knowledge about its stability. The information we are interested in is whether a solution is bounded for a given set of parameters or not. In this section, we will limit ourselves to the driving frequencies, which can be represented as: $\nicefrac{\Omega_2}{\Omega_1} \equiv \nicefrac{m}{n}$, where $m$ and $n$ are integers and $\nicefrac{m}{n}$ is an irreducible fraction. Then the matrix in equation \eqref{matrix mathieu} is $T = m \pi$ periodic. As in \cite{leefer2017investigation}, we identify the edge of stability regions as a set of parameters for which a solution of \eqref{studied eq of motion} is a $2T$ periodic function\footnote{Note that such stability condition differs from the one we demand while simulating the motion of a particle. The periodic solution of equation of motion implies boundedness, but the value of this boundary might lie outside the physical dimensions of the trap. That is why we ought not to be surprised when we find some differences in stability diagrams, even for the simplest case of a single particle in the trap. \label{foot: different stability condition}} to our problem \eqref{matrix mathieu}. This allows us to seek a solution to our problem in the form:
 \begin{equation}
 	\label{Floquet ansatz}
 	z(\tau) = \sum_{k=-\infty}^{\infty} c_k \exp(i\frac{k}{m}\tau),
