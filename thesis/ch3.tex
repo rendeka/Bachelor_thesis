@@ -51,7 +51,7 @@ There emerges one stable triangle with many tongues of instability. With an incr
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\linewidth]{img/0_ions_1_electrons_q1_0.0-0.04_q2_0.0-0.5_897x897_833.eps}
-	\caption{Stability diagrams for $\nicefrac{\Omega_2}{\Omega_1} = 833$}
+	\caption{Simulated stability diagram for $\nicefrac{\Omega_2}{\Omega_1} = 833$}
 	\label{fig:stabil-eta=833}
 \end{figure}
 
@@ -60,19 +60,19 @@ There emerges one stable triangle with many tongues of instability. With an incr
 \begin{figure}[H]
 \begin{subfigure}{.3\textwidth}
   \centering
-  \includegraphics[width=\linewidth]{img/0_ions_1_electrons_q1_0.0-0.1_q2_0.0-0.5_1280x1280_3.eps}
+  \includegraphics[width=\linewidth]{img/0_ions_1_electrons_q1_0.0-0.1_q2_0.0-0.5_960x960_3.eps}
   \caption{Normal initial conditions}
   \label{fig:normal_conds-3}
 \end{subfigure}%
 \begin{subfigure}{.3\textwidth}
   \centering
-  \includegraphics[width=\linewidth]{img/high_velocity_3.eps}
+  \includegraphics[width=\linewidth]{img/0_ions_1_electrons_q1_0.0-0.1_q2_0.0-0.5_960x960_3.eps}
   \caption{High velocity}
   \label{fig:high_velocity-3}
 \end{subfigure}%
 \begin{subfigure}{.3\textwidth}
   \centering
-  \includegraphics[width=\linewidth]{img/large_radius.eps}  
+  \includegraphics[width=\linewidth]{img/0_ions_1_electrons_q1_0.0-0.1_q2_0.0-0.5_960x960_3.eps}  
   \caption{Further away from center}
   \label{fig:large_radius-3}
 \end{subfigure}
@@ -80,7 +80,9 @@ There emerges one stable triangle with many tongues of instability. With an incr
 \label{fig:init-conds-eta=3}
 \end{figure}
 
-High initial velocity \ref{fig:high_velocity-3} makes the region with the weakest field (around $q_1 \approx q_2 \approx 0$) unstable, which is understandable since the stability condition \xxx{reference} is not satisfied. A wider distance from the trap's center combined with the initial velocity pointing away from the trap \ref{fig:large_radius-3} distorts the stability diagram's shape significantly.  
+High initial velocity \ref{fig:high_velocity-3} makes the region with the weakest field (around $q_1 \approx q_2 \approx 0$) unstable, which is understandable since the stability condition \xxx{reference} is not satisfied. A wider distance from the trap's center combined with the initial velocity pointing away from the trap \ref{fig:large_radius-3} distorts the stability diagram's shape significantly. 
+
+\xxx{as a sanity check we try to reproduce a result from \cite{leefer2017investigation}.} 
 
 \section{Creating a Coulomb crystal}
 \xxx{currently making some useable pictures}
@@ -91,3 +93,8 @@ High initial velocity \ref{fig:high_velocity-3} makes the region with the weakes
 \subsection{One electron - a hundred ions}
 
 \section{Design of the experiment}
+
+\section{Future}
+\label{chap:future}
+
+Our concerns in the future will be reproducing results of this thesis for the real planar geometry of the trap used in our experiment. The potential of such a trap can be formulated in integral form utilizing Bessel functions, which will make our simulations much more computationally expensive. We need to derive equation of motion and identify parameters analogous to $a$, $q_1$ and $q_2$ which we had for ideal quadrupole trap. After that we can use our exiting program to study stability of particles in dependence on such parameters exactly as we did in this thesis. 

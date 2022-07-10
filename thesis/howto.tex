@@ -33,3 +33,43 @@ if __name__ == '__main__':
 \caption{Main program.}
 \label{lst:main}
 \end{listing}
+
+
+\begin{listing}[H]
+\begin{lstlisting}
+	def ODESystemEffectiveDamping(rv, aCoulomb, mass, charge, trapParams):
+
+    if (mass == electronMass):        
+        a, q1, q2 = trapParams
+        q1 = 0
+    else:
+        a, q1, q2 = trapParams * (electronMass / mass)
+    
+	    
+    # unpacking position and velocity components
+    r, v = rv
+    x,y,z = r
+    vx,vy,vz = v
+    
+    # defining the system of first order ODEs
+    x1 = vx
+    vx1 = aCoulomb[0] - x / 4 * (a + 2 * q1**2 / 2 * (f2 / f1)**2 
+    	+ q2**2 / 2) - 2 * beta * vx
+    
+    y1 = vy
+    vy1 = aCoulomb[1] - y / 4 * (a + 2 * q1**2 / 2 * (f2 / f1)**2 
+    	+ q2**2 / 2) - 2 * beta * vy
+    
+    z1 = vz
+    vz1 = aCoulomb[2] - z / 2 * (a + 2 * q1**2 / 2 * (f2 / f1)**2 
+    	+ q2**2 / 2) - 2 * beta * vz
+    
+	# defining derivatives of position and velocity 
+    r1 = np.array([x1, y1, z1])
+    v1 = np.array([vx1, vy1, vz1])
+
+    return np.array([r1, v1])	    
+\end{lstlisting}
+\caption{The system of ODEs used for simulating Coulomb crystal.}
+\label{lst:crystal}
+\end{listing} 

@@ -84,12 +84,11 @@ def Recombine(system, i, o):
     """marking recombined particles by setting their charge to zero. Later these particles will be removed from the system"""
     system[(i,o),3] = 0   
 
-def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,  Step=StepEulerAdvanced, freezeIons=False, velocityDiagram=False):
+def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,
+           Step=StepEulerAdvanced, freezeIons=False, velocityDiagram=False, kSecular=20):
     """
     integrating equations of motion
     """
-    
-    #dt = GetDt(ODESystem)#get dt depending on system of ODEs you want to solve
     
     particles = copy(system)#don't want to modify initial system
     particles, n, nElectrons, nIons = RearrangeSystem(particles)
@@ -97,12 +96,26 @@ def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,  
     if freezeIons: #with freezed ions we will loop only through electrons
         n = nElectrons
         
-    start = timer()#to track real time of the computation
+    a, q1, q2 = trapParams
+    #dt = GetDt(ODESystem)#get dt depending on system of ODEs you want to solve
     
+    if nIons == 0:
+        if q2 > 0:
+            if IsExact(ODESystem):    
+                tmax = kSecular * np.sqrt(2) / q2
+            else:
+                tmax = kSecular * np.sqrt(8) / (f2 * q2)
+                
+    else:
+        if q1 > 0:
+            if IsExact(ODESystem):    
+                tmax = kSecular * np.sqrt(2) * f2 / (f1 * q1)
+            else:
+                tmax = kSecular * np.sqrt(8) / (f1 * q1)
+                
+                
     t = np.zeros(n)
     iterations = int(tmax / dt) + 1 #this is number of steps that will by saved in an array
-    #iterations = iterations // 10
-    #iterations = iterations * 10
     
     
     rs = np.zeros((n,iterations,3)) #array of positions in time for all particles
@@ -121,6 +134,8 @@ def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,  
     velInit = TotVel(particles, nElectrons)
     velFinal = 0
     
+    start = timer()#to track real time of the computation
+
     for k in range(iterations - 1): #loop in time
         
         mass = particles[:,2]
@@ -182,7 +197,10 @@ def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,  
             r, v = rv
             
             if np.isposinf(np.dot(r,r)) or np.isposinf(np.dot(v,v)): #if position or velocity is too large we stop integrating
-                stability = nElectrons
+                if velocityDiagram:
+                    stability = velocityChop
+                else:
+                    stability = nElectrons
                 end = timer()#to track real time of the computation
                 exeTime = round((end - start), 2)
                 energy = kineticEnergy + potentialEnergy
@@ -218,11 +236,13 @@ def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,  
     
     if velocityDiagram:
         stability = round((velFinal / velInit), 5)
+        if stability > velocityChop-100:
+            stability = velocityChop
     else:
         stability = 0
         
         for i in range(n):
-            if(rMax[i] > 5*0.8 * r0) and (charge[i] < 0): # condition (charge[i] < 0) is here for the case of freezed ions
+            if(rMax[i] > 0.8 * r0) and (charge[i] < 0): # condition (charge[i] < 0) is here for the case of freezed ions
                 stability = stability + 1
         
         

@@ -45,9 +45,9 @@ def PlotODESolution(ODESolution):
     ax.set_ylabel('y[mm]')
     ax.set_zlabel('z[mm]')
     
-    ax.xaxis.set_tick_params(labelsize=10)
-    ax.yaxis.set_tick_params(labelsize=10)
-    ax.zaxis.set_tick_params(labelsize=10)
+    ax.xaxis.set_tick_params(labelsize=sizeTick)
+    ax.yaxis.set_tick_params(labelsize=sizeTick)
+    ax.zaxis.set_tick_params(labelsize=sizeTick)
     
     framesize = 0.3
     
@@ -95,8 +95,8 @@ def PlotODESolution2D(ODESolution):
     ax.set_xlabel('x[mm]')
     ax.set_ylabel('y[mm]')
     
-    ax.xaxis.set_tick_params(labelsize=10)
-    ax.yaxis.set_tick_params(labelsize=10)
+    ax.xaxis.set_tick_params(labelsize=sizeTick)
+    ax.yaxis.set_tick_params(labelsize=sizeTick)
     
     #plt.gca().set_aspect('equal') #setting aspect ration to 1
 
@@ -162,9 +162,9 @@ def PlotFinalPositions(ODESolution):
     ax.set_ylabel('y[mm]')
     ax.set_zlabel('z[mm]')
     
-    ax.xaxis.set_tick_params(labelsize=10)
-    ax.yaxis.set_tick_params(labelsize=10)
-    ax.zaxis.set_tick_params(labelsize=10)
+    ax.xaxis.set_tick_params(labelsize=sizeTick)
+    ax.yaxis.set_tick_params(labelsize=sizeTick)
+    ax.zaxis.set_tick_params(labelsize=sizeTick)
     
     ax.auto_scale_xyz([-0.06, 0.06], [-0.06, 0.06], [-0.06, 0.06])
     
@@ -201,8 +201,8 @@ def PlotStability(data=np.zeros((2,2)), params=np.zeros(10), index=None, fileNam
         path = path + 'velocity/'
         fig, ax = plt.subplots()
         
-        vmin, vmax = 0, 120
-        levels = 80 
+        vmin, vmax = 0, 50
+        levels = 400 
         level_boundaries = np.linspace(vmin, vmax, levels + 1)
         
         quadcontourset = ax.contourf(
@@ -212,13 +212,16 @@ def PlotStability(data=np.zeros((2,2)), params=np.zeros(10), index=None, fileNam
         )
         
         
-        fig.colorbar(
+        cbar = fig.colorbar(
             ScalarMappable(norm=quadcontourset.norm, cmap=quadcontourset.cmap),
-            ticks=range(vmin, vmax+5, 5),
+            ticks=range(vmin, vmax+5, 15),
             boundaries=level_boundaries,
             values=(level_boundaries[:-1] + level_boundaries[1:]) / 2,
             extend='max',
         )
+        
+        cbar.ax.tick_params(labelsize=sizeTick)
+        cbar.set_label(r'$\dfrac{\bar{\mathcal{v}}}{\mathcal{v}_0}$', fontsize=sizeLabel, rotation=0)
         
         
     else:
@@ -244,7 +247,7 @@ def PlotStabilityRescaled(data=np.zeros((2,2)), params=[], index=None, fileName=
 
     else:
         data, params = LoadStabilityDiagram(fileName, velocityDiagram=velocityDiagram)
-        data = data / 1
+        #data = RepairData(data)
         if fileName[0] == 'd':            
             q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, eta, f1, f2 = params
         else:
@@ -262,8 +265,8 @@ def PlotStabilityRescaled(data=np.zeros((2,2)), params=[], index=None, fileName=
         #path = path + 'velocity/'
         fig, ax = plt.subplots()
         
-        vmin, vmax = 0, 100
-        levels = 1000
+        vmin, vmax = 0, 22
+        levels = 1000    
         level_boundaries = np.linspace(vmin, vmax, levels + 1)
         
         quadcontourset = ax.contourf(
@@ -275,13 +278,15 @@ def PlotStabilityRescaled(data=np.zeros((2,2)), params=[], index=None, fileName=
         
         cbar = fig.colorbar(
             ScalarMappable(norm=quadcontourset.norm, cmap=quadcontourset.cmap),
-            ticks=range(vmin, vmax+5, 10),
+            ticks=range(vmin-5, vmax+5, 10),
             boundaries=level_boundaries,
             values=(level_boundaries[:-1] + level_boundaries[1:]) / 2,
             extend='max',
         )
         
-        cbar.ax.tick_params(labelsize=12)
+        cbar.ax.tick_params(labelsize=sizeTick)
+        cbar.set_label(r'$\dfrac{\bar{\mathcal{v}}}{\mathcal{v}_0}$', fontsize=sizeLabel, rotation=0)
+
         
         
     else:
@@ -289,10 +294,10 @@ def PlotStabilityRescaled(data=np.zeros((2,2)), params=[], index=None, fileName=
         plt.contourf(X, Y, data)
         
         
-    plt.xticks(fontsize=12)    
-    plt.yticks(fontsize=12)    
-    plt.xlabel('$q_{2} \ [10^{-1}]$', fontsize=15)
-    plt.ylabel('$q_{1} \ [10^{-2}]$', fontsize=15)
+    plt.xticks(fontsize=sizeTick)    
+    plt.yticks(fontsize=sizeTick)    
+    plt.xlabel('$q_{2} \ [10^{-1}]$', fontsize=sizeLabel)
+    plt.ylabel('$q_{1} \ [10^{-2}]$', fontsize=sizeLabel)
     plt.tight_layout()
     
     extensions = ['eps', 'png']
@@ -377,7 +382,6 @@ def PlotStabilityDet(data, params):
         
     fileName = 'q1_' + str(q1Start) + '-' + str(q1Stop) + '_q2_' + str(q2Start) + '-' + str(q2Stop) + '_' + str(int(q2Resol)) + 'x' + str(int(q1Resol)) + '_' + str(eta)
  
-            
     path = 'pics/stability_diagrams/determinant/'
     
     fig = plt.figure()        
@@ -392,3 +396,11 @@ def PlotStabilityDet(data, params):
         plt.savefig(path + fileName + '.' + extension, format=extension)
     
     plt.show()
+    
+def RepairData(data, defect=1.0, fix=velocityChop):
+    for i, row in enumerate(data):
+        for j, element in enumerate(row):
+            #if (i != 0)or(j != 0):
+            if element == defect:
+                data[i,j] = fix
+    return data

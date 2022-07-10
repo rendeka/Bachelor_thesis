@@ -58,6 +58,7 @@
 \usepackage{titlesec}
 \usepackage{footmisc}
 
+
 % load bibliography tools
 \usepackage[backend=bibtex,natbib,style=numeric,sorting=none]{biblatex}
 % alternative with alphanumeric citations (more informative than numbers):
@@ -117,7 +118,6 @@
 \input{todos} % remove this before compiling the final version
 
 \input{macros} % use this file for various custom definitions
-
 
 \begin{document}
 

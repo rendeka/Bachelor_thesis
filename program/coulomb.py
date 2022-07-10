@@ -80,9 +80,13 @@ def NeedFinerTimeStep(r, v, dt):
 def CoulombForce(r, charges, timeTransformation=True):
     
     """returns Coulomb force and potential energy caused by Coulomb interaction between single pair of particles"""     
+    
+    if timeTransformation:    
+        c = 1 /(4 * np.pi * 8.854e-12) * (2/f2)**2 #term (2/f2)**2 is due to time scaling 
+    else:
+        c = 1 /(4 * np.pi * 8.854e-12)  
         
-    c = 1 /(4 * np.pi * 8.854e-12) * (2/f2)**2 #term (2/f2)**2 is due to time scaling 
-
+    
     force = c * charges * Norm(r)**(-3) * r
     potential = np.dot(force,r)#this is potential energy
     
