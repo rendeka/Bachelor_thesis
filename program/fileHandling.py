@@ -168,7 +168,8 @@ def LoadStabilityDiagram(fileName, velocityDiagram=False):
     else:
         q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nIons, nElectrons, eta = ParseFileName(fileName)
         path = 'stability_diagrams/'
-        params = np.array([q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, np.array([nIons, nElectrons]), eta, f1, f2], dtype=object)
+        params = np.array([q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, 
+                           np.array([nIons, nElectrons]), eta, f1, f2], dtype=object)
 
 
     

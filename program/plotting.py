@@ -265,7 +265,7 @@ def PlotStabilityRescaled(data=np.zeros((2,2)), params=[], index=None, fileName=
         #path = path + 'velocity/'
         fig, ax = plt.subplots()
         
-        vmin, vmax = 0, 22
+        vmin, vmax = 0, 23
         levels = 1000    
         level_boundaries = np.linspace(vmin, vmax, levels + 1)
         
@@ -278,14 +278,14 @@ def PlotStabilityRescaled(data=np.zeros((2,2)), params=[], index=None, fileName=
         
         cbar = fig.colorbar(
             ScalarMappable(norm=quadcontourset.norm, cmap=quadcontourset.cmap),
-            ticks=range(vmin-5, vmax+5, 10),
+            ticks=range(vmin, vmax+5, 5),
             boundaries=level_boundaries,
             values=(level_boundaries[:-1] + level_boundaries[1:]) / 2,
             extend='max',
         )
         
         cbar.ax.tick_params(labelsize=sizeTick)
-        cbar.set_label(r'$\dfrac{\bar{\mathcal{v}}}{\mathcal{v}_0}$', fontsize=sizeLabel, rotation=0)
+        cbar.set_label(r'$\dfrac{\bar{\mathcal{v}}}{\mathcal{v}_0}$', fontsize=sizeLabel, rotation=0, labelpad=15)
 
         
         
@@ -300,7 +300,7 @@ def PlotStabilityRescaled(data=np.zeros((2,2)), params=[], index=None, fileName=
     plt.ylabel('$q_{1} \ [10^{-2}]$', fontsize=sizeLabel)
     plt.tight_layout()
     
-    extensions = ['eps', 'png']
+    extensions = ['eps', 'png', 'pdf']
     
     for extension in extensions: #saving pictures 
         plt.savefig(path + 'rescaled/' + fileName + '.' + extension, format=extension)
@@ -390,7 +390,7 @@ def PlotStabilityDet(data, params):
     plt.xlabel('$q_{2}$')
     plt.ylabel('$q_{1}$')
     
-    extensions = ['eps', 'png']
+    extensions = ['eps', 'png', 'pdf']
     
     for extension in extensions: #saving pictures 
         plt.savefig(path + fileName + '.' + extension, format=extension)

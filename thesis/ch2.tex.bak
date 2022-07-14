@@ -1,47 +1,49 @@
-\chapter{Confinement of two species with radically different charge to mass ratio}
-\label{chap:math}
-
-\xxx{In this chapter we will build on theory from the first chapter and introduce some new theory as well}
+\chapter{Co-trapping of two different species}
+\label{chap:co-trapping}
 
 \section{Two frequency quadrupole Paul trap}
 \label{sec:two frequency trap}
-
 As was mentioned in the section \ref{sec:spring constant},
-we can use two frequencies, each targeting to optimize the trapping of one species. Higher frequency $\Omega_2$
- for trapping electrons, with the potential $V_2$
- applied to the electrode. A lower frequency $\Omega_1$
- with potential $V_1$
- for trapping ions. We proceed in setting up a two-frequency trap as described in \cite{FOOT2018117, trypogeorgos2016cotrapping}. First, we must acknowledge that while higher frequency will have no significant impact on heavier ions, a light electron will experience the slower field to the full extent. Therefore we have to ensure that the trapping of electrons due to the higher frequency field is strong enough to withstand misguiding by the field with a lower frequency. This potential instability is referred to as \emph{parametric excitation}. We can secure that to some extent by feeding potentials on electrodes in such a way that $V_1 \ll V_2$. We can provide potentials up to $V_2 \sim \SI{100}{\volt}$, and $V_1 \sim \SI{5}{\volt}$, in the conditions of our experiment. Assuming that this allows us to look at each frequency setup independently, using \eqref{spring constant}, we get a ratio of spring constants:
+we can use two frequencies, each targeting to optimize the trapping of one species. Higher frequency $\Omega_2$ for trapping electrons, with the potential $V_2$ applied to the electrode. A lower frequency $\Omega_1$ with potential $V_1$ for trapping ions. We have already derived the ideal quadrupole potential for a single frequency case. Repeating the same process with the exception of using applied potential on the electrodes in the form $\Phi_0 = V_0 + V_1 \cos(\Omega_1 t) + V_2 \cos(\Omega_2 t)$, would yield two-frequency potential for an ideal quadrupole:
+\begin{equation}
+	\label{ideal quadrupole potential two frequency}
+	V(t,\vb{r}) = \left[V_0 + V_1 \cos(\Omega_1 t) + V_2 \cos(\Omega_2 t)\right] \dfrac{x^2+y^2 \minus 2z^2}{2\ell_0^2}.
+\end{equation}
+We proceed in setting up a two-frequency trap as described in \cite{FOOT2018117, trypogeorgos2016cotrapping}. First, we must acknowledge that while higher frequency will have no significant impact on heavier ions, a light electron will experience the slower field to the full extent. Therefore we have to ensure that the trapping of electrons due to the higher frequency field is strong enough to withstand misguiding by the field with a lower frequency. This potential instability is referred to as \emph{parametric excitation}. We can secure that to some extent by feeding potentials on electrodes in such a way that $V_1 \ll V_2$. We can provide potentials up to $V_2 \sim \SI{100}{\volt}$, and $V_1 \sim \SI{5}{\volt}$, in the conditions of our experiment. Assuming that this allows us to look at each frequency setup independently, using \eqref{spring constant}, we get a ratio of spring constants:
 \begin{equation}
 	\label{two frequency ratio}
 	\Kappa = \dfrac{\kappa_{electron}(\Omega_2)}{\kappa_{ion}(\Omega_1)} \approx \dfrac{M_{ion}}{M_{electron}} \left(\dfrac{V_2}{V_1}\dfrac{\Omega_1}{\Omega_2}\right)^2.
 \end{equation}
 The correct way to create a stable configuration of a two-frequency trap is to begin by finding the optimal parameters for the confinement of lighter species. Optimal trapping in a single frequency trap corresponds to \cite{gerlich1992inhomogeneous} $q_2 \approx 0.4$. Using \eqref{q_2}, with the choice of $V_2 = \SI{100}{\volt}$, we obtain optimal frequency for electron trapping as $\Omega_2 = \SI{1.88e10}{rad.s^{-1}}$. Now, we must choose the $\Omega_1$ and $V_1$ for ion trapping in a way that suppresses parametric heating of electrons. It is crucial to keep the electron's secular frequency higher than the driving frequency for ion confinement. Otherwise, the $\Omega_2$ frequency field would be too slow to save an electron from parametric excitation. So another condition that must be satisfied in two frequency trapping is:
 \begin{equation}
-	\Omega_1 \ll \omega_2 = \dfrac{\sqrt{2} Q V_2}{M_{electron} \ell_0^2 \Omega_2},
+	\Omega_1 \ll \omega_2 = \dfrac{Q V_2}{\sqrt{2} M_{electron} \ell_0^2 \Omega_2},
 \end{equation}
-where the second equality follows from \eqref{secular frequency}. 
- 
+where the second equality follows from \eqref{secular frequency}. Unfortunately \cite{FOOT2018117}, we will not be able to forestall parametric heating all the time. In the case of $$\mu \Omega_1 = 2 \omega_2,$$
+where $\mu \in \N$, occurs resonance of driving $\Omega_1$ and secular $\omega_2$ frequency, resulting in heating of lighter species. If substitute for $\omega_2$ from \eqref{secular frequency}, we get a set of unstable parameters $q_2$ characterized by the equation:
+\begin{equation}
+	\label{unstable q_2}
+	q_2 = \sqrt{2}\mu\nicefrac{\Omega_1}{\Omega_2},
+\end{equation}
+which explains the origin of unstable tongues in stability diagrams; see \ref{chap:results} the last chapter.
 
 \xxx{Same criterion for optimal trapping $q_1 \approx 0.4$ gives us frequency $\Omega_1 = \SI{1.55e7}{rad.s^{-1}}$. For such setting we obtain the ratio of spring constants for both species $\Kappa = 20$, which is already a great improvement compared to a single frequency trap.}
 
-
+\begin{comment}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \xxx{\dots build a little bridge from the section explaining a single frequency trap. We need two frequencies for particles with widely different charge to mass ratios: $Q_m \equiv \nicefrac{Q}{m}$ \cite{FOOT2018117}.}
-In the case of a linear quadrupole with perfectly hyperbolical electrodes with cylindrical symmetry we have a electric potential in the form \cite{leefer2017investigation}
-:
-
+In the case of a linear quadrupole with perfectly hyperbolical electrodes with cylindrical symmetry we have a electric potential in the form:\todo{this should be the right potential}
 \begin{equation}
-	V(t, \vb{r}) = \bigg[ V_0 + V_1 cos(\Omega_1 t) + V_2 \cos(\Omega_2 t) \bigg] \frac{x^2 + y^2 - 2 z^2 }{2 \ell_0^2},
+	V(t, \vb{r}) = \bigg[ V_0 + V_1 cos(\Omega_1 t) + V_2 \cos(\Omega_2 t) \bigg] \frac{x^2 + y^2 \minus 2 z^2 }{2 \ell_0^2},
 \end{equation}
 where $V_0$ is an amplitude of static potential, $V_1$ of slower potential and $V_2$ is an amplitude of rapidly oscillating potential on the electrode. The equations of motion for a particle in such potential, after change of variable: $\tau = \nicefrac{t\Omega_2}{2}$ are:
+\end{comment}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{subequations}
 \label{eq of motion for simulation}
 \begin{align}
-	\ddot{x}(\tau) & = x(\tau) \bigg[ a - 2 q_1 \cos\left(2 \tau \nicefrac{\Omega_1}{\Omega_2} \right) - 2 q_2 \cos(2\tau) \bigg], \\
-	\ddot{y}(\tau) & = y(\tau) \bigg[ a - 2 q_1 \cos\left(2 \tau \nicefrac{\Omega_1}{\Omega_2} \right) - 2 q_2 \cos(2\tau) \bigg], \\
+	\ddot{x}(\tau) & = x(\tau) \bigg[ a \minus 2 q_1 \cos\left(2 \tau \nicefrac{\Omega_1}{\Omega_2} \right) \minus 2 q_2 \cos(2\tau) \bigg], \\
+	\ddot{y}(\tau) & = y(\tau) \bigg[ a \minus 2 q_1 \cos\left(2 \tau \nicefrac{\Omega_1}{\Omega_2} \right) \minus 2 q_2 \cos(2\tau) \bigg], \\
 	\label{studied eq of motion}
-	\ddot{z}(\tau) & = -2z(\tau) \bigg[ a - 2 q_1 \cos\left(2 \tau \nicefrac{\Omega_1}{\Omega_2} \right) - 2 q_2 \cos(2\tau) \bigg],
+	\ddot{z}(\tau) & = \minus 2z(\tau) \bigg[ a \minus 2 q_1 \cos\left(2 \tau \nicefrac{\Omega_1}{\Omega_2} \right) \minus 2 q_2 \cos(2\tau) \bigg],
 \end{align}
 \end{subequations}
 where $a$, $q_1$ and $q_2$ are dimensionless parameters:
@@ -50,16 +52,14 @@ where $a$, $q_1$ and $q_2$ are dimensionless parameters:
 	\label{a}
 	a & = 4 \dfrac{Q V_0}{M\Omega_2^2 \ell_0^2}, \\
 	\label{q_1}
-	q_1 & = -2 \dfrac{Q V_1}{M\Omega_2^2 \ell_0^2}, \\
+	q_1 & = \minus 2 \dfrac{Q V_1}{M\Omega_2^2 \ell_0^2}, \\
 	\label{q_2}
-	q_2 & = -2 \dfrac{Q V_2}{M\Omega_2^2 \ell_0^2}.
+	q_2 & = \minus 2 \dfrac{Q V_2}{M\Omega_2^2 \ell_0^2}.
 \end{align}
 \end{subequations}
 
 \section{Floquet theory}
-\label{sec:floquet}
-
-
+\label{sec:floquet theory}
 Since the particle experiences the weakest confinement in the z-direction, we will examine this equation's properties. Floquet theory is a theory covering linear first-order ODEs with periodic coefficients. These are equations of the form:
 \begin{equation}
 	\label{Floquet structure}
@@ -76,7 +76,7 @@ where $\tensorq{F}$ is a matrix valued function with minimal period $T$. Let's i
 	&=
 	\begin{bmatrix}
 		0 & 1 \\
-		-2\bigg( a - 2 q_1 \cos\left(2 \tau \nicefrac{\Omega_1}{\Omega_2} \right) - 2 q_2 \cos(2\tau) \bigg) & 0	
+		\minus 2\bigg( a \minus 2 q_1 \cos\left(2 \tau \nicefrac{\Omega_1}{\Omega_2} \right) \minus 2 q_2 \cos(2\tau) \bigg) & 0	
 	\end{bmatrix}
 	\begin{bmatrix}
 		z(\tau) \\
@@ -91,7 +91,7 @@ which already has a structure of \eqref{Floquet structure}. Without the necessit
 where $c_k$ are constant coefficients. Substituting this into equation \eqref{matrix mathieu} yields an identity:
 
 \begin{multline}
-	\sum_{k=-\infty}^{\infty}\left[ \left(a - \dfrac{k^2}{m^2} \right)c_k - q_1 \left(c_{k-2n} + c_{k+2n} \right) - q_2 \left(c_{k-2m} + c_{k+2m} \right)  \right] \\ \exp(i\frac{k}{m}\tau) = 0,
+	\sum_{k=\minus\infty}^{\infty}\left[ \left(a \minus \dfrac{k^2}{m^2} \right)c_k \minus q_1 \left(c_{k-2n} + c_{k+2n} \right) \minus q_2 \left(c_{k-2m} + c_{k+2m} \right)  \right] \\ \exp(i\frac{k}{m}\tau) = 0,
 \end{multline}
 which holds for every $\tau$ only if each element of the sum is equal to zero. This relation can be written as:
 
@@ -108,7 +108,7 @@ which holds for every $\tau$ only if each element of the sum is equal to zero. T
 where $\tensorq{F}$ is an infinite matrix with elements:
 
 \begin{equation}
-	\tensorq{F}_{i j} = \left[ \left(a - \dfrac{k^2}{m^2} \right)\delta_{i j} - q_1 \left(\delta_{i j-2n} + \delta_{i j+2n} \right) - q_2 \left(\delta_{i j-2m} + \delta_{i j+2m} \right)  \right],
+	\tensorq{F}_{i j} = \left[ \left(a \minus \dfrac{k^2}{m^2} \right)\delta_{i j} \minus q_1 \left(\delta_{i j-2n} + \delta_{i j+2n} \right) \minus q_2 \left(\delta_{i j-2m} + \delta_{i j+2m} \right)  \right],
 \end{equation} 
 where:
 \begin{equation}
@@ -123,68 +123,74 @@ The equation \eqref{Floquet edge eq} is equivalent to:
 	\label{Floquet determinant}
 	det(\tensorq{F}) = 0.
 \end{equation}
-So the determination of stability boils down to computing a determinant of a matrix $\tensorq{F}$. We approximate $\tensorq{F}$ by sufficiently large $\rightarrow (10m+1) \times (10m+1)$ finite matrix. For the index $k$ in previous equations it means: $$k \in \{ -5m, \ -5m+1, \  \cdots, \ 5m-1, \ 5m \} \subset \Z,$$ neglecting solutions with smaller periods. Parameters for which $det(\tensorq{F}) > 0$ were identified as stable and for $det(\tensorq{F}) < 0$ as unstable.
+So the determination of stability boils down to computing a determinant of a matrix $\tensorq{F}$. We approximate $\tensorq{F}$ by sufficiently large $\rightarrow (10m+1) \times (10m+1)$ finite matrix. For the index $k$ in previous equations it means: $$k \in \{ \minus 5m, \ \minus 5m+1, \  \cdots, \ 5m \minus 1, \ 5m \} \subset \Z,$$ neglecting solutions with smaller periods. Parameters for which $det(\tensorq{F}) > 0$ were identified as stable and for $det(\tensorq{F}) < 0$ as unstable.
  	
 \section{Simulation}
 \label{sec:simulation}
-
 Let us begin this section by summarizing our approximations, some of which we have already applied while deriving the equation of motion. We follow mainly the overview from \cite{Friedman_1982}. Starting with insignificant neglections and moving towards more problematic ones. 
 \begin{description}
 	\item[Gravitational interaction:] neglecting gravitational interaction goes without saying since, for Ca+ ions, it is weaker than electrostatic force by order of $\sim 10^{32}$.
 	\item[Relativistic effects:] we did not involve any relativistic corrections since we usually deal with small velocities while trapping particles. Ca+ ions are Doppler cooled down to energies of $\sim \SI{e-4}{\eV}$. The fastest simulated electrons had a kinetic energy of $\sim \SI{1}{\eV}$, for which the relativistic gamma factor is still $\gamma \approx  1$ up to the fifth decimal place.
-	\item[Ion radiation:] a well-known consequence of Maxwell equations is that accelerating charged particle emits electromagnetic radiation. We did not account for this energetic loss due to the relatively small force applied to particles in a trap. The power $[P] = [Watt]$ of such radiation can be for our non-relativistic case calculated using \cite{larmor1897lxiii} the Larmor formula: $$P = \dfrac{Q^2 a_c^2}{6 \pi \varepsilon_0 c^3},$$ where $c$ is a speed of light, $\vb{a_c}$ denotes the acceleration of a particle at the given time, and $\varepsilon_0$ is the vacuum permittivity. We can easily estimate the upper bound of acceleration by considering the maximal reasonable value of each term in the equation \eqref{eq of motion for simulation}\footnote{Note that for this set of parameters are all solutions already fully unstable}: $r = \ell_0$, $cos = 1$, $a = 0$, $q_1 = 0.1$ and $q_2 = 0.5$. We get:  $$a_c^{max} \approx \SI{1.8e-3}{m.s^{-2}},$$ which means that the maximal power of radiation was: $$P^{max} = \SI{2e-59}{\watt}.$$ Considering such a constant energy loss, it would take an electron $\sim\num{3e33}$ years to radiate the energy of $\SI{1}{\electronvolt}$.%$\varepsilon_0 = \SI{8.85e-12}{m^{-3}.kg^{-1}.s^{4}.A^{2}}$
-	\item[Magnetic field:] Let us begin by writing full form Maxwell's equations in the vacuum:
+	\item[Ion radiation:] a well-known consequence of Maxwell equations is that accelerating charged particle emits electromagnetic radiation. We did not account for this energetic loss due to the relatively small force applied to particles in a trap. The power $[P] = [Watt]$ of such radiation can be for our non-relativistic case calculated using \cite{larmor1897lxiii} the Larmor formula: $$P = \dfrac{Q^2 a_c^2}{6 \pi \varepsilon_0 c^3},$$ where $c$ is a speed of light, $\vb{a_c}$ denotes the acceleration of a particle at the given time, and $\varepsilon_0$ is the vacuum permittivity. We can estimate this radiation power for electron by taking an average value of it's acceleration during stable trajectories from our simulations: $\bar{a_c} \sim \SI{1e17}{m.s^{-2}}$. The resulting radiation power is then: $\bar{P} \approx \SI{5e-20}{\watt}$, which has, in the timescale of our simulations $\sim \SI{e-7}{s}$, negligible effect. Radiation power for ions would be even less significant.
+%$\varepsilon_0 = \SI{8.85e-12}{m^{-3}.kg^{-1}.s^{4}.A^{2}}$
+	\item[Electromagnetic field:] Let us begin by writing full form Maxwell's equations assuming we can provide sufficient vacuum to disregard material properties:
 \begin{subequations}
 \label{full maxwell}
 \begin{align}
 	\label{full gauss}
-	\nabla \cdot \vb{E} &= \dfrac{\rho}{\varepsilon_0}, \\
+	&\nabla \cdot \vb{E} = \dfrac{\rho}{\varepsilon_0}, \\
 	\label{full faraday}
-	\nabla \times \vb{E} &= -\dfrac{\partial\vb{B}}{\partial t}, \\
+	&\nabla \times \vb{E} = \minus\dfrac{\partial\vb{B}}{\partial t}, \\
 	\label{full magnet}
-	\nabla \cdot \vb{B} &= 0, \\
+	&\nabla \cdot \vb{B} = 0, \\
 	\label{full ampere}
-	\nabla \times \vb{B} &= \dfrac{1}{c^2}\dfrac{\partial\vb{E}}{\partial t}.
+	&\nabla \times \vb{B} = \dfrac{1}{c^2} \left( \dfrac{\vb{j}}{\varepsilon_0} +  \dfrac{\partial\vb{E}}{\partial t} \right),
 \end{align}
 \end{subequations}
-We are using quasistatical form instead:
+where $\rho$ is a charge density and $\vb{j}$ is current density. We are using quasistatic approximation instead:
 \begin{subequations}
 \label{static maxwell}
 \begin{align}
 	\label{static gauss}
-	\nabla \cdot \vb{E} &= 0, \\
+	&\nabla \cdot \vb{E} = 0, \\
 	\label{static faraday}
-	\nabla \times \vb{E} &= \vb{0}, \\
+	&\nabla \times \vb{E} = \vb{0}, \\
 	\label{static magnet}
-	\nabla \cdot \vb{B} &= 0, \\
+	&\nabla \cdot \vb{B} = 0, \\
 	\label{static ampere}
-	\nabla \times \vb{B} &= \vb{0}.
+	&\nabla \times \vb{B} = \vb{0}.
 \end{align}
 \end{subequations}
-\todo{finish this} 
+We are setting $\rho=0$ because we derive our equations in charge-free space. The Coulomb interaction is included in the simulation afterwards, exploiting the linearity of Maxwell's equations. The current density inside our trap caused by a moving electron with maximal speed throughout our simulations $v_{max} \sim \num{e+4}$, can be estimated as:
+\begin{equation}
+	j = \rho v \approx \nicefrac{Q v}{\ell_0^3} \sim \SI{e-4}{A.m^{-2}},
+\end{equation}
+which can be neglected. Overall, the amplitude of an oscillating magnetic field is much smaller than that of an electric \cite{Friedman_1982}: $\nicefrac{E_0}{B_0} = c$. This means that for a magnetic field to play any significant role in the equation of motion, the particle would have to have a speed comparable to the speed of light, which is not the case, as we have already mentioned. Even though we are not using any external magnetic field, the validity of equation \eqref{static faraday} requires one more condition \cite{Friedman_1982} for a wavelength of our changing electric field, and that is:
+\begin{equation}
+	\lambda \equiv \dfrac{2\pi c}{\Omega_2} \gg \ell_0,
+\end{equation}
+after substituting corresponding values we get: $\lambda = \SI{100}{\mm} \gg \SI{0.5}{\mm} = \ell_0$. If this condition was not met, there could be a possibility of forming standing waves that could change the trap's dynamics. 
   
-	\item[Induced charge on the electrodes:] charged particles induce surface charge density on the electrodes. This causes attraction of a particle toward the electrode, which can contribute to vacation of the particle from the trap. For reference we can look at simplified situation of a charged particle near an infinite conductive plane. An average acceleration of an electron throughout the stable simulated trajectory was in the order of $\bar{a}_c \sim 10^{17}$. For an infinite conductor to cause an acceleration $\sim \nicefrac{\bar{a}_c}{100}$, the electron would have to approach the electrode up to the distance of $\approx \SI{0.25}{\micro\meter}$, which would already be outside our definition of stable trajectory. Hence we can omit such an effect. 
-	\item[Creation of Rydberg atoms:] \xxx{An electron can get caught in some highly excited ion orbital creating a Rydberg atom. The electron can subsequently drop to a lower but still very unstable orbital and vacate from it, losing energy by the associated photon emission. It might be necessary to add such a process to our simulation in the future.}
+	\item[Induced charge on the electrodes:] charged particles induce surface charge density on the electrodes. This causes attraction of a particle toward the electrode, which can contribute to vacation of the particle from the trap. For reference we can look at simplified situation of a charged particle near an infinite conductive plane. An average acceleration of an electron throughout the stable simulated trajectory was in the order of $\bar{a}_c \sim 10^{17}$. For an infinite plane to cause an acceleration $\sim \nicefrac{\bar{a}_c}{100}$, the electron would have to approach the electrode up to the distance of $\approx \SI{0.25}{\micro\meter}$, which would already be outside our definition of stable trajectory. Hence we can omit such an effect. 
+	\item[Creation of Rydberg atoms:] \xxx{an electron can get caught in some highly excited ion orbital creating a Rydberg atom. The electron can subsequently drop to a lower but still volatile state and vacate from it under the influence of the trap, losing energy by the associated photon emission. An electron moving inside a Coulomb crystal can be within reach of multiple ions simultaneously. Hence it may greatly contribute to electron cooling. It might be necessary to add such a process to our simulation in the future.}
 	\item[Phase shift:] induced by the finite speed of electric signal delivered to the electrode. This could be problematic since the characteristic dimension of our trap is $\ell_0 = \SI{0.5}{\mm}$, and we are using frequencies up to the orders of $\Omega_2 \sim \SI{e10}{rad.s^{-1}}$. Suppose we optimistically assume that the signal travels through the electrode with the speed of light. In that case, the signal in one period $\nicefrac{1}{\Omega_2}$ spans over the distance of $\sim \SI{0.03}{\mm}$, which is getting close to our characteristic length. We tackle this problem by dividing our electrodes into eight sections, see \ref{fig:Real trap geometry 1}, each with its own feeding from the power source.
+	\item[Imperfection of electrodes:] \xxx{adding some perturbation to the electric potential caused by the imperfection of electrodes and study of its impact on stability will be one of the subjects for our future research.}	
 	\item[Collisions with neutrals:] \xxx{we will be able to make a vacuum with pressure of (no idea and not sure it it can produce significant problems)}
 \end{description}	
 
-
 \subsection{Choice of time-step}
-
-We have tried several integration methods when numerically solving our equations of motion, whether with exact or effective potential.
-Choice of time-step is always a delicate issue. For the case of solving the Mathieu-type equation, we followed the Nyquist criterion \xxx{\cite{1697831}}. Nyquist criterion is used mainly in signal processing for compact signals with convergent Fourier series. It states that for the signal with the highest frequency $f$, the largest possible sample size so that the discretization of the signal will carry equivalent information as the continuous one is $\nicefrac{1}{(2 \textit{f})}$. We started numerically solving the equation of motion with this time step, gradually increasing its size until the numerical solution with the denser sampling would give us the same result for the given tolerance. Repeating this process for several methods \footnote{All tried methods can be found in the file \textit{intMethods.py}} for numerical solving of ODEs \cite{teukolsky1992numerical}. For the case of a single electron in the trap with the expected initial conditions \textit{thisOne.dat} had the best performance a predictor-corrector method, which we have defined as \textit{StepEulerAdvanced}. The sufficient time-step for this method was $\Delta t = \nicefrac{1}{(5 \textit{f})}$. \todo{\textbackslash verb doesn't work for some reason that's why are names of the files are currently in italics}
+We have tried several integration methods when numerically solving our equations of motion, whether with exact or effective potential. We mostly use a total simulation length corresponding to twenty secular oscillations $(\nicefrac{20}{\omega})$ \eqref{secular frequency} for a given particle. However, when looking at the average velocity of an electron , see for example \ref{fig:stabil-eta=3}, it was sometimes necessary to extend this time up to two-hundred secular oscillations to harvest the practically relevant information.
+Choice of time-step is always a delicate issue. For solving the Hill-type differential equation, we used a constant time-step, following the Nyquist criterion \cite{1697831}. Nyquist criterion is used mainly in signal processing for compact signals with convergent Fourier series. It states that for the signal with the highest frequency $\textit{f} \equiv \nicefrac{\Omega}{2\pi}$, the largest possible sample size so that the discretization of the signal will carry equivalent information as the continuous one is $\nicefrac{1}{(2\textit{f})}$. We started numerically solving the equation of motion with this time step, gradually increasing its size until the numerical solution with the denser sampling would give us the same result for the given tolerance. Repeating this process for several methods \footnote{All tried methods can be found in the file \textit{intMethods.py}} for numerical solving of ODEs \cite{teukolsky1992numerical}. For the case of a single electron in the trap with the expected initial conditions \textit{thisOne.dat} had the best performance a predictor-corrector method, which we have defined as \textit{StepEulerAdvanced}. The sufficient time-step for this method was $\Delta t = \nicefrac{1}{(10 \Omega)}$. For simulations including multiple particles, it was necessary to use an adaptive time-step. \todo{maybe explain how that works... maybe in appendix}
 
 \subsection{Treatment of laser cooling}
-In our simulation, we treated the effect of laser cooling of ions by introducing a new frictional force, meaning it is proportional to $\propto - \vb{\dot{r}}$. The strength of this force is characterized by the parameter $\beta \in (0,1)$. 
-Let us begin this section by summarizing our approximations (inspired by \cite{Friedman_1982}) when deriving the equation of motion. 
+In our simulation, we treated the effect of laser cooling of ions by introducing a new frictional force, meaning it is proportional to $\propto \minus \vb{\dot{r}}$. The strength of this force is characterized by the parameter $\beta \in (0,1)$. 
 
 \subsection{Simulating Coulomb crystal}
 We simulated Coulomb crystal by molecular dynamics, meaning we solved the equation of motion for each ion in effective potential with Coulomb interaction. 
 We simulated the creation of a Coulomb crystal by molecular dynamics while keeping an eye on the total potential energy. We solved an equation of motion for each ion in effective potential with Coulomb interaction and laser cooling represented by the damping factor. We have used damping parameter $\beta$ large enough to decelerate the particles within a computationally reasonable time. To ensure that the ions had enough time to find a potential minimum, they were given a synthetic boost in kinetic energy every time they were slowed down to the minimal temperature, which can be obtained by laser cooling \xxx{(about \SI{0.01}{Kelvin})}. \todo{might be good idea to implement some simplex based algorithm with the molecular dynamics}
 
 \subsection{The code}
-The practical part of this thesis consists of developing the code simulating the motion of ions and electrons in a two frequency Paul trap. We have chosen the programming language python for its current popularity allied with an abundance of highly optimized libraries and a good combination of computational and development costs. The source code can be found at \href{https://github.com/rendeka/Bachelor_thesis.git}{github\footnote{$https://github.com/rendeka/Bachelor\_thesis.git$}.} \xxx{Main features of the program are:
+The practical part of this thesis consists of developing the code simulating the motion of ions and electrons in a two frequency Paul trap. We have chosen the programming language python for its current popularity allied with an abundance of highly optimized libraries and a good combination of computational and development costs. The source code can be found at \href{https://github.com/rendeka/Bachelor_thesis.git}{github\footnote{$https://github.com/rendeka/Bachelor\_thesis.git$}.} Main features of the program are:
 \begin{itemize}
 	\item Creating a Coulomb crystal.
 	\item Making stability diagram in dependence on $q_1$ and $q_2$ parameters.
@@ -193,5 +199,4 @@ The practical part of this thesis consists of developing the code simulating the
 	\item Tracking the information about the system: positions, velocities, energies
 	\item Producing graphical outcomes.
 \end{itemize}
-I think it would be beneficial to explain, for example what I mean by "optimizing," but I do not think it belongs here. I will probably put it into the appendix.
-} 
+More about its functionalities can be found in the appendix \ref{sec:code}.

@@ -24,11 +24,11 @@ import warnings
 def SolveParticleSystem(nCrystal='30'):
     """doesn't work if number of electrons=0 and freezedIons=True"""    
     
-    #initsystem = MakeParticleSystem(50,1)
+    initsystem = MakeParticleSystem(1,0)
     n = int(nCrystal)
     #initsystem = MakeParticleSystem(n,0)
     
-    initsystem = LoadParticleSystem('this_3')
+    #initsystem = LoadParticleSystem('this_3')
     
     #initsystem = LoadParticleSystem('coulomb_crystals/crystal-evolution_' + nCrystal)
     #initsystem = AddElectron(initsystem)     
@@ -46,7 +46,7 @@ def SolveParticleSystem(nCrystal='30'):
     #SaveParticleSystem(initsystem, 'oneElectron')
     """
     
-    trapParams = np.array([0, 0.01, 0.25])
+    trapParams = np.array([0, 0.01, 0.31])
     #trapParams = np.array([0, 0.0245, 0.447])
     
     ODESolution = ODEint(initsystem, trapParams, endTime, timeStep, ODESystemExact, StepEulerAdvanced, freezeIons=False)
@@ -72,7 +72,8 @@ def MakeStabilityDiagram(nCrystal='20', q1Start=0.0, q1Stop=0.1, q1Resol=300, q2
     
     """
     initsystem = np.array([electron], dtype=object)
-    stability, plotParams = StabilityDiagram(initsystem, ODESystemExact, q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, endTime, timeStep, freezeIons)         
+    stability, plotParams = StabilityDiagram(initsystem, ODESystemExact, q1Start, q1Stop, q1Resol, 
+                                             q2Start, q2Stop, q2Resol, endTime, timeStep, freezeIons)         
     PlotStability(stability, plotParams) 
     """
     
@@ -94,7 +95,8 @@ def MakeStabilityDiagram(nCrystal='20', q1Start=0.0, q1Stop=0.1, q1Resol=300, q2
     stability, plotParams = StabilityDiagram(initsystem, ODESystemExact, q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, endTime, timeStep, freezeIons, velocityDiagram)       
     PlotStability(data=stability, params=plotParams, velocityDiagram=velocityDiagram)
     
-def MakeStabilityDiagramList(nCrystal='20', q1Start=0.0, q1Stop=0.05, q1Resol=40, q2Start=0.0, q2Stop=0.5, q2Resol=40, freezeIons=True):
+def MakeStabilityDiagramList(nCrystal='20', q1Start=0.0, q1Stop=0.05, q1Resol=40, 
+                             q2Start=0.0, q2Stop=0.5, q2Resol=40, freezeIons=True):
     
     systems = CreateInitialSystems()
     
@@ -105,7 +107,8 @@ def MakeStabilityDiagramList(nCrystal='20', q1Start=0.0, q1Stop=0.05, q1Resol=40
         PlotStability(stability, plotParams, idx)   
     
     
-def MakeStabilityDiagramEdge(nCrystal='20', previousFileName=None, q1Start=0.0, q1Stop=0.1, q1Resol=80, q2Start=0.0, q2Stop=0.5, q2Resol=80, freezeIons=True):
+def MakeStabilityDiagramEdge(nCrystal='20', previousFileName=None, q1Start=0.0, q1Stop=0.1, q1Resol=80, 
+                             q2Start=0.0, q2Stop=0.5, q2Resol=80, freezeIons=True):
     
     #initsystem = LoadParticleSystem('slowElectron')
     #initsystem = LoadParticleSystem('thisOne')
@@ -134,7 +137,8 @@ def MakeStabilityDiagramEdge(nCrystal='20', previousFileName=None, q1Start=0.0, 
     start = timer()#to track real time of the computation
 
     if previousFileName is None:
-        stability, plotParams = StabilityDiagram(initsystem, ODESystemExact, q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, endTime, timeStep, freezeIons)
+        stability, plotParams = StabilityDiagram(initsystem, ODESystemExact, q1Start, q1Stop, q1Resol, 
+                                                 q2Start, q2Stop, q2Resol, endTime, timeStep, freezeIons)
         nParticles = plotParams[-4]
         nIons, nElectrons = nParticles
     else:
@@ -153,7 +157,8 @@ def MakeStabilityDiagramEdge(nCrystal='20', previousFileName=None, q1Start=0.0, 
             q1Resol = int(scaleFactor * q1Resol)# we want to cast into integer in order to allow any racional number as scaleFactor
             q2Resol = int(scaleFactor * q2Resol)# but it's your responsibility to make sure that resolution has no decimal places for every interation
                     
-            stability, plotParams = StabilityDiagramEdge(initsystem, ODESystemExact, previousFileName, q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, endTime, timeStep, freezeIons)            
+            stability, plotParams = StabilityDiagramEdge(initsystem, ODESystemExact, previousFileName, q1Start, q1Stop, q1Resol, 
+                                                         q2Start, q2Stop, q2Resol, endTime, timeStep, freezeIons)            
             PlotStability(stability, plotParams)
             
             
@@ -174,12 +179,14 @@ def StabilityDiagramForCrystals(q1Start=0.0, q1Stop=0.1, q1Resol=32, q2Start=0.0
     for idx in range(1):
                 
         freezeIons = True
-        stability, plotParams = StabilityDiagram(initsystem, ODESystemExact, q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, endTime, timeStep, freezeIons)           
+        stability, plotParams = StabilityDiagram(initsystem, ODESystemExact, q1Start, q1Stop, q1Resol,
+                                                 q2Start, q2Stop, q2Resol, endTime, timeStep, freezeIons)           
         PlotStability(stability, plotParams)   
         
         initsystem = AddElectron(crystal, electron)        
         freezeIons = True
-        stability, plotParams = StabilityDiagram(initsystem, ODESystemExact, q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, endTime, timeStep, freezeIons)           
+        stability, plotParams = StabilityDiagram(initsystem, ODESystemExact, q1Start, q1Stop, q1Resol, 
+                                                 q2Start, q2Stop, q2Resol, endTime, timeStep, freezeIons)           
         PlotStability(stability, plotParams) 
         #print('testing result ', idx)    
         #TestCoulombCrystal(nCrystal=str(idx), trapParams=tp)
@@ -234,7 +241,7 @@ def PlotVelocityEdge(fileNameVel, fileNameStability):
     
     fig, ax = plt.subplots()
     
-    vmin1, vmax1 = 0, velocityChop-100
+    vmin1, vmax1 = 0, 23
     levels1= 1000
     level_boundaries = np.linspace(vmin1, vmax1, levels1 + 1)
     
@@ -253,27 +260,27 @@ def PlotVelocityEdge(fileNameVel, fileNameStability):
         extend='max',
     )
     
-    cbar.ax.tick_params(labelsize=sizeTick)
-    cbar.set_label(r'$\dfrac{\bar{\mathcal{v}}}{\mathcal{v}_0}$', fontsize=sizeLabel, rotation=0)
+    cbar.ax.tick_params(labelsize=sizeTickSmall)
+    cbar.set_label(r'$\dfrac{\bar{\mathcal{v}}}{\mathcal{v}_0}$', fontsize=sizeLabelSmall, rotation=0, labelpad=15)
       
     vmin2 = 0
-    vmax2 = 1000
+    vmax2 = 10000
     
     levels2 = np.linspace(vmin2, vmax2, 2+1)
-    ax.contourf(X,Y,fMatrix, levels=levels2, vmin=vmin2, vmax=vmax2, cmap=plt.get_cmap('binary'))
+    ax.contourf(X,Y,fMatrix, levels=levels2, vmin=vmin2, vmax=vmax2, cmap=plt.get_cmap('spring'))
     #contourf_ = ax2.contourf(X,Y,fMatrix, levels=levels2, vmin=vmin2, vmax=vmax2)
     #cbar = fig.colorbar(contourf_)
     
-    plt.xticks(fontsize=sizeTick)    
-    plt.yticks(fontsize=sizeTick)    
-    plt.xlabel('$q_{2} \ [10^{-1}]$', fontsize=sizeLabel)
-    plt.ylabel('$q_{1} \ [10^{-2}]$', fontsize=sizeLabel)
+    plt.xticks(fontsize=sizeTickSmall)    
+    plt.yticks(fontsize=sizeTickSmall)    
+    plt.xlabel('$q_{2} \ [10^{-1}]$', fontsize=sizeLabelSmall)
+    plt.ylabel('$q_{1} \ [10^{-2}]$', fontsize=sizeLabelSmall)
     plt.tight_layout()
     
     
     fileName = fileNameStability + '_' + str(levels1)
     path = 'pics/stability_diagrams/velocity_with_edge/'
-    extensions = ['eps', 'png']    
+    extensions = ['eps', 'png', 'pdf']    
     for extension in extensions: #saving pictures 
         plt.savefig(path + fileName + '.' + extension, format=extension)
     
@@ -302,23 +309,23 @@ if __name__ == '__main__':
     #PlotCrystalTest(nCrystal='20') 
     #PlotCrystal(nCrystal='5') 
     
-    #SolveParticleSystem(nCrystal='50')
+    SolveParticleSystem(nCrystal='50')
     
     #PlotStability(fileName='0_ions_1_electrons_q1_0.0-0.05_q2_0.0-0.5_40x41_3',velocityDiagram=True)
     
     #PlotStabilityEdge(fileName='0_ions_1_electrons_q1_0.0-0.1_q2_0.0-0.55_768x897_3')
     #PlotStabilityVelocity(fileName='0_ions_1_electrons_q1_0.0-0.1_q2_0.0-0.5_200x200_3')
-    #PlotVelocityEdge(fileNameVel='0_ions_1_electrons_q1_0.0-0.05_q2_0.0-0.5_120x120_833', 
+    
+    #PlotVelocityEdge(fileNameVel='0_ions_1_electrons_q1_0.0-0.05_q2_0.0-0.5_360x360_833', 
     #                    fileNameStability='0_ions_1_electrons_q1_0.0-0.04_q2_0.0-0.5_897x897_833')
-    #PlotStability(fileName='0_ions_1_electrons_q1_0.0-0.1_q2_0.0-0.55_768x897_3')
     
     #PlotStabilityRescaled(fileName='0_ions_1_electrons_q1_0.0-0.05_q2_0.0-0.5_360x360_833', velocityDiagram=True)
 
     #MakeStabilityDiagramList()
         
     #MakeStabilityDiagramEdge(nCrystal='50', previousFileName='50_ions_1_electrons_q1_0.0-0.05_q2_0.0-0.5_128x128_13')   
-    #MakeStabilityDiagramEdge(previousFileName=None, q1Start=0.0, q1Stop=0.1, q1Resol=45, q2Start=0.0, q2Stop=0.5, q2Resol=45)   
-    MakeStabilityDiagram(q1Start=0.0, q1Stop=0.05, q1Resol=51, q2Start=0.0, q2Stop=0.5, q2Resol=52, velocityDiagram=False)  
+    #MakeStabilityDiagramEdge(previousFileName=None, q1Start=0.0, q1Stop=0.1, q1Resol=11, q2Start=0.0, q2Stop=0.5, q2Resol=11)   
+    #MakeStabilityDiagram(q1Start=0.0, q1Stop=0.1, q1Resol=360, q2Start=0.0, q2Stop=0.5, q2Resol=360, velocityDiagram=True)  
 
     #StabilityDiagramForCrystals()
     
@@ -326,7 +333,7 @@ if __name__ == '__main__':
     """left-click unstable, right-click stable. After you choose triangles you must save them with SaveTriangles"""
     #SaveTriangles(triangleUnstable, triangleStable, params)
     
-    #StabilityDet(q1Start=0.0, q1Stop=0.08, q1Resol=970, q2Start=0.0, q2Stop=0.5, q2Resol=970, f1=f1, f2=f2)
+    #StabilityDet(q1Start=0.0, q1Stop=0.07, q1Resol=990, q2Start=0.0, q2Stop=0.5, q2Resol=990, f1=f1, f2=f2)
     stopMain = timer()
     print(round(stopMain - startMain,2),'seconds')
 
