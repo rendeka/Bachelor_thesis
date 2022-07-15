@@ -30,13 +30,13 @@ which explains the origin of unstable tongues in stability diagrams; see \ref{ch
 
 \begin{comment}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \xxx{\dots build a little bridge from the section explaining a single frequency trap. We need two frequencies for particles with widely different charge to mass ratios: $Q_m \equiv \nicefrac{Q}{m}$ \cite{FOOT2018117}.}
-In the case of a linear quadrupole with perfectly hyperbolical electrodes with cylindrical symmetry we have a electric potential in the form:\todo{this should be the right potential}
+\end{comment}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+In the case of a quadrupole with perfectly hyperbolical electrodes we have a electric potential in the form:
 \begin{equation}
 	V(t, \vb{r}) = \bigg[ V_0 + V_1 cos(\Omega_1 t) + V_2 \cos(\Omega_2 t) \bigg] \frac{x^2 + y^2 \minus 2 z^2 }{2 \ell_0^2},
 \end{equation}
 where $V_0$ is an amplitude of static potential, $V_1$ of slower potential and $V_2$ is an amplitude of rapidly oscillating potential on the electrode. The equations of motion for a particle in such potential, after change of variable: $\tau = \nicefrac{t\Omega_2}{2}$ are:
-\end{comment}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \begin{subequations}
 \label{eq of motion for simulation}
 \begin{align}
@@ -169,16 +169,16 @@ which can be neglected. Overall, the amplitude of an oscillating magnetic field 
 \begin{equation}
 	\lambda \equiv \dfrac{2\pi c}{\Omega_2} \gg \ell_0,
 \end{equation}
-after substituting corresponding values we get: $\lambda = \SI{100}{\mm} \gg \SI{0.5}{\mm} = \ell_0$. If this condition was not met, there could be a possibility of forming standing waves that could change the trap's dynamics. 
-  
+after substituting corresponding values we get: $\lambda = \SI{100}{\mm} \gg \SI{0.5}{\mm} = \ell_0$. If this condition was not met, there could be a possibility of forming standing waves that could change the trap's dynamics.  
 	\item[Induced charge on the electrodes:] charged particles induce surface charge density on the electrodes. This causes attraction of a particle toward the electrode, which can contribute to vacation of the particle from the trap. For reference we can look at simplified situation of a charged particle near an infinite conductive plane. An average acceleration of an electron throughout the stable simulated trajectory was in the order of $\bar{a}_c \sim 10^{17}$. For an infinite plane to cause an acceleration $\sim \nicefrac{\bar{a}_c}{100}$, the electron would have to approach the electrode up to the distance of $\approx \SI{0.25}{\micro\meter}$, which would already be outside our definition of stable trajectory. Hence we can omit such an effect. 
-	\item[Creation of Rydberg atoms:] \xxx{an electron can get caught in some highly excited ion orbital creating a Rydberg atom. The electron can subsequently drop to a lower but still volatile state and vacate from it under the influence of the trap, losing energy by the associated photon emission. An electron moving inside a Coulomb crystal can be within reach of multiple ions simultaneously. Hence it may greatly contribute to electron cooling. It might be necessary to add such a process to our simulation in the future.}
+	\item[Creation of Rydberg atoms:] \xxx{an electron can get caught in some highly excited ion orbital creating a Rydberg atom. The electron can subsequently drop to a lower but still volatile state and vacate from it under the influence of the trap, losing energy by the associated photon emission. An electron moving inside a Coulomb crystal can be within reach of multiple ions simultaneously. Hence it may greatly contribute to electron cooling. It will be necessary to add such a process to our simulation in the future.}
 	\item[Phase shift:] induced by the finite speed of electric signal delivered to the electrode. This could be problematic since the characteristic dimension of our trap is $\ell_0 = \SI{0.5}{\mm}$, and we are using frequencies up to the orders of $\Omega_2 \sim \SI{e10}{rad.s^{-1}}$. Suppose we optimistically assume that the signal travels through the electrode with the speed of light. In that case, the signal in one period $\nicefrac{1}{\Omega_2}$ spans over the distance of $\sim \SI{0.03}{\mm}$, which is getting close to our characteristic length. We tackle this problem by dividing our electrodes into eight sections, see \ref{fig:Real trap geometry 1}, each with its own feeding from the power source.
 	\item[Imperfection of electrodes:] \xxx{adding some perturbation to the electric potential caused by the imperfection of electrodes and study of its impact on stability will be one of the subjects for our future research.}	
-	\item[Collisions with neutrals:] \xxx{we will be able to make a vacuum with pressure of (no idea and not sure it it can produce significant problems)}
+	\item[Collisions with neutrals:] \xxx{we will be able to make a vacuum with pressure of $\sim \SI{e-13}{bar}$\todo{complete this}}
 \end{description}	
 
 \subsection{Choice of time-step}
+\todo{Remove names of files and python functions. Present algorithm for StepEulerAdvanced and other stuff can be mentioned in the appendix}
 We have tried several integration methods when numerically solving our equations of motion, whether with exact or effective potential. We mostly use a total simulation length corresponding to twenty secular oscillations $(\nicefrac{20}{\omega})$ \eqref{secular frequency} for a given particle. However, when looking at the average velocity of an electron , see for example \ref{fig:stabil-eta=3}, it was sometimes necessary to extend this time up to two-hundred secular oscillations to harvest the practically relevant information.
 Choice of time-step is always a delicate issue. For solving the Hill-type differential equation, we used a constant time-step, following the Nyquist criterion \cite{1697831}. Nyquist criterion is used mainly in signal processing for compact signals with convergent Fourier series. It states that for the signal with the highest frequency $\textit{f} \equiv \nicefrac{\Omega}{2\pi}$, the largest possible sample size so that the discretization of the signal will carry equivalent information as the continuous one is $\nicefrac{1}{(2\textit{f})}$. We started numerically solving the equation of motion with this time step, gradually increasing its size until the numerical solution with the denser sampling would give us the same result for the given tolerance. Repeating this process for several methods \footnote{All tried methods can be found in the file \textit{intMethods.py}} for numerical solving of ODEs \cite{teukolsky1992numerical}. For the case of a single electron in the trap with the expected initial conditions \textit{thisOne.dat} had the best performance a predictor-corrector method, which we have defined as \textit{StepEulerAdvanced}. The sufficient time-step for this method was $\Delta t = \nicefrac{1}{(10 \Omega)}$. For simulations including multiple particles, it was necessary to use an adaptive time-step. \todo{maybe explain how that works... maybe in appendix}
 

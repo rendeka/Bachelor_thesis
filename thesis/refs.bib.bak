@@ -157,3 +157,30 @@ author = {Sven Fanghänel and Oskar Asvany and Stephan Schlemmer},
 keywords = {Radio-frequency ion traps, Electrical potential calculations, Multipole expansion, Effective potential, Low temperature ions},
 abstract = {Radio-frequency (rf) traps are ideal places to store cold ions for spectroscopic experiments. Specific multipole configurations are suited best for different applications but have to be modified to allow e.g. for a proper overlap of a laser beam waist with the ion cloud. Therefore the corresponding trapping fields should be shaped accordingly. To achieve this goal highly accurate electrical potentials of rf multipole traps and the resulting effective trapping potentials are calculated using the boundary element method (BEM). These calculations are used to evaluate imperfections and to optimize the field geometry. For that purpose the complex fields are reduced to a small set of multipole expansion coefficients. Desirable values for these coefficients are met by systematic changes of real trap dimensions from CAD designs. The effect of misalignment of a linear quadrupole, the optimization of an optically open Paul trap, the influence of steering electrodes (end electrode and ring electrode) on a 22-pole ion trap and the effect of the micro motion on the lowest reachable temperatures in such a trap are discussed.}
 }
+@article{drewsen2003ion,
+  title={Ion Coulomb crystals: a tool for studying ion processes},
+  author={Drewsen, Michael and Jensen, I and Lindballe, Jens and Nissen, N and Martinussen, Randi and Mortensen, Anders and Staanum, Peter and Voigt, Dirk},
+  journal={International Journal of Mass Spectrometry},
+  volume={229},
+  number={1-2},
+  pages={83--91},
+  year={2003},
+  publisher={Elsevier}
+}
+@article{thompson2015ion,
+  title={Ion coulomb crystals},
+  author={Thompson, Richard C},
+  journal={Contemporary Physics},
+  volume={56},
+  number={1},
+  pages={63--79},
+  year={2015},
+  publisher={Taylor \& Francis}
+}
+@book{fitzpatrick2014plasma,
+  title={Plasma physics: an introduction},
+  author={Fitzpatrick, Richard},
+  year={2014},
+  publisher={Crc Press}
+}
+

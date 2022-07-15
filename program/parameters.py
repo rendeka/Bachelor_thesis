@@ -20,8 +20,8 @@ V1 = 5#slow ac potential  5
 V2 = 100 #fast ac potential 100
 
 Kb = 1.3806e-23#Boltzman constant
-planc = 6.626e-34
-eps0 = 8.85e-12 
+eps0 = 8.8541878e-12
+planckConst = 6.62607e-34
 
 #f2 = 2.5e9 * 2 * np.pi
 f2 = 1.88e10
@@ -45,5 +45,3 @@ sizeTick = 15
 # for 3 pictures side by side
 sizeLabelLarge = 30
 sizeTickLarge = 20
-
-#res = ((2*np.pi*eps0)**(2/3) * V1**(4/3) * planc**2 * (-electronCharge)**(2/3))/(r0**(8/3) * electronMass**(5/3) * f1**(4/3) * Kb)

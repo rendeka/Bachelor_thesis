@@ -24,11 +24,11 @@ import warnings
 def SolveParticleSystem(nCrystal='30'):
     """doesn't work if number of electrons=0 and freezedIons=True"""    
     
-    initsystem = MakeParticleSystem(1,0)
+    #initsystem = MakeParticleSystem(50,1)
     n = int(nCrystal)
     #initsystem = MakeParticleSystem(n,0)
     
-    #initsystem = LoadParticleSystem('this_3')
+    initsystem = LoadParticleSystem('this_3')
     
     #initsystem = LoadParticleSystem('coulomb_crystals/crystal-evolution_' + nCrystal)
     #initsystem = AddElectron(initsystem)     
@@ -46,7 +46,7 @@ def SolveParticleSystem(nCrystal='30'):
     #SaveParticleSystem(initsystem, 'oneElectron')
     """
     
-    trapParams = np.array([0, 0.01, 0.31])
+    trapParams = np.array([0, 0.01, 0.25])
     #trapParams = np.array([0, 0.0245, 0.447])
     
     ODESolution = ODEint(initsystem, trapParams, endTime, timeStep, ODESystemExact, StepEulerAdvanced, freezeIons=False)
@@ -144,7 +144,7 @@ def MakeStabilityDiagramEdge(nCrystal='20', previousFileName=None, q1Start=0.0, 
     else:
         q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nIons, nElectrons, eta = ParseFileName(previousFileName)
         
-    for _ in range(4):#number of times we will scale the resolution
+    for _ in range(3):#number of times we will scale the resolution
         print('resolution: ' +  str(int(q1Resol)) + 'x' + str(int(q2Resol)))
         for i in range(1):#after this loop resolution will be doubled in both coordinates q1 adn q2
             subStart = timer()
@@ -241,7 +241,7 @@ def PlotVelocityEdge(fileNameVel, fileNameStability):
     
     fig, ax = plt.subplots()
     
-    vmin1, vmax1 = 0, 23
+    vmin1, vmax1 = 0, 21
     levels1= 1000
     level_boundaries = np.linspace(vmin1, vmax1, levels1 + 1)
     
@@ -261,7 +261,7 @@ def PlotVelocityEdge(fileNameVel, fileNameStability):
     )
     
     cbar.ax.tick_params(labelsize=sizeTickSmall)
-    cbar.set_label(r'$\dfrac{\bar{\mathcal{v}}}{\mathcal{v}_0}$', fontsize=sizeLabelSmall, rotation=0, labelpad=15)
+    cbar.set_label(r'$\dfrac{\langle v \rangle}{v_0}$', fontsize=sizeLabelSmall, rotation=0, labelpad=15)
       
     vmin2 = 0
     vmax2 = 10000
@@ -280,7 +280,7 @@ def PlotVelocityEdge(fileNameVel, fileNameStability):
     
     fileName = fileNameStability + '_' + str(levels1)
     path = 'pics/stability_diagrams/velocity_with_edge/'
-    extensions = ['eps', 'png', 'pdf']    
+    extensions = ['png', 'pdf']    
     for extension in extensions: #saving pictures 
         plt.savefig(path + fileName + '.' + extension, format=extension)
     
@@ -309,27 +309,27 @@ if __name__ == '__main__':
     #PlotCrystalTest(nCrystal='20') 
     #PlotCrystal(nCrystal='5') 
     
-    SolveParticleSystem(nCrystal='50')
+    #SolveParticleSystem(nCrystal='50')
     
     #PlotStability(fileName='0_ions_1_electrons_q1_0.0-0.05_q2_0.0-0.5_40x41_3',velocityDiagram=True)
     
     #PlotStabilityEdge(fileName='0_ions_1_electrons_q1_0.0-0.1_q2_0.0-0.55_768x897_3')
     #PlotStabilityVelocity(fileName='0_ions_1_electrons_q1_0.0-0.1_q2_0.0-0.5_200x200_3')
     
-    #PlotVelocityEdge(fileNameVel='0_ions_1_electrons_q1_0.0-0.05_q2_0.0-0.5_360x360_833', 
-    #                    fileNameStability='0_ions_1_electrons_q1_0.0-0.04_q2_0.0-0.5_897x897_833')
+    #PlotVelocityEdge(fileNameVel='0_ions_1_electrons_q1_0.0-0.05_q2_0.0-0.5_340x340_13', 
+    #                    fileNameStability='0_ions_1_electrons_q1_0.0-0.05_q2_0.0-0.5_960x960_13')
     
-    #PlotStabilityRescaled(fileName='0_ions_1_electrons_q1_0.0-0.05_q2_0.0-0.5_360x360_833', velocityDiagram=True)
+    #PlotStabilityRescaled(fileName='0_ions_1_electrons_q1_0.01396-0.01626_q2_0.24294-0.24798_240x240_833', velocityDiagram=False)
 
     #MakeStabilityDiagramList()
         
     #MakeStabilityDiagramEdge(nCrystal='50', previousFileName='50_ions_1_electrons_q1_0.0-0.05_q2_0.0-0.5_128x128_13')   
-    #MakeStabilityDiagramEdge(previousFileName=None, q1Start=0.0, q1Stop=0.1, q1Resol=11, q2Start=0.0, q2Stop=0.5, q2Resol=11)   
+    MakeStabilityDiagramEdge(previousFileName=None, q1Start=0.0147, q1Stop=0.0156, q1Resol=120, q2Start=0.243, q2Stop=0.249, q2Resol=120)   
     #MakeStabilityDiagram(q1Start=0.0, q1Stop=0.1, q1Resol=360, q2Start=0.0, q2Stop=0.5, q2Resol=360, velocityDiagram=True)  
 
     #StabilityDiagramForCrystals()
     
-    #params = ClickStabilityRegions(fileName='0_ions_1_electrons_q1_0.0-0.1_q2_0.0-0.5_960x960_3')
+    #params = ClickStabilityRegions(fileName='0_ions_1_electrons_q1_0.0-0.05_q2_0.0-0.5_960x960_833')
     """left-click unstable, right-click stable. After you choose triangles you must save them with SaveTriangles"""
     #SaveTriangles(triangleUnstable, triangleStable, params)
     

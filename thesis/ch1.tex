@@ -4,7 +4,10 @@
 In this chapter, we introduce concepts essential for understanding this thesis's concerns. This chapter is divided into several subsections. \footnote{\xxx{In the first subsection, we are going to discuss the basic principles of plasma physics. In the following subsection, we will talk about the motion of a charged particle inside the Paul trap. Next, we will introduce the idea of laser cooling. And finally, in the last subsection, we will present our approach to simulating such a system, entering this thesis's practical component.}} \todo{the sections in the first two chapters will probably be rearranged}
 
 \section{Coulomb crystal}
-\xxx{Things to write about: definition of plasma, characteristic parameters, coupling parameter $\Gamma$, better characterization of Coulomb crystal, point of crystallization, strongly coupled plasma in the nature, Rydberg atoms}
+Most of the ordinary matter has a crystal or rather polycrystal structure. Meaning its elementary constituents (atoms, molecules, ions) create an ordered formation repeating itself, in the case of crystals up to macroscopic scales. The shape of these structures \cite{drewsen2003ion} is essentially dictated by the wave function overlap. A CC orders itself differently. An average distance between ions in a CC is usually \cite{thompson2015ion} five orders of magnitude larger than it is for atoms in solid matter. On this scale are quantum effects negligible, and ions are merely pushed away from each other by classical Coulomb interaction. Therefore they need an external force to keep them together, which is provided by a trapping potential in our case. However, these structures can also be found in nature, namely in the cores of white dwarfs and crusts of neutron stars.
+
+\subsection{Plasma}
+The broadest definition of plasma is to identify it as ionized gas \cite{fitzpatrick2014plasma}\xxx{\dots}. The standard definition is more strict by demanding quasineutrality and collective behavior as well. We will call such plasma as \emph{conventional plasma}\todo{check the usage of this term}. Quasineutrality suggests the same ion and electron concentrations over the whole volume. By this merit, a CC is far from being a conventional plasma as it is composed exclusively of positive ions.\todo{what is collective behavior, coupling parameter, maybe other plasma parameters, strongly coupled plasma, maybe Rydberg ions}
 
 \section{Ion trapping}
 Here we introduce the concept of trapping a single ion by a quickly oscillating field. We will tightly follow a classic textbook \cite{gerlich1992inhomogeneous} in the whole section, starting by writing the equation of motion.
@@ -146,7 +149,7 @@ A multipole is one of Paul trap's classical, well-studied geometries. N-th order
 \caption{The quadrupole Paul trap}
 \label{fig:quadrupole}
 \end{figure}
-In the figure \ref{fig:quadrupole scheme}, we can see a comparison of a quadrupole trap's hyperbolical \textit{(dashed)} and linear \textit{(four circles)} electrode geometries. We define a characteristic length of the multipole $\ell_0$, indicating the closest distance from the trap's center to an electrode. It is possible to obtain a potential of a multipole with infinitely long linear electrodes by applying boundary conditions \eqref{boundary condition n-pole} to a solution of Laplace equation with cylindrical symmetry \eqref{cylindrical symmetry potential}.
+\todo{Do I need to cite somebody for \ref{fig:quadrupole picture}?}In the figure \ref{fig:quadrupole scheme}, we can see a comparison of a quadrupole trap's hyperbolical \textit{(dashed)} and linear \textit{(four circles)} electrode geometries. We define a characteristic length of the multipole $\ell_0$, indicating the closest distance from the trap's center to an electrode. It is possible to obtain a potential of a multipole with infinitely long linear electrodes by applying boundary conditions \eqref{boundary condition n-pole} to a solution of Laplace equation with cylindrical symmetry \eqref{cylindrical symmetry potential}.
 \begin{subequations}
 \label{boundary condition n-pole}
 \begin{align}
@@ -244,7 +247,7 @@ Nevertheless, we will conduct our research in this thesis by examining the situa
 
 \subsection{Spring constant}
 \label{sec:spring constant}
-If we focus on the dynamic component of an effective potential \eqref{effective potential hyperbolic}, we can see that it is formally equivalent a potential of a harmonic oscillator\footnote{Meaning a potential in the form: $V(\xi) = \dfrac{\kappa}{2} \xi^2$}. This encourages us to define a spring constant: 
+If we focus on the dynamic component of an effective potential \eqref{effective potential hyperbolic}, we can see that it is formally equivalent to a potential of a harmonic oscillator\footnote{Meaning a potential in the form: $V(\xi) = \dfrac{\kappa}{2} \xi^2$}. This encourages us to define a spring constant: 
 \begin{equation}
 	\label{spring constant}
 	\kappa \equiv \dfrac{Q^2 V_1^2}{2\ell_0^4 M \Omega_1^2},

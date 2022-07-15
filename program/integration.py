@@ -85,7 +85,7 @@ def Recombine(system, i, o):
     system[(i,o),3] = 0   
 
 def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,
-           Step=StepEulerAdvanced, freezeIons=False, velocityDiagram=False, kSecular=200):
+           Step=StepEulerAdvanced, freezeIons=False, velocityDiagram=False, kSecular=800):
     """
     integrating equations of motion
     """
@@ -108,9 +108,8 @@ def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,
                 
     else:
         if q1 > 0:
-            dt = dt * f2 / f1
             if IsExact(ODESystem):    
-                tmax = 100*kSecular * np.sqrt(2) / q1
+                tmax = kSecular * np.sqrt(2) / q1
             else:
                 tmax = kSecular * np.sqrt(8) / (f1 * q1)
                 print('what are you doing?')
@@ -244,7 +243,7 @@ def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,
         stability = 0
         
         for i in range(n):
-            if(rMax[i] > 20*0.8 * r0) and (charge[i] < 0): # condition (charge[i] < 0) is here for the case of freezed ions
+            if(rMax[i] > 0.8 * r0) and (charge[i] < 0): # condition (charge[i] < 0) is here for the case of freezed ions
                 stability = stability + 1
         
         

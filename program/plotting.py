@@ -4,13 +4,18 @@ import matplotlib.pyplot as plt
 
 
 from matplotlib.cm import ScalarMappable
-from matplotlib import cm# Colour maps for the contour graph
+from matplotlib import cm # Colour maps for the contour graph
+from matplotlib import rc # Latex typesetting
+
 from scipy import interpolate
 
 from fileHandling import *
 
 from mpl_toolkits import mplot3d
-from parameters import * 
+from parameters import *
+
+#rc('font', **{'family':'serif','serif':['Palatino']})
+#rc('text', usetex=True) 
 
 
 def PlotODESolution(ODESolution):
@@ -232,8 +237,10 @@ def PlotStability(data=np.zeros((2,2)), params=np.zeros(10), index=None, fileNam
     plt.xlabel('$q_{2}$')
     plt.ylabel('$q_{1}$')
     
-    extensions = ['eps', 'png']
-    
+    if velocityDiagram:
+        extensions = ['png', 'pdf']
+    else:    
+        extensions = ['eps', 'png', 'pdf']    
     for extension in extensions: #saving pictures 
         plt.savefig(path + fileName + '.' + extension, format=extension)
     
@@ -265,7 +272,7 @@ def PlotStabilityRescaled(data=np.zeros((2,2)), params=[], index=None, fileName=
         #path = path + 'velocity/'
         fig, ax = plt.subplots()
         
-        vmin, vmax = 0, 23
+        vmin, vmax = 0, 20
         levels = 1000    
         level_boundaries = np.linspace(vmin, vmax, levels + 1)
         
@@ -285,7 +292,7 @@ def PlotStabilityRescaled(data=np.zeros((2,2)), params=[], index=None, fileName=
         )
         
         cbar.ax.tick_params(labelsize=sizeTick)
-        cbar.set_label(r'$\dfrac{\bar{\mathcal{v}}}{\mathcal{v}_0}$', fontsize=sizeLabel, rotation=0, labelpad=15)
+        cbar.set_label(r'$\dfrac{\langle v \rangle}{v_0}$', fontsize=sizeLabel, rotation=0, labelpad=15)
 
         
         
@@ -300,7 +307,10 @@ def PlotStabilityRescaled(data=np.zeros((2,2)), params=[], index=None, fileName=
     plt.ylabel('$q_{1} \ [10^{-2}]$', fontsize=sizeLabel)
     plt.tight_layout()
     
-    extensions = ['eps', 'png', 'pdf']
+    if velocityDiagram:
+        extensions = ['png', 'pdf']
+    else:    
+        extensions = ['eps', 'png', 'pdf']
     
     for extension in extensions: #saving pictures 
         plt.savefig(path + 'rescaled/' + fileName + '.' + extension, format=extension)

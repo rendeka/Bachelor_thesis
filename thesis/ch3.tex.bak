@@ -31,7 +31,7 @@ We will start by looking at the stability diagrams for different $\nicefrac{\Ome
 	\label{fig:velocityedge-eta=3}
 \end{figure}
 
-In the sub-figure \ref{fig:det_3} we can see stable\textit{(dark)} and unstable\textit{(light)} regions of the studied differential equation. The adjacent image shows the stability of an electron based on numerical simulation. In contrast with the determinant solution, we can see that the two stability areas have melted away in the field with higher amplitudes\todo{not entirely sure why...}. The image \ref{fig:velocityedge-eta=3} combines two pictures. The pink curve construes the stable region, and in the background is a contour plot of the average electron velocity throughout the trajectory relative to the initial velocity. The color bar to the right indicates the value of this ratio. The figures such as \ref{fig:sim_3} can help us find the stable trap parameters while keeping electron temperature as low as possible, which is our ultimate goal.
+In the sub-figure \ref{fig:det_3} we can see stable\textit{(dark)} and unstable\textit{(light)} regions of the studied differential equation. The adjacent image shows the stability of an electron based on numerical simulation. In contrast with the determinant solution, we can see that the two stability areas have melted away in the field with higher amplitudes\todo{not entirely sure why...}. The image \ref{fig:velocityedge-eta=3} combines two pictures. The pink curve construes the stable regions simulated for the figure \ref{fig:sim_3}. In the background is a contour plot of the average electron velocity throughout the whole trajectory: $$\langle v \rangle = \dfrac{1}{T_{max}} \int_{0}^{T_{max}} v(\tau) \, d\tau,$$ relative to the initial velocity $v_0$. The color bar to the right indicates the value of this ratio. We create all the other figures similar to \ref{fig:velocityedge-eta=3} in the same way. These diagrams can help us find stable trap parameters while keeping electron temperature as low as possible, which is our ultimate goal.
 
 Moving to larger frequency ratio $\rightarrow \nicefrac{\Omega_2}{\Omega_1} = 13$ we can start to notice some patterns.
 
@@ -44,7 +44,7 @@ Moving to larger frequency ratio $\rightarrow \nicefrac{\Omega_2}{\Omega_1} = 13
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
   \centering
-  \includegraphics[width=\linewidth]{img/0_ions_1_electrons_q1_0.0-0.05_q2_0.0-0.5_640x640_13.pdf}  
+  \includegraphics[width=\linewidth]{img/0_ions_1_electrons_q1_0.0-0.05_q2_0.0-0.5_960x960_13.pdf}  
   \caption{Simulation}
   \label{fig:sim_13}
 \end{subfigure}
@@ -54,8 +54,8 @@ Moving to larger frequency ratio $\rightarrow \nicefrac{\Omega_2}{\Omega_1} = 13
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=\linewidth]{img/0_ions_1_electrons_q1_0.0-0.05_q2_0.0-0.5_640x640_13_1000.png}
-	\caption{Average electron velocity for $\nicefrac{\Omega_2}{\Omega_1} = 833$}
+	\includegraphics[width=\linewidth]{img/0_ions_1_electrons_q1_0.0-0.05_q2_0.0-0.5_960x960_13_1000.png}
+	\caption{Average electron velocity for $\nicefrac{\Omega_2}{\Omega_1} = 13$}
 	\label{fig:stabil-eta=13}
 \end{figure}
 
@@ -72,7 +72,7 @@ There emerges one stable triangle with many tongues of instability. With an incr
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
   \centering
-  \includegraphics[width=\linewidth]{img/0_ions_1_electrons_q1_0.0-0.04_q2_0.0-0.5_897x897_833.pdf}  
+  \includegraphics[width=\linewidth]{img/0_ions_1_electrons_q1_0.0-0.05_q2_0.0-0.5_960x960_833.pdf}  
   \caption{Simulation}
   \label{fig:sim_833}
 \end{subfigure}
@@ -80,9 +80,11 @@ There emerges one stable triangle with many tongues of instability. With an incr
 \label{fig:stabil-eta=833}
 \end{figure}
 
+It is worth pointing out that the computation time of the determinant stability diagram already exceeds that of simulated for this frequency ratio. Nevertheless, we apply a built-in NumPy\footnote{NumPy is widely used, open source, numerical python library: \href{https://numpy.org}{https://numpy.org/}} function for computing determinants using LU decomposition \cite{teukolsky1992numerical} with time complexity $\mathcal{O}(n^3)$, not utilizing the fact that our matrices are sparse. Moreover, we are interested only in the sign of a determinant which also suggests a capacity for efficiency improvement. But since the determinant solutions are not essential to us, we do not investigate such further advancements in this thesis.
+
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=\linewidth]{img/0_ions_1_electrons_q1_0.0-0.04_q2_0.0-0.5_897x897_833_1000.pdf}
+	\includegraphics[width=\linewidth]{img/0_ions_1_electrons_q1_0.0-0.05_q2_0.0-0.5_960x960_833_1000.png}
 	\caption{Simulated stability diagram for $\nicefrac{\Omega_2}{\Omega_1} = 833$}
 	\label{fig:stabil-eta=833}
 \end{figure}
