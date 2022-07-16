@@ -24,14 +24,49 @@ We will start by looking at the stability diagrams for different $\nicefrac{\Ome
 \label{fig:stabil-eta=3}
 \end{figure}
 
+In the sub-figure \ref{fig:det_3} we can see stable\textit{(dark)} and unstable\textit{(light)} regions of the studied differential equation. The adjacent image shows the stability of an electron based on numerical simulation. In contrast with the determinant solution, we can see that the two stability areas have melted away in the field with higher amplitudes. We must not forget that the stability in the figure \ref{fig:det_3} is calculated only along the z-axis. We can investigate this by setting the initial position and velocity in x-y directions to zero. As we can see, the subsequent picture \ref{fig:sim_3_z-direction} already agrees with the determinant solution \ref{fig:det_3}.
+
+\begin{figure}[H]
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{img/0_ions_1_electrons_q1_0.0-0.1_q2_0.0-0.5_992x992_3.pdf}
+  \caption{Simulation in z-direction}
+  \label{fig:sim_3_z-direction}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{img/0_ions_1_electrons_q1_0.0-0.1_q2_0.0-0.5_960x960_3.pdf}  
+  \caption{Simulation with x-y stability edge}
+  \label{fig:sim_3_x-y_edge}
+\end{subfigure}
+\caption{Stability diagrams for $\nicefrac{\Omega_2}{\Omega_1} = 3$}
+\label{fig:stabil-eta=3 different directions}
+\end{figure}
+
+In the next set of pictures \ref{fig:stabil-eta=3_x-y_directions}, we evaluate the stability diagram in x-y directions by setting $\zeta = x$ in \eqref{tilde params} for a determinant solution and setting the z-component of initial position and velocity to zero in the simulation. The contour plot \ref{fig:sim_3_x-y_edge} was created with the enhanced condition for identifying stable solutions from the standard \eqref{stability condition in simulation}: $\max\limits_{x \in \mathcal{L}}(r) \leq 0.8 \ \ell_0$ to $\max\limits_{x \in \mathcal{L}}(r) \leq 4 \ \ell_0$. The\todo{add the green line to this picture} \xxx{green} trace embodies the edge of stability made with our standard \eqref{stability condition in simulation} stability requirement in simulation. So this picture, among others, illustrates the non-equivalence of our condition and the condition for stability we use in Floquet theory, as we have already mentioned in \ref{foot:different stability condition}. The\todo{add the green line to this picture} \xxx{green} line in \ref{fig:sim_3_x-y_edge} represents the stability edge taken from \ref{fig:stabil-eta=3_x-y_directions}, explaining the difference between stability diagrams \ref{fig:stabil-eta=3}. We obtain an important closure that holds for all the other frequency ratios as well. The discrepancy between determinant and simulated stability diagrams is resolved by the necessity to combine determinant solutions in both x and z directions. This can be easily fixed with the cost of doubling the computation time for a determinant solution. Nonetheless, from now on, we will focus on simulated results, keeping the determinant diagrams in the z-direction for comparison. Moreover, we can use these pictures as our sanity check. By matching them with the results from \cite{leefer2017investigation} \textit{(where the stability of the ideal quadrupole trap along the x-direction was studied)}, we see that we have reproduced the same\footnote{Note that they have used different condition to identify stable solutions.} results $\rightarrow$ proving the validity of our code, at least to some extent.
+\begin{figure}[H]
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{img/det_q1_0.0-0.14_q2_0.0-1.0_960x960_3.pdf}
+  \caption{Determinant in x-direction}
+  \label{fig:det_3_x-direction}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{img/0_ions_1_electrons_q1_0.0-0.14_q2_0.0-1.0_984x984_3.pdf}  
+  \caption{Simulation in x-y plane}
+  \label{fig:sim_3_x-direction}
+\end{subfigure}
+\caption{Stability diagrams for $\nicefrac{\Omega_2}{\Omega_1} = 3$ in x-y plane}
+\label{fig:stabil-eta=3_x-y_directions}
+\end{figure} 
+The image \ref{fig:velocityedge-eta=3} combines two pictures. The pink curve construes the stable regions simulated for the figure \ref{fig:sim_3}. In the background is a contour plot of the average electron velocity $\langle v \rangle$ throughout the whole trajectory\footnote{Average value defined as: $\langle \xi \rangle = \nicefrac{1}{T} \int_{0}^{T} \xi(\tau) \, d\tau,$ where $T$ denotes a total time of simulation.} relative to the initial velocity $v_0$. The color bar to the right indicates the value of this ratio. We create all the other figures similar to \ref{fig:velocityedge-eta=3} in the same way. These diagrams can help us find stable trap parameters while keeping electron temperature as low as possible, which is our ultimate goal.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\linewidth]{img/0_ions_1_electrons_q1_0.0-0.1_q2_0.0-0.5_960x960_3_1000.png}
 	\caption{Average electron velocity for $\nicefrac{\Omega_2}{\Omega_1} = 3$}
 	\label{fig:velocityedge-eta=3}
 \end{figure}
-
-In the sub-figure \ref{fig:det_3} we can see stable\textit{(dark)} and unstable\textit{(light)} regions of the studied differential equation. The adjacent image shows the stability of an electron based on numerical simulation. In contrast with the determinant solution, we can see that the two stability areas have melted away in the field with higher amplitudes\todo{not entirely sure why...}. The image \ref{fig:velocityedge-eta=3} combines two pictures. The pink curve construes the stable regions simulated for the figure \ref{fig:sim_3}. In the background is a contour plot of the average electron velocity throughout the whole trajectory: $$\langle v \rangle = \dfrac{1}{T_{max}} \int_{0}^{T_{max}} v(\tau) \, d\tau,$$ relative to the initial velocity $v_0$. The color bar to the right indicates the value of this ratio. We create all the other figures similar to \ref{fig:velocityedge-eta=3} in the same way. These diagrams can help us find stable trap parameters while keeping electron temperature as low as possible, which is our ultimate goal.
 
 Moving to larger frequency ratio $\rightarrow \nicefrac{\Omega_2}{\Omega_1} = 13$ we can start to notice some patterns.
 

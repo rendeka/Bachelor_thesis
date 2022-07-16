@@ -34,7 +34,7 @@ and following equation of motion:
 \subsection{Effective potential}
 Dealing with such rapidly changing non-autonomous differential equations can be a riot, although it is possible to solve them analytically for special boundary conditions, as will be discussed further. By a lucky chance, we are not always interested in exact solutions while trapping ions. The relevance often lies in the time-averaged effect of a swiftly changing field. With that in mind, we will now try to derive \emph{effective potential} fulfilling precisely this role.
 
-Let's consider initial conditions: $\vb{r}(0) = \vb{r_0}$ and $\vb{\dot{r}}(0) = 0$. For the simplest case of homogeneous electric field $\vb{E_0}(\vb{r}) = const$, we obtain a trivial solution:\todo{what about $E_s$?}
+Let's consider initial conditions: $\vb{r}(0) = \vb{r_0}$ and $\vb{\dot{r}}(0) = 0$. For the case of an oscillating electric field with homogeneous amplitude $\vb{E_0}(\vb{r}) = const$, we obtain a trivial solution:
 \begin{equation}
 	\label{solution for homogenious field}
 	\vb{r}(t) = \vb{r_0} \minus \vb{A} \cos(\Omega_1 t),
@@ -44,7 +44,7 @@ where the vector:
 	\label{oscillation amplitude}
 	\vb{A} \equiv \vb{A}(\vb{r}) = \frac{Q \vb{E_0}(\vb{r})}{m \Omega_1^2},
 \end{equation}
-is an amplitude of oscillation around the initial position of the particle. The crucial consequence of this result is that we can further restrict the motion of a particle by increasing the frequency of field oscillation. Of course, the situation changes when we bring a small inhomogeneity into the field. Here comes our first \todo{elaborate} leap of fate by assuming that the amplitude of oscillation $\vb{A}$ won't be affected by this inhomogeneity. Instead, the particle will drift slowly towards the weaker field region. Motivated by this observation, we can try to find a solution to the equation of motion in the form:
+is an amplitude of oscillation around the initial position of the particle. The crucial consequence of this result is that we can further restrict the motion of a particle by increasing the frequency of field oscillation. Of course, the situation changes when we bring a small inhomogeneity into the field. Here comes our first leap of fate by assuming that our defining relation for the amplitude of oscillation \eqref{oscillation amplitude} won't be affected by such inhomogeneity. Instead, the particle will drift slowly towards the weaker field region, minimizing its mean potential energy. Motivated by these two assumptions, we can try to find a solution to the equation of motion in the form:
 \begin{equation}
 	\label{motion separation}
 	\vb{r}(t) = \vb{R_0}(t) + \vb{R_1}(t),
@@ -132,7 +132,7 @@ Previously derived equations indirectly feature the potential $\Phi = \Phi_{rf} 
 where $C_0$, $D_0$, $A_n$, $B_n$, $C_n$ and $D_n$ are coefficients that need to be determined from boundary conditions. 
 
 \subsubsection{Multipole trap}
-A multipole is one of Paul trap's classical, well-studied geometries. N-th order multipole consists of 2n linear electrodes arranged in a discretely symmetrical manner.
+A multipole is one of Paul trap's classical, well-studied geometries. N-th order multipole consists of 2n linear electrodes arranged with a discrete cylindrical symmetry.
 \begin{figure}[H]
 \begin{subfigure}{.4\textwidth}
 	\centering
@@ -146,10 +146,10 @@ A multipole is one of Paul trap's classical, well-studied geometries. N-th order
 	\caption{A photograph of linear quadrupole trap.}
 	\label{fig:quadrupole picture}
 \end{subfigure}
-\caption{The quadrupole Paul trap}
+\caption{The quadrupole trap}
 \label{fig:quadrupole}
 \end{figure}
-\todo{Do I need to cite somebody for \ref{fig:quadrupole picture}?}In the figure \ref{fig:quadrupole scheme}, we can see a comparison of a quadrupole trap's hyperbolical \textit{(dashed)} and linear \textit{(four circles)} electrode geometries. We define a characteristic length of the multipole $\ell_0$, indicating the closest distance from the trap's center to an electrode. It is possible to obtain a potential of a multipole with infinitely long linear electrodes by applying boundary conditions \eqref{boundary condition n-pole} to a solution of Laplace equation with cylindrical symmetry \eqref{cylindrical symmetry potential}.
+\todo{Do I need to cite somebody for \ref{fig:quadrupole picture}?}In the figure \ref{fig:quadrupole scheme}, we can see a comparison of a quadrupole trap's hyperbolical \textit{(dashed)} and linear \textit{(four circles)} electrode geometries. The quadrupole is already a very important geometry worth a special alias $\rightarrow$ the Paul trap, as will be pointed out shortly. We define a characteristic length of the multipole $\ell_0$, indicating the closest distance from the trap's center to an electrode. It is possible to obtain a potential of a multipole with infinitely long linear electrodes by applying boundary conditions \eqref{boundary condition n-pole} to a solution of Laplace equation with cylindrical symmetry \eqref{cylindrical symmetry potential}.
 \begin{subequations}
 \label{boundary condition n-pole}
 \begin{align}
@@ -226,7 +226,7 @@ which means that the effective potential is:
 \end{equation}
 
 \subsubsection{Real geometry of our trap}
-Since we want to implement laser cooling in our experiment, the linear Paul trap is not a viable option, as its apparatus would stand in the way of laser beams. For this reason, we will use surface electrodes where the particles levitate above the trap so that the ions will be accessible to us.
+Since we want to implement laser cooling in our experiment, the Paul trap is not a viable option, as its apparatus would stand in the way of laser beams. For this reason, we will use surface electrodes where the particles levitate above the trap so that the ions will be accessible to us.
 \begin{figure}[H]
 \begin{subfigure}{.5\textwidth}
   \centering
@@ -286,7 +286,7 @@ If we apply no static field $a = 0$ the secular frequency is:
 which is in accordance with the result we attained with the spring constant of the harmonic pseudopotential.
 
 \subsection{Stability} 
-The stability of a linear system such as \eqref{mathieu equation} can be examined with the help of a robust theory for linear ODEs with periodic coefficients, which we do in section \ref{sec:floquet theory}. Nevertheless, we eventually want to study the trapping of multiple charged particles, and their mutual interaction razes the linearity of our equations. There is no single outright mathematical way to define the stability of a non-linear, non-autonomous system. Mathematical approaches might demand the boundedness of the solution in the phase space. Then we would talk about Lagrange stability \cite{bhatia2002stability}. Another approach would be to seek stable points and study what happens to the solutions starting in their proximity. This approach is referred to as Lyapunov stability \cite{lyapunov1992general}. We will use a simple but practical criterion for identifying stable solutions. A stable particle cannot vacate the internal dimension of the trap, meaning:
+The stability of a linear system such as \eqref{mathieu equation} can be examined with the help of a robust theory for linear ordinary differential equations(ODEs) with periodic coefficients, which we do in section \ref{sec:floquet theory}. Nevertheless, we eventually want to study the trapping of multiple charged particles, and their mutual interaction razes the linearity of our equations. There is no single outright mathematical way to define the stability of a non-linear, non-autonomous system. Mathematical approaches might demand the boundedness of the solution in the phase space. Then we would talk about Lagrange stability \cite{bhatia2002stability}. Another approach would be to seek stable points and study what happens to the solutions starting in their proximity. This approach is referred to as Lyapunov stability \cite{lyapunov1992general}. We will use a simple but practical criterion for identifying stable solutions. A stable particle cannot vacate the internal dimension of the trap, meaning:
 \begin{equation}
 	\max\limits_{x \in \mathcal{L}}(r) \leq r_m < \ell_0,
 \end{equation}

@@ -57,6 +57,7 @@ where $a$, $q_1$ and $q_2$ are dimensionless parameters:
 	q_2 & = \minus 2 \dfrac{Q V_2}{M\Omega_2^2 \ell_0^2}.
 \end{align}
 \end{subequations}
+Although we are not using any static potential, implying this, we keep it in our equations for generality.
 
 \section{Floquet theory}
 \label{sec:floquet theory}
@@ -65,33 +66,43 @@ Since the particle experiences the weakest confinement in the z-direction, we wi
 	\label{Floquet structure}
 	\dot{\vb{u}}(\tau) = \tensorq{F}(\tau) \vb{u}(\tau),
 \end{equation}
-where $\tensorq{F}$ is a matrix valued function with minimal period $T$. Let's illustrate this theory for the case of our differential equation. We begin by rewriting the equation \eqref{studied eq of motion} as a system of two first-order differential equations written in the matrix form:
+where $\tensorq{F}$ is a matrix valued function with minimal period $T$. Let's illustrate this theory for the case of our differential equation. We begin by rewriting the equation \eqref{eq of motion for simulation} as one general system of two first-order differential equations written in the matrix form:
 \begin{align}
 \label{matrix mathieu}
 	\frac{d}{d \tau}
 	\begin{bmatrix}
-		z(\tau) \\
-		\dot{z}(\tau)
+		\zeta(\tau) \\
+		\dot{\zeta}(\tau)
 	\end{bmatrix}	
 	&=
 	\begin{bmatrix}
 		0 & 1 \\
-		\minus 2\bigg( a \minus 2 q_1 \cos\left(2 \tau \nicefrac{\Omega_1}{\Omega_2} \right) \minus 2 q_2 \cos(2\tau) \bigg) & 0	
+		\tilde{a} \minus 2 \tilde{q}_1 \cos\left(2 \tau \nicefrac{\Omega_1}{\Omega_2} \right) \minus 2 \tilde{q}_2 \cos(2\tau) & 0	
 	\end{bmatrix}
 	\begin{bmatrix}
-		z(\tau) \\
-		\dot{z}(\tau)
+		\zeta(\tau) \\
+		\dot{\zeta}(\tau)
 	\end{bmatrix},
 \end{align}
-which already has a structure of \eqref{Floquet structure}. Without the necessity of finding a solution to this system, we can acquire knowledge about its stability. The information we are interested in is whether a solution is bounded for a given set of parameters or not. In this section, we will limit ourselves to the driving frequencies, which can be represented as: $\nicefrac{\Omega_2}{\Omega_1} \equiv \nicefrac{m}{n}$, where $m$ and $n$ are integers and $\nicefrac{m}{n}$ is an irreducible fraction. Then the matrix in equation \eqref{matrix mathieu} is $T = m \pi$ periodic. As in \cite{leefer2017investigation}, we identify the edge of stability regions as a set of parameters for which a solution of \eqref{studied eq of motion} is a $2T$ periodic function\footnote{Note that such stability condition differs from the one we demand while simulating the motion of a particle. The periodic solution of equation of motion implies boundedness, but the value of this boundary might lie outside the physical dimensions of the trap. That is why we ought not to be surprised when we find some differences in stability diagrams, even for the simplest case of a single particle in the trap. \label{foot: different stability condition}} to our problem \eqref{matrix mathieu}. This allows us to seek a solution to our problem in the form:
+where:
+\begin{align}
+	\label{xi variable}
+	\zeta &\in \{x,y,z\}, \\
+	\label{tilde params} 
+	\{ \tilde{a}, \tilde{q}_1, \tilde{q}_2 \} &= \begin{cases}
+		\{a, q_1, q_2\} &if \ (\zeta = x) \lor (\zeta = y), \\
+		\minus 2 \{a, q_1, q_2\} &if \ (\zeta = z). 
+	\end{cases}
+\end{align}
+This system \eqref{matrix mathieu} already has a structure of \eqref{Floquet structure}. Without the necessity of finding a solution to this system, we can acquire knowledge about its stability. The information we are interested in is whether a solution is bounded for a given set of parameters or not. In this section, we will limit ourselves to the driving frequencies, which can be represented as: $\nicefrac{\Omega_2}{\Omega_1} \equiv \nicefrac{m}{n}$, where $m$ and $n$ are integers and $\nicefrac{m}{n}$ is an irreducible fraction. Then the matrix in equation \eqref{matrix mathieu} is $T = m \pi$ periodic. As in \cite{leefer2017investigation}, we identify the edge of stability regions as a set of parameters for which a solution of \eqref{studied eq of motion} is a $2T$ periodic function\footnote{Note that such stability condition differs from the one we demand while simulating the motion of a particle. The periodic solution of equation of motion implies boundedness, but the value of this boundary might lie outside the physical dimensions of the trap. That is why we ought not to be surprised when we find some differences in stability diagrams, even for the simplest case of a single particle in the trap. \label{foot:different stability condition}} to our problem \eqref{matrix mathieu}. This allows us to seek a solution to our problem in the form:
 \begin{equation}
 	\label{Floquet ansatz}
-	z(\tau) = \sum_{k=-\infty}^{\infty} c_k \exp(i\frac{k}{m}\tau),
+	\zeta(\tau) = \sum_{k=-\infty}^{\infty} c_k \exp(i\frac{k}{m}\tau),
 \end{equation}
 where $c_k$ are constant coefficients. Substituting this into equation \eqref{matrix mathieu} yields an identity:
 
 \begin{multline}
-	\sum_{k=\minus\infty}^{\infty}\left[ \left(a \minus \dfrac{k^2}{m^2} \right)c_k \minus q_1 \left(c_{k-2n} + c_{k+2n} \right) \minus q_2 \left(c_{k-2m} + c_{k+2m} \right)  \right] \\ \exp(i\frac{k}{m}\tau) = 0,
+	\sum_{k=\minus\infty}^{\infty}\left[ \left(\tilde{a} \minus \dfrac{k^2}{m^2} \right)c_k \minus \tilde{q}_1 \left(c_{k-2n} + c_{k+2n} \right) \minus \tilde{q}_2 \left(c_{k-2m} + c_{k+2m} \right)  \right] \\ \exp(i\frac{k}{m}\tau) = 0,
 \end{multline}
 which holds for every $\tau$ only if each element of the sum is equal to zero. This relation can be written as:
 
@@ -108,7 +119,7 @@ which holds for every $\tau$ only if each element of the sum is equal to zero. T
 where $\tensorq{F}$ is an infinite matrix with elements:
 
 \begin{equation}
-	\tensorq{F}_{i j} = \left[ \left(a \minus \dfrac{k^2}{m^2} \right)\delta_{i j} \minus q_1 \left(\delta_{i j-2n} + \delta_{i j+2n} \right) \minus q_2 \left(\delta_{i j-2m} + \delta_{i j+2m} \right)  \right],
+	\tensorq{F}_{i j} = \left[ \left(\tilde{a} \minus \dfrac{k^2}{m^2} \right)\delta_{i j} \minus \tilde{q}_1 \left(\delta_{i j-2n} + \delta_{i j+2n} \right) \minus \tilde{q}_2 \left(\delta_{i j-2m} + \delta_{i j+2m} \right)  \right],
 \end{equation} 
 where:
 \begin{equation}
@@ -131,7 +142,7 @@ Let us begin this section by summarizing our approximations, some of which we ha
 \begin{description}
 	\item[Gravitational interaction:] neglecting gravitational interaction goes without saying since, for Ca+ ions, it is weaker than electrostatic force by order of $\sim 10^{32}$.
 	\item[Relativistic effects:] we did not involve any relativistic corrections since we usually deal with small velocities while trapping particles. Ca+ ions are Doppler cooled down to energies of $\sim \SI{e-4}{\eV}$. The fastest simulated electrons had a kinetic energy of $\sim \SI{1}{\eV}$, for which the relativistic gamma factor is still $\gamma \approx  1$ up to the fifth decimal place.
-	\item[Ion radiation:] a well-known consequence of Maxwell equations is that accelerating charged particle emits electromagnetic radiation. We did not account for this energetic loss due to the relatively small force applied to particles in a trap. The power $[P] = [Watt]$ of such radiation can be for our non-relativistic case calculated using \cite{larmor1897lxiii} the Larmor formula: $$P = \dfrac{Q^2 a_c^2}{6 \pi \varepsilon_0 c^3},$$ where $c$ is a speed of light, $\vb{a_c}$ denotes the acceleration of a particle at the given time, and $\varepsilon_0$ is the vacuum permittivity. We can estimate this radiation power for electron by taking an average value of it's acceleration during stable trajectories from our simulations: $\bar{a_c} \sim \SI{1e17}{m.s^{-2}}$. The resulting radiation power is then: $\bar{P} \approx \SI{5e-20}{\watt}$, which has, in the timescale of our simulations $\sim \SI{e-7}{s}$, negligible effect. Radiation power for ions would be even less significant.
+	\item[Ion radiation:] a well-known consequence of Maxwell equations is that accelerating charged particle emits electromagnetic radiation. We did not account for this energetic loss due to the relatively small force applied to particles in a trap. The power $[P] = [Watt]$ of such radiation can be for our non-relativistic case calculated using \cite{larmor1897lxiii} the Larmor formula: $$P = \dfrac{Q^2 a_c^2}{6 \pi \varepsilon_0 c^3},$$ where $c$ is a speed of light, $\vb{a_c}$ denotes the acceleration of a particle at the given time, and $\varepsilon_0$ is the vacuum permittivity. We can estimate this radiation power for electron by taking an average\footnote{Average value defined as: $\langle \xi \rangle = \nicefrac{1}{T} \int_{0}^{T} \xi(\tau) \, d\tau,$ where $T$ denotes a total time of simulation.} value of it's acceleration during stable trajectories from our simulations: $\langle a_c \rangle \sim \SI{1e17}{m.s^{-2}}$. The resulting radiation power is then: $\langle P \rangle \approx \SI{5e-20}{\watt}$, which has, in the timescale of our simulations $\sim \SI{e-7}{s}$, a negligible effect. Radiation power for ions would be even less significant.
 %$\varepsilon_0 = \SI{8.85e-12}{m^{-3}.kg^{-1}.s^{4}.A^{2}}$
 	\item[Electromagnetic field:] Let us begin by writing full form Maxwell's equations assuming we can provide sufficient vacuum to disregard material properties:
 \begin{subequations}
@@ -170,7 +181,7 @@ which can be neglected. Overall, the amplitude of an oscillating magnetic field 
 	\lambda \equiv \dfrac{2\pi c}{\Omega_2} \gg \ell_0,
 \end{equation}
 after substituting corresponding values we get: $\lambda = \SI{100}{\mm} \gg \SI{0.5}{\mm} = \ell_0$. If this condition was not met, there could be a possibility of forming standing waves that could change the trap's dynamics.  
-	\item[Induced charge on the electrodes:] charged particles induce surface charge density on the electrodes. This causes attraction of a particle toward the electrode, which can contribute to vacation of the particle from the trap. For reference we can look at simplified situation of a charged particle near an infinite conductive plane. An average acceleration of an electron throughout the stable simulated trajectory was in the order of $\bar{a}_c \sim 10^{17}$. For an infinite plane to cause an acceleration $\sim \nicefrac{\bar{a}_c}{100}$, the electron would have to approach the electrode up to the distance of $\approx \SI{0.25}{\micro\meter}$, which would already be outside our definition of stable trajectory. Hence we can omit such an effect. 
+	\item[Induced charge on the electrodes:] charged particles induce surface charge density on the electrodes. This causes attraction of a particle toward the electrode, which can contribute to vacation of the particle from the trap. For reference we can look at simplified situation of a charged particle near an infinite conductive plane. As we have already stated, an average acceleration of the electron throughout the stable simulated trajectory was in the order of $\langle a_c \rangle \sim \SI{e17}{m.s^{-2}}$. For an infinite plane to cause an acceleration $\sim \nicefrac{\langle a_c \rangle}{100}$, the electron would have to approach the electrode up to the distance of $\approx \SI{0.25}{\micro\meter}$, which would already be outside our definition of stable trajectory. Hence we can omit such an effect. 
 	\item[Creation of Rydberg atoms:] \xxx{an electron can get caught in some highly excited ion orbital creating a Rydberg atom. The electron can subsequently drop to a lower but still volatile state and vacate from it under the influence of the trap, losing energy by the associated photon emission. An electron moving inside a Coulomb crystal can be within reach of multiple ions simultaneously. Hence it may greatly contribute to electron cooling. It will be necessary to add such a process to our simulation in the future.}
 	\item[Phase shift:] induced by the finite speed of electric signal delivered to the electrode. This could be problematic since the characteristic dimension of our trap is $\ell_0 = \SI{0.5}{\mm}$, and we are using frequencies up to the orders of $\Omega_2 \sim \SI{e10}{rad.s^{-1}}$. Suppose we optimistically assume that the signal travels through the electrode with the speed of light. In that case, the signal in one period $\nicefrac{1}{\Omega_2}$ spans over the distance of $\sim \SI{0.03}{\mm}$, which is getting close to our characteristic length. We tackle this problem by dividing our electrodes into eight sections, see \ref{fig:Real trap geometry 1}, each with its own feeding from the power source.
 	\item[Imperfection of electrodes:] \xxx{adding some perturbation to the electric potential caused by the imperfection of electrodes and study of its impact on stability will be one of the subjects for our future research.}	

@@ -116,7 +116,8 @@ def MakeStabilityDiagramEdge(nCrystal='20', previousFileName=None, q1Start=0.0, 
     #initsystem = MakeParticleSystem(0,1)
     #SaveParticleSystem(initsystem, 'newSystem')
     
-    initsystem = LoadParticleSystem('this_3')
+    #initsystem = LoadParticleSystem('this_3')
+    initsystem = MakeParticleSystem(0, 1, dimension=2, Telectron=1)
     #initsystem = LoadParticleSystem('large_init_pos_2')
     #initsystem = LoadParticleSystem('large_init_vel')
 
@@ -319,21 +320,21 @@ if __name__ == '__main__':
     #PlotVelocityEdge(fileNameVel='0_ions_1_electrons_q1_0.0-0.05_q2_0.0-0.5_340x340_13', 
     #                    fileNameStability='0_ions_1_electrons_q1_0.0-0.05_q2_0.0-0.5_960x960_13')
     
-    #PlotStabilityRescaled(fileName='0_ions_1_electrons_q1_0.01396-0.01626_q2_0.24294-0.24798_240x240_833', velocityDiagram=False)
+    #PlotStabilityRescaled(fileName='0_ions_1_electrons_q1_0.0-0.14_q2_0.0-1.0_984x984_3', velocityDiagram=False)
 
     #MakeStabilityDiagramList()
         
     #MakeStabilityDiagramEdge(nCrystal='50', previousFileName='50_ions_1_electrons_q1_0.0-0.05_q2_0.0-0.5_128x128_13')   
-    MakeStabilityDiagramEdge(previousFileName=None, q1Start=0.0147, q1Stop=0.0156, q1Resol=120, q2Start=0.243, q2Stop=0.249, q2Resol=120)   
-    #MakeStabilityDiagram(q1Start=0.0, q1Stop=0.1, q1Resol=360, q2Start=0.0, q2Stop=0.5, q2Resol=360, velocityDiagram=True)  
+    #MakeStabilityDiagramEdge(previousFileName=None, q1Start=0.0, q1Stop=0.14, q1Resol=123, q2Start=0.0, q2Stop=1.0, q2Resol=123)   
+    MakeStabilityDiagram(q1Start=0.0147, q1Stop=0.0156, q1Resol=220, q2Start=0.243, q2Stop=0.249, q2Resol=220, velocityDiagram=True)  
 
     #StabilityDiagramForCrystals()
     
-    #params = ClickStabilityRegions(fileName='0_ions_1_electrons_q1_0.0-0.05_q2_0.0-0.5_960x960_833')
+    #params = ClickStabilityRegions(fileName='0_ions_1_electrons_q1_0.0-0.14_q2_0.0-1.0_123x123_3')
     """left-click unstable, right-click stable. After you choose triangles you must save them with SaveTriangles"""
     #SaveTriangles(triangleUnstable, triangleStable, params)
     
-    #StabilityDet(q1Start=0.0, q1Stop=0.07, q1Resol=990, q2Start=0.0, q2Stop=0.5, q2Resol=990, f1=f1, f2=f2)
+    #StabilityDet(q1Start=0.0, q1Stop=0.14, q1Resol=960, q2Start=0.0, q2Stop=1.0, q2Resol=960, f1=f1, f2=f2)
     stopMain = timer()
     print(round(stopMain - startMain,2),'seconds')
 

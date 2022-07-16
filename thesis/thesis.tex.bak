@@ -60,7 +60,7 @@
 
 
 % load bibliography tools
-\usepackage[backend=bibtex,natbib,style=numeric,sorting=none]{biblatex}
+\usepackage[backend=bibtex,natbib,style=numeric,sorting=none,giveninits=true]{biblatex}
 % alternative with alphanumeric citations (more informative than numbers):
 %\usepackage[backend=bibtex,natbib,style=alphabetic]{biblatex}
 %

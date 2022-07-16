@@ -396,11 +396,11 @@ def StabilityMatrix(trapParams, f1, f2):
     resol = 10*m + 1
     
     stabilityMatrix = np.zeros((resol,resol))
-    stabilityFactor = -2 #1    
+    stabilityFactor = 1 #-2    
     
     for i in range(resol):
         k = i - (resol-1)/2
-        stabilityMatrix[i,i] = a * eta**2 - ((k)/m)**2
+        stabilityMatrix[i,i] = a * stabilityFactor * eta**2 - ((k)/m)**2
         if i + 2*n < resol:            
             stabilityMatrix[i,i + 2*n] = -q1 * stabilityFactor
             stabilityMatrix[i + 2*n,i] = -q1 * stabilityFactor

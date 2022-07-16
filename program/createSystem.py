@@ -26,7 +26,7 @@ def RandomPosition(maxRadius=0.1 * r0, dim=3):
     
     return vector
 
-def MakeParticleSystem(n=1, m=1, dimension=3, Tion=10, Telectron=0.010):#system with n ions and m electrons
+def MakeParticleSystem(n=1, m=1, dimension=3, Tion=10, Telectron=0.01):#system with n ions and m electrons
     particles = []
 
     for i in range(n): 
@@ -51,6 +51,13 @@ def MakeParticleSystem(n=1, m=1, dimension=3, Tion=10, Telectron=0.010):#system 
         for particle in particles:                
             particle[0][2] = 0 #setting position in z direction to zero
             particle[1][2] = 0 #setting velocity in z direction to zero
+            
+    if dimension == 1:
+        for particle in particles:                
+            particle[0][0] = 0 #setting position in x direction to zero
+            particle[1][0] = 0 #setting velocity in x direction to zero
+            particle[0][1] = 0 #setting position in y direction to zero
+            particle[1][1] = 0 #setting velocity in y direction to zero
 
     return np.array(particles)  
 def MakeParticleGrid(n=10, T=4):
