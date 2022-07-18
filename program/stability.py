@@ -304,6 +304,12 @@ def StabilityDiagramEdge(system, ODESystem, previousFile, q1Start=0.0, q1Stop=0.
   
     return stability, params   
 
+def RemoveMinusOnes(data):
+    for (i,row) in enumerate(data):
+        for (j,element) in enumerate(row):
+            if element == -1:
+                data[i,j] = 0
+    return data
 
 def PrepForStabilityEdge(fileName, needComputationValue=-1):
     """
@@ -314,9 +320,12 @@ def PrepForStabilityEdge(fileName, needComputationValue=-1):
     """
     
     stability, params = LoadStabilityDiagram(fileName)
-    q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nParticles, eta, f1, f2 = params
-    nIons, nElectrons = nParticles
-    n = nIons + nElectrons
+    
+    if fileName[0] == 'd':
+        q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, eta, f1, f2 = params
+        stability = RemoveMinusOnes(stability)
+    else:
+        q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nParticles, eta, f1, f2 = params
         
     q1Step = (q1Stop - q1Start) / q1Resol
     q2Step = (q2Stop - q2Start) / q2Resol
@@ -487,4 +496,4 @@ def StabilityDet(q1Start=0.0, q1Stop=0.15, q1Resol=20, q2Start=0.0, q2Stop=1.0, 
     from plotting import PlotStabilityDet
     PlotStabilityDet(stability, params)
   
-    #return stability, params   
+    #return stability, params  

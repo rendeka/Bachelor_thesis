@@ -85,7 +85,7 @@ def Recombine(system, i, o):
     system[(i,o),3] = 0   
 
 def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,
-           Step=StepEulerAdvanced, freezeIons=False, velocityDiagram=False, kSecular=800):
+           Step=StepEulerAdvanced, freezeIons=False, velocityDiagram=False, kSecular=20):
     """
     integrating equations of motion
     """
@@ -111,7 +111,10 @@ def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,
             if IsExact(ODESystem):    
                 tmax = kSecular * np.sqrt(2) / q1
             else:
-                tmax = kSecular * np.sqrt(8) / (f1 * q1)
+                dt = dt * ionMass / electronMass
+                tmax = 100*kSecular * np.sqrt(2) / q1
+
+                #tmax = kSecular * np.sqrt(8) / (f1 * q1)
                 print('what are you doing?')
                 
                 
@@ -161,6 +164,10 @@ def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,
             kineticEnergy[k] = kineticEnergy[k] + 0.5 * mass[i] * Norm(v)**2 * (f2/2)**2
             potentialFromTrap = trapEnergy(ODESystem, trapParams, r, mass[i], t[i]) 
             potentialEnergy[k] = potentialEnergy[k] + potentialFromTrap + potentialCoulomb[i]
+            
+            
+            potentialEnergy[k] = potentialEnergy[k] + potentialCoulomb[i]
+            kineticEnergy[k] = 0
                                                               
             if allowRecombination:
                 

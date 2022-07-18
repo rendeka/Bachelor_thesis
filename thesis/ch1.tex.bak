@@ -1,13 +1,32 @@
 \chapter{Theoretical introduction}
 \label{chap:intro}
 
-In this chapter, we introduce concepts essential for understanding this thesis's concerns. This chapter is divided into several subsections. \footnote{\xxx{In the first subsection, we are going to discuss the basic principles of plasma physics. In the following subsection, we will talk about the motion of a charged particle inside the Paul trap. Next, we will introduce the idea of laser cooling. And finally, in the last subsection, we will present our approach to simulating such a system, entering this thesis's practical component.}} \todo{the sections in the first two chapters will probably be rearranged}
+In this chapter, we introduce concepts essential for understanding this thesis's concerns. This chapter is divided into several subsections. In the first subsection, we are going to discuss the basic principles of plasma physics. In the following subsection, we will talk about the motion of a charged particle inside the Paul trap. Next, we will introduce the idea of laser cooling. And finally, in the last subsection, we will present our approach to simulating such a system, entering this thesis's practical component.
 
 \section{Coulomb crystal}
-Most of the ordinary matter has a crystal or rather polycrystal structure. Meaning its elementary constituents (atoms, molecules, ions) create an ordered formation repeating itself, in the case of crystals up to macroscopic scales. The shape of these structures \cite{drewsen2003ion} is essentially dictated by the wave function overlap. A CC orders itself differently. An average distance between ions in a CC is usually \cite{thompson2015ion} five orders of magnitude larger than it is for atoms in solid matter. On this scale are quantum effects negligible, and ions are merely pushed away from each other by classical Coulomb interaction. Therefore they need an external force to keep them together, which is provided by a trapping potential in our case. However, these structures can also be found in nature, namely in the cores of white dwarfs and crusts of neutron stars.
+Most of the solid matter we come across has either a crystal or rather polycrystal structure. Meaning its elementary constituents (atoms, molecules, ions) create an ordered formation repeating itself, in the case of crystals up to macroscopic scales. The shape of these structures \cite{drewsen2003ion} is essentially dictated by the atomic wave function overlap. A CC orders itself differently. An average distance between ions in a CC is usually \cite{thompson2015ion} five orders of magnitude larger than it is for atoms in typical matter. On this scale are quantum effects negligible, and ions are merely pushed away from each other by classical Coulomb interaction. Therefore they need an external force to keep them together, which is provided by a trapping potential in our case. However, these structures can also be found in nature, namely in the cores of white dwarfs and crusts of neutron stars.
 
-\subsection{Plasma}
-The broadest definition of plasma is to identify it as ionized gas \cite{fitzpatrick2014plasma}\xxx{\dots}. The standard definition is more strict by demanding quasineutrality and collective behavior as well. We will call such plasma as \emph{conventional plasma}\todo{check the usage of this term}. Quasineutrality suggests the same ion and electron concentrations over the whole volume. By this merit, a CC is far from being a conventional plasma as it is composed exclusively of positive ions.\todo{what is collective behavior, coupling parameter, maybe other plasma parameters, strongly coupled plasma, maybe Rydberg ions}
+\subsubsection{Plasma}
+Not all texts agree on a precise definition of plasma. A somewhat broad definition \cite{fitzpatrick2014plasma} states that plasma is an ionized gas exerting collective behavior. We often demand quasineutrality as well, suggesting similar ion and electron concentrations. By this merit, a CC can not be labeled plasma as it is composed exclusively of positive ions. Collective behavior means that the plasma responds to external changes as a whole. The standard parameter linked to this aspect is plasma frequency $\omega_p$, describing the pace with which plasma reacts to the external electromagnetic field.
+\begin{equation}
+	\label{plasma frequency}
+	\omega_p = \frac{n Q^2}{\varepsilon_0 M},
+\end{equation}
+where $n$ represents a concentration of charged particles, $Q$ their charge, $M$ their mass, and $\varepsilon_0$ is vacuum permittivity. This equation \eqref{plasma frequency} shows that the electrons play an essential role in collective behavior, as they can react much more swiftly than heavy ions. That is another reason why it is necessary to add electrons so that CC can become plasma. 
+
+Plasma can have multiple components, each having different masses and velocities. We define a temperature \cite{fitzpatrick2014plasma} for each species individually as their mean kinetic energy:
+\begin{equation}
+	\label{temperature}
+	T_s = \frac{1}{3} M_s \langle v_s \rangle,
+\end{equation}
+where $\langle v_s \rangle$ denotes an average velocity of single species.
+
+Another crucial attribute when examining plasma is the $\Gamma$ parameter, representing the proportion of Coulomb potential energy to the plasma's kinetic energy.
+\begin{equation}
+	\label{gamma def}
+	\Gamma \equiv \frac{E_c}{k_b T},
+\end{equation}
+where $T$ denotes temperature, $E_c$ Coulomb energy, and $k_b$ is a Boltzmann constant. It is not easy to figure out the potential energy of a general plasma. However, when dealing with Coulomb crystals with tens to hundreds of ions, nothing stops us from computing it exactly. Classical thermal plasma has $k_b T \gg E_c$. In the case of CCs, $k_b T < E_c$ and we are talking about \emph{strongly coupled} plasma.
 
 \section{Ion trapping}
 Here we introduce the concept of trapping a single ion by a quickly oscillating field. We will tightly follow a classic textbook \cite{gerlich1992inhomogeneous} in the whole section, starting by writing the equation of motion.
@@ -166,7 +185,7 @@ where $\hat{r} = \nicefrac{r}{\ell_0}$. We get an electric intensity in polar co
 \begin{equation}
 	\vb{E}(r,\varphi) = \minus\nabla_{r\varphi} \Phi(r,\varphi),
 \end{equation}
-where $\nabla_{r\varphi} = \left[\dfrac{\partial}{\partial r}, \dfrac{1}{r} \dfrac{\partial}{\partial \varphi}\right]^\top$. We get:
+where $\nabla_{r\varphi} = \left[\dfrac{\partial}{\partial r}, \dfrac{1}{r} \dfrac{\partial}{\partial \varphi}\right]^\top$. Hence:
 \begin{equation}
 \label{need this for norm(E_0)}
 \vb{E}(r,\varphi) = \dfrac{\Phi_0}{\ell_0} n \hat{r}^{n-1} 
@@ -200,11 +219,11 @@ where we, for abbreviation, introduced the function:
 \begin{equation}
 	F(t) = n\dfrac{Q V_0}{M \ell_0^2} + n\dfrac{Q V_1}{M \ell_0^2} \cos(\Omega_1 t).
 \end{equation}
-We see that for $n = 2$ the equation of motion \eqref{eq of motion multipole} is linear. The same is clearly not true for the case of $n > 2$. That is why the motion in a quadrupole trap is easiest to describe, and we chose this geometry to study simultaneous electron-ion trapping in this thesis.
+We see that for $n = 2$ the equation of motion \eqref{eq of motion multipole} is linear. The same is clearly not true for the case of $n > 2$. That is why the motion in a quadrupole trap is the easiest to describe, and we chose this geometry to study simultaneous electron-ion trapping in this thesis.
 
 \subsubsubsection{Ideal quadrupole trap}
 \label{sec:quadrupole trap}
-We have already derived a equation of motion for single charged particle in a quadrupole trap $\rightarrow$ $n=2$ in \eqref{eq of motion multipole}. This equation gets further simplified by replacing linear electrodes with hyperbolical ones. With this change, the electric field gets scaled \cite{leefer2017investigation} by a factor $\nicefrac{1}{2}$, but foremost it loses the spatial dependence on the angle $\varphi$. In that case, the motion in the x and y directions stays decoupled, and we obtain an equation of motion in a variable $\vb{r} = (x,y)^\top$ for an idealized quadrupole trap:
+We have already derived a equation of motion for single charged particle in a quadrupole trap $\rightarrow$ $n=2$ in \eqref{eq of motion multipole}. This equation gets further simplified by replacing linear electrodes with hyperbolical ones. With this change, the electric field gets scaled \cite{leefer2017investigation} by a factor $\nicefrac{1}{2}$, but foremost it loses the spatial dependence on the angle $\varphi$. In that case, the motion in the x and y directions stays independent, and we obtain an equation of motion in a variable $\vb{r} = (x,y)^\top$ for an idealized quadrupole trap:
 \begin{equation}
 	\label{eq of motion hyperbolic electrodes}
 	M\vb{\ddot{r}} = \minus\dfrac{Q}{\ell_0^2} \big[V_0 + V_1 \cos(\Omega_1 t)\big] \vb{r}.
@@ -231,13 +250,13 @@ Since we want to implement laser cooling in our experiment, the Paul trap is not
 \begin{subfigure}{.5\textwidth}
   \centering
   \includegraphics[width=\linewidth]{img/real_trap_geometry_1.pdf}
-  \caption{Scheme of our planar trap}
+  \caption{Scheme of our planar trap.}
   \label{fig:Real trap geometry 1}
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
   \centering
   \includegraphics[width=\linewidth]{img/real_trap_geometry_2.pdf}  
-  \caption{(3 x 3) millimeter segment of our trap with the potential well above it}
+  \caption{Our trap with calculated potential well above it (length in meters).}
   \label{fig:Real trap geometry 2}
 \end{subfigure}
 \caption{Planar trap geometry}
@@ -257,9 +276,7 @@ characterizing the strength of trapping potential. The spring constant is closel
 	\label{secular frequency}
 	\omega \approx \sqrt{\nicefrac{\kappa}{M}} = \nicefrac{Q V_1}{\sqrt{2}\ell_0^2 M \Omega_1}.
 \end{equation}
-The good news is that the spring constant does not depend on the charge sign, making it possible to trap electrons as well as ions. The bad news is that the spring constant depends on the charge-to-mass ratio $\nicefrac{Q}{M}$, making it practically very difficult to trap electrons and ions simultaneously. For our case of trapping Ca+ ions together with electrons, we get $\nicefrac{\kappa_{electron}}{\kappa_{ion}} = \nicefrac{M_{ion}}{M_{electron}} \approx 73000$ while we would like to achieve $\nicefrac{\kappa_{electron}}{\kappa_{ion}} \sim 10$ so that electron trajectories would ideally stay inside the ion crystal but at the similar scales. It seems that we have hit upon a huge snag with our approach. Fortunately, this does not mean we have to abandon the idea of RF trapping itself. Instead, we can improve on it by adding a second frequency, giving us the freedom to treat the stability of both species individually and making it possible to manage the desired ratio of spring constants. Two frequency Paul trap will be further discussed in section \ref{sec:two frequency trap}.
-
-\xxx{We aim to create a Coulomb crystal and trap electrons within so that a cooled electron would spread its de Broglie's wavelength across multiple ions. For this, we need tighter confinement of electrons, but the ions must be close to each other as well. }
+The good news is that the spring constant does not depend on the charge sign, making it possible to trap electrons as well as ions. The bad news is that the spring constant depends on the charge-to-mass ratio $\nicefrac{Q}{M}$, making it practically very difficult to trap electrons and ions simultaneously. For our case of trapping $Ca^+$ ions together with electrons, we get $\nicefrac{\kappa_{electron}}{\kappa_{ion}} = \nicefrac{M_{ion}}{M_{electron}} \approx 73000$ while we would like to achieve $\nicefrac{\kappa_{electron}}{\kappa_{ion}} \sim 10$ so that electron trajectories would ideally stay inside the ion crystal but at similar scales. It seems that we have hit upon a huge snag with our approach. Fortunately, this does not mean we have to abandon the idea of RF trapping itself. Instead, we can improve on it by adding a second frequency, giving us the freedom to treat the stability of both species individually and making it possible to manage the desired ratio of spring constants. Two frequency Paul trap will be further discussed in section \ref{sec:two frequency trap}.
 
 \subsection{Mathieu equation}
 \label{sec:mathieu equation}
@@ -275,7 +292,7 @@ where:
 	q_1 &= \minus\dfrac{2 Q V_1}{M \ell_0^2 \Omega_1^2}.
 \end{align}
 \end{subequations}
-The equation \eqref{mathieu equation} bears a name after E.L. Mathieu, who was the first to extensively study it in the context of vibrating membranes. It has an analytical solution \cite{5416839} in terms of special functions called Mathieu functions, denoted $ce_n$ and $se_n$, sometimes referred to as cosine-elliptic and sine-elliptic. The secular is given by \cite{gerlich1992inhomogeneous} the Dehmelt approximation:
+The equation \eqref{mathieu equation} bears a name after E.L. Mathieu, who was the first to extensively study this ODE in the context of vibrating membranes. It has an analytical solution \cite{5416839} in terms of special functions called Mathieu functions, denoted $ce_n$ and $se_n$, sometimes referred to as cosine-elliptic and sine-elliptic. The secular is given by \cite{gerlich1992inhomogeneous} the Dehmelt approximation:
 \begin{equation}
 	\omega \approx \frac{\Omega_1}{2} \sqrt{a + \frac{q_1^2}{2}}.
 \end{equation}
@@ -302,6 +319,11 @@ We still need to find the right value for $r_m$. It has been established \cite{g
 \end{equation}
 
 \section{Laser cooling}
-The Ca+ ion has an energy gap between the ground $(s_{\nicefrac{1}{2}})$ and one of its excited $(p_{\nicefrac{1}{2}})$ states with the value corresponding to the wavelength of $\SI{397}{\nano\meter}$ \cite{urabe1993laser}. By tuning the wavelength of our laser slightly below this transition energy, we can exploit the Doppler effect so that only ions moving towards the laser can experience radiation with the right frequency to excite them. After a brief time, the atom will deexcite, emitting a photon in a random direction. The only way the ion would still have the same momentum as before the absorption is if the photon was emitted exactly in the same direction as it was absorbed (as if the photon did not interact with the atom at all). But since the photon emission is isotropic, the ion will effectively slow down. This type of laser cooling is also known as \emph{Doppler cooling}. Detailed explanation can be found in \cite{alma990008711500106986}.   
+The $Ca^+$ ion has an energy gap between the ground $(s_{\nicefrac{1}{2}})$ and one of its excited $(p_{\nicefrac{1}{2}})$ states with the value corresponding to the wavelength of $\SI{397}{\nano\meter}$ \cite{urabe1993laser}. By tuning the wavelength of our laser slightly below this transition energy, we can exploit the Doppler effect so that only ions moving towards the laser can experience radiation with the right frequency to excite them. After a brief time, the atom will deexcite, emitting a photon in a random direction. The only way the ion would still have the same momentum as before the absorption is if the photon was emitted exactly in the same direction as it was absorbed (as if the photon did not interact with the atom at all). But since the photon emission is isotropic, the ion will effectively slow down. This type of laser cooling is also known as \emph{Doppler cooling}. Detailed explanation can be found in \cite{alma990008711500106986}.   
 
-\section{Desing of our experiment}
+\section{Design of the experiment}
+
+\todo{I will write this section on Monday with Albin's help}
+\begin{comment}
+\xxx{materials and processes used for making electrode; oven as source of calcium atoms, lasers for ionizing calcium atoms creating $Ca^+ + e^-$, lasers for ion cooling}
+\end{comment}

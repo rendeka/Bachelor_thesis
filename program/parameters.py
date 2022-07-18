@@ -26,8 +26,8 @@ planckConst = 6.62607e-34
 #f2 = 2.5e9 * 2 * np.pi
 f2 = 1.88e10
 
-f1 = f2 // 833
-f2 = f1 * 833
+f1 = f2 // 1207
+f2 = f1 * 1207
 
 const = 1e-3 #constant for harmonic potential
 beta = 1e-5 #constant for damping force

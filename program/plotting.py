@@ -44,17 +44,17 @@ def PlotODESolution(ODESolution):
         ax.plot3D(x, y, z, color)
     
     ax.view_init(15, 240)
-    ax.set_title(str(n) + " charged particles \n" + "method: " + methodName + "\n" + "execution time: " + str(exeTime) + " s")
+    #ax.set_title(str(n) + " charged particles \n" + "\n" + "execution time: " + str(exeTime) + " seconds",fontsize=sizeLabel)
     
-    ax.set_xlabel('x[mm]')
-    ax.set_ylabel('y[mm]')
-    ax.set_zlabel('z[mm]')
+    ax.set_xlabel('x[mm]', fontsize=sizeLabelSmall, labelpad=10)
+    ax.set_ylabel('y[mm]', fontsize=sizeLabelSmall, labelpad=10)
+    ax.set_zlabel('z[mm]', fontsize=sizeLabelSmall, labelpad=10)
     
     ax.xaxis.set_tick_params(labelsize=sizeTick)
     ax.yaxis.set_tick_params(labelsize=sizeTick)
     ax.zaxis.set_tick_params(labelsize=sizeTick)
     
-    framesize = 0.3
+    framesize = 0.2
     
     ax.auto_scale_xyz([-framesize, framesize], [-framesize, framesize], [-framesize, framesize])
 
@@ -149,29 +149,36 @@ def PlotFinalPositions(ODESolution):
     
     for i in range(n):
             
+        """
         x = rs[i,-1,0] * 1000 # 1000 to convert into milimeters
         y = rs[i,-1,1] * 1000 
         z = rs[i,-1,2] * 1000 
+        """
+        
+        x = rs[i,0] * 10000 # 1000 to convert into milimeters
+        y = rs[i,1] * 10000 
+        z = rs[i,2] * 10000 
         
         charge = system[-1][3]
         if charge > 0:
-            color = "red"
+            col = "red"
         else:
-            color = "blue"
+            col = "blue"
 
-        ax.scatter(x, y, z, color)
+        ax.scatter(x, y, z, color=col)
     
     ax.view_init(15, 240)
     
-    ax.set_xlabel('x[mm]')
-    ax.set_ylabel('y[mm]')
-    ax.set_zlabel('z[mm]')
+    ax.set_xlabel('$x \ [10^{-4}m]$', fontsize=sizeLabelSmall, labelpad=10)
+    ax.set_ylabel('$y \ [10^{-4}m]$', fontsize=sizeLabelSmall, labelpad=10)
+    ax.set_zlabel('$z \ [10^{-4}m]$', fontsize=sizeLabelSmall, labelpad=10)
     
-    ax.xaxis.set_tick_params(labelsize=sizeTick)
-    ax.yaxis.set_tick_params(labelsize=sizeTick)
-    ax.zaxis.set_tick_params(labelsize=sizeTick)
+    ax.xaxis.set_tick_params(labelsize=sizeTickSmall)
+    ax.yaxis.set_tick_params(labelsize=sizeTickSmall)
+    ax.zaxis.set_tick_params(labelsize=sizeTickSmall)
     
-    ax.auto_scale_xyz([-0.06, 0.06], [-0.06, 0.06], [-0.06, 0.06])
+    framesize = 1.4
+    ax.auto_scale_xyz([-framesize, framesize], [-framesize, framesize], [-framesize, framesize])
     
     
     plt.grid(b=None)
@@ -272,7 +279,7 @@ def PlotStabilityRescaled(data=np.zeros((2,2)), params=[], index=None, fileName=
         #path = path + 'velocity/'
         fig, ax = plt.subplots()
         
-        vmin, vmax = 0, 20
+        vmin, vmax = 0, 21
         levels = 1000    
         level_boundaries = np.linspace(vmin, vmax, levels + 1)
         
@@ -291,9 +298,8 @@ def PlotStabilityRescaled(data=np.zeros((2,2)), params=[], index=None, fileName=
             extend='max',
         )
         
-        cbar.ax.tick_params(labelsize=sizeTick)
-        cbar.set_label(r'$\dfrac{\langle v \rangle}{v_0}$', fontsize=sizeLabel, rotation=0, labelpad=15)
-
+        cbar.ax.tick_params(labelsize=sizeTickSmall)
+        cbar.set_label(r'$\dfrac{\langle v \rangle}{v_0}$', fontsize=sizeLabelSmall, rotation=0, labelpad=15)
         
         
     else:
@@ -301,10 +307,10 @@ def PlotStabilityRescaled(data=np.zeros((2,2)), params=[], index=None, fileName=
         plt.contourf(X, Y, data)
         
         
-    plt.xticks(fontsize=sizeTick)    
-    plt.yticks(fontsize=sizeTick)    
-    plt.xlabel('$q_{2} \ [10^{-1}]$', fontsize=sizeLabel)
-    plt.ylabel('$q_{1} \ [10^{-2}]$', fontsize=sizeLabel)
+    plt.xticks(fontsize=sizeTickSmall)    
+    plt.yticks(fontsize=sizeTickSmall)    
+    plt.xlabel('$q_{2} \ [10^{-1}]$', fontsize=sizeLabelSmall)
+    plt.ylabel('$q_{1} \ [10^{-2}]$', fontsize=sizeLabelSmall)
     plt.tight_layout()
     
     if velocityDiagram:
@@ -378,7 +384,12 @@ def PlotCrystalTest(nCrystal='20'):
     
 def PlotCrystal(nCrystal='20'):
     s = LoadParticleSystem('coulomb_crystals/' + nCrystal) 
-    sol = ODEint(s, np.array([0,0,0]), 1e-10, 1e-10, ODESystem=ODESystemExact,  Step=StepEulerAdvanced, freezeIons=True)
+    #sol = ODEint(s, np.array([0,0,0]), 1e-10, 1e-10, ODESystem=ODESystemExact,  Step=StepEulerAdvanced, freezeIons=True)
+    rs=[]
+    for p in s:
+        rs.append(p[0])
+    rs = np.array(rs)
+    sol = rs, None, None, None, None, s, None
     PlotFinalPositions(sol)   
     
     

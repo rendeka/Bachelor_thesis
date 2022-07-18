@@ -1,5 +1,7 @@
 \chapter{Using software}
 
+We will not provide an entire architecture of our program since it awaits an extensive reconstruction in the near future. In this appendix, we explain some of its functionalities instead.
+
 \section{Python script}
 \label{sec:code}
 
