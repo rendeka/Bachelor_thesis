@@ -24,7 +24,7 @@ import warnings
 def SolveParticleSystem(nCrystal='30'):
     """doesn't work if number of electrons=0 and freezedIons=True"""    
     
-    initsystem = MakeParticleSystem(10,0)
+    #initsystem = MakeParticleSystem(1,0)
     #n = int(nCrystal)
     #initsystem = MakeParticleSystem(n,0)
     
@@ -37,7 +37,7 @@ def SolveParticleSystem(nCrystal='30'):
     #initsystem = LoadParticleSystem('oneElectron')
     
     
-    """
+    #"""
     crystal = LoadParticleSystem('coulomb_crystals/' + nCrystal) 
     electron = LoadParticleSystem('this_3')[0]
     #electron = MakeParticle(mass=electronMass, charge=electronCharge, T=0.01)
@@ -46,12 +46,12 @@ def SolveParticleSystem(nCrystal='30'):
     #initsystem = np.array([electron])
     #SaveParticleSystem(initsystem, 'oneElectron')
     #initsystem = MakeParticleSystem(0,50)
-    """
+    #"""
     
     trapParams = np.array([0, 0.005, 0.25])
     #trapParams = np.array([0, 0.0245, 0.447])
     
-    ODESolution = ODEint(initsystem, trapParams, endTime, timeStep, ODESystemEffectiveDamping, StepEulerAdvanced, freezeIons=False)
+    ODESolution = ODEint(initsystem, trapParams, endTime, timeStep, ODESystemExact, StepEulerAdvanced, freezeIons=True)
     #ODESolution = ODEint(initsystem, trapParams, 50*endTime, 5000*timeStep, ODESystemEffectiveDamping, StepEulerAdvanced, freezeIons=False)
     newsystem = ODESolution[-2]
     
@@ -156,7 +156,7 @@ def MakeStabilityDiagramEdge(nCrystal='20', previousFileName=None, q1Start=0.0, 
     else:
         q1Start, q1Stop, q1Resol, q2Start, q2Stop, q2Resol, nIons, nElectrons, eta = ParseFileName(previousFileName)
         
-    for _ in range(3):#number of times we will scale the resolution
+    for _ in range(5):#number of times we will scale the resolution
         print('resolution: ' +  str(int(q1Resol)) + 'x' + str(int(q2Resol)))
         for i in range(1):#after this loop resolution will be doubled in both coordinates q1 adn q2
             subStart = timer()
@@ -260,7 +260,7 @@ def PlotVelocityEdge(fileNameVel, fileNameStability, velocityDiagram=True):
     
     if velocityDiagram:
     
-        vmin1, vmax1 = 0, 32
+        vmin1, vmax1 = 0, 21
         levels1= 1000
         level_boundaries = np.linspace(vmin1, vmax1, levels1 + 1)
         
@@ -280,7 +280,7 @@ def PlotVelocityEdge(fileNameVel, fileNameStability, velocityDiagram=True):
         )
         
         cbar.ax.tick_params(labelsize=sizeTick)
-        cbar.set_label(r'$\dfrac{\langle v \rangle}{v_0}$', fontsize=sizeLabel, rotation=0, labelpad=15)
+        cbar.set_label(r'$\dfrac{\langle v \rangle}{v_0}$', fontsize=sizeLabelSmall, rotation=0, labelpad=15)
     else:
         plt.contourf(X, Y, reshapedData)
       
@@ -288,17 +288,17 @@ def PlotVelocityEdge(fileNameVel, fileNameStability, velocityDiagram=True):
     vmax2 = 10000
     
     levels2 = np.linspace(vmin2, vmax2, 2+1)
-    ax.contourf(X,Y,fMatrix, levels=levels2, vmin=vmin2, vmax=vmax2, cmap=plt.get_cmap('cool'))
+    ax.contourf(X,Y,fMatrix, levels=levels2, vmin=vmin2, vmax=vmax2, cmap=plt.get_cmap('spring'))
     #spring -> pink
     #summer -> dark green
     #autumn -> red
     #winter -> blue
     #cool   -> light blue
     
-    plt.xticks(fontsize=sizeTick)    
-    plt.yticks(fontsize=sizeTick)    
-    plt.xlabel('$q_{2} \ [10^{-1}]$', fontsize=sizeLabel)
-    plt.ylabel('$q_{1} \ [10^{-2}]$', fontsize=sizeLabel)
+    plt.xticks(fontsize=sizeTickSmall)    
+    plt.yticks(fontsize=sizeTickSmall)    
+    plt.xlabel('$q_{2} \ [10^{-1}]$', fontsize=sizeLabelSmall)
+    plt.ylabel('$q_{1} \ [10^{-2}]$', fontsize=sizeLabelSmall)
     plt.tight_layout()
     
     if velocityDiagram:
@@ -322,14 +322,14 @@ if __name__ == '__main__':
     
     print(strftime("%b-%d-%Y %H:%M:%S", localtime()))
     
-    timeStep = 1/(40)#in normal time scale 1/(10 * f2) -> faster period divided into five segments 
+    timeStep = 1/(20)#in normal time scale 1/(10 * f2) -> faster period divided into five segments 
     endTime = 5 * f2 / f1#in normal time scale 50 * (1 / f1) -> fifty slower periods 
     
     
     tp = np.array([0, 0.005, 0.25])
-    #MakeCoulombCrystalFromGrid(nCrystal='200', trapParams=tp, tmax=25*f2/f1*5, dt=1/(200))
+    MakeCoulombCrystalFromGrid(nCrystal='100', trapParams=tp, tmax=25*f2/f1*5, dt=1/(400))
     #SolveParticleSystem(nCrystal='200')
-    PlotCrystal(nCrystal='200') 
+    #PlotCrystal(nCrystal='100') 
 
     
     #MakeCoulombCrystal(nCrystal='1', trapParams=tp)
@@ -343,19 +343,19 @@ if __name__ == '__main__':
     #PlotStabilityEdge(fileName='0_ions_1_electrons_q1_0.0-0.1_q2_0.0-0.55_768x897_3')
     #PlotStabilityVelocity(fileName='0_ions_1_electrons_q1_0.0-0.1_q2_0.0-0.5_200x200_3')
     
-    #PlotVelocityEdge(fileNameVel='0_ions_1_electrons_q1_0.0-0.1_q2_0.0-0.5_360x360_3', 
-    #                    fileNameStability='det_q1_0.0-0.1_q2_0.0-0.5_970x970_3')
+    #PlotVelocityEdge(fileNameVel='0_ions_1_electrons_q1_0.0-0.04_q2_0.0-0.5_360x360_1207', 
+    #                    fileNameStability='0_ions_1_electrons_q1_0.0-0.04_q2_0.0-0.5_960x960_1207')
     
     #PlotVelocityEdge(fileNameVel='0_ions_1_electrons_q1_0.0-0.1_q2_0.0-0.5_360x360_3', 
     #                    fileNameStability='det_q1_0.0-0.1_q2_0.0-0.5_970x970_3',
-    #                    velocityDiagram=True)
+    #                    velocityDiagram=False)
     
     #PlotStabilityRescaled(fileName='0_ions_1_electrons_q1_0.0-0.04_q2_0.0-0.5_360x360_1207', velocityDiagram=True)
 
     #MakeStabilityDiagramList()
         
     #MakeStabilityDiagramEdge(nCrystal='50', previousFileName='50_ions_1_electrons_q1_0.0-0.05_q2_0.0-0.5_128x128_13')   
-    #MakeStabilityDiagramEdge(previousFileName=None, q1Start=0.0, q1Stop=0.1, q1Resol=61, q2Start=0.0, q2Stop=0.5, q2Resol=61)   
+    #MakeStabilityDiagramEdge(previousFileName=None, q1Start=0.0, q1Stop=0.04, q1Resol=30, q2Start=0.0, q2Stop=0.5, q2Resol=30)   
     #MakeStabilityDiagram(q1Start=0.0, q1Stop=0.04, q1Resol=80, q2Start=0.0, q2Stop=0.5, q2Resol=80, velocityDiagram=True)  
 
     #StabilityDiagramForCrystals()

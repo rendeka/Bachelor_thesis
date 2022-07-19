@@ -112,7 +112,7 @@ def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,
                 tmax = kSecular * np.sqrt(2) / q1
             else:
                 dt = dt * ionMass / electronMass
-                tmax = 100*kSecular * np.sqrt(2) / q1
+                tmax = 500*kSecular * np.sqrt(2) / q1
 
                 #tmax = kSecular * np.sqrt(8) / (f1 * q1)
                 print('what are you doing?')

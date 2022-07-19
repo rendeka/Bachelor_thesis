@@ -22,6 +22,7 @@ V2 = 100 #fast ac potential 100
 Kb = 1.3806e-23#Boltzman constant
 eps0 = 8.8541878e-12
 planckConst = 6.62607e-34
+avogadro = 6.02214e23
 
 #f2 = 2.5e9 * 2 * np.pi
 f2 = 1.88e10
@@ -30,7 +31,7 @@ f1 = f2 // 1207
 f2 = f1 * 1207
 
 const = 1e-3 #constant for harmonic potential
-beta = 1e-5 #constant for damping force
+beta = 1e-3 #constant for damping force
 
 velocityChop = 1100 # trashold value for velocity diagrams
 

@@ -44,17 +44,17 @@ def PlotODESolution(ODESolution):
         ax.plot3D(x, y, z, color)
     
     ax.view_init(15, 240)
-    #ax.set_title(str(n) + " charged particles \n" + "\n" + "execution time: " + str(exeTime) + " seconds",fontsize=sizeLabel)
+    ax.set_title(str(n) + " charged particles \n" + "method: " + methodName + "\n" + "execution time: " + str(exeTime) + " s")
     
-    ax.set_xlabel('x[mm]', fontsize=sizeLabelSmall, labelpad=10)
-    ax.set_ylabel('y[mm]', fontsize=sizeLabelSmall, labelpad=10)
-    ax.set_zlabel('z[mm]', fontsize=sizeLabelSmall, labelpad=10)
+    ax.set_xlabel('x[mm]')
+    ax.set_ylabel('y[mm]')
+    ax.set_zlabel('z[mm]')
     
     ax.xaxis.set_tick_params(labelsize=sizeTick)
     ax.yaxis.set_tick_params(labelsize=sizeTick)
     ax.zaxis.set_tick_params(labelsize=sizeTick)
     
-    framesize = 0.2
+    framesize = 0.8
     
     ax.auto_scale_xyz([-framesize, framesize], [-framesize, framesize], [-framesize, framesize])
 
@@ -155,9 +155,9 @@ def PlotFinalPositions(ODESolution):
         z = rs[i,-1,2] * 1000 
         """
         
-        x = rs[i,0] * 10000 # 1000 to convert into milimeters
-        y = rs[i,1] * 10000 
-        z = rs[i,2] * 10000 
+        x = rs[i,0] * 1000 # 1000 to convert into milimeters
+        y = rs[i,1] * 1000 
+        z = rs[i,2] * 1000 
         
         charge = system[-1][3]
         if charge > 0:
@@ -169,15 +169,15 @@ def PlotFinalPositions(ODESolution):
     
     ax.view_init(15, 240)
     
-    ax.set_xlabel('$x \ [10^{-4}m]$', fontsize=sizeLabelSmall, labelpad=10)
-    ax.set_ylabel('$y \ [10^{-4}m]$', fontsize=sizeLabelSmall, labelpad=10)
-    ax.set_zlabel('$z \ [10^{-4}m]$', fontsize=sizeLabelSmall, labelpad=10)
+    ax.set_xlabel('x[mm]', fontsize=sizeLabelSmall)
+    ax.set_ylabel('y[mm]', fontsize=sizeLabelSmall)
+    ax.set_zlabel('z[mm]', fontsize=sizeLabelSmall)
     
     ax.xaxis.set_tick_params(labelsize=sizeTickSmall)
     ax.yaxis.set_tick_params(labelsize=sizeTickSmall)
     ax.zaxis.set_tick_params(labelsize=sizeTickSmall)
     
-    framesize = 1.4
+    framesize = 0.5
     ax.auto_scale_xyz([-framesize, framesize], [-framesize, framesize], [-framesize, framesize])
     
     

@@ -12,12 +12,12 @@ we can use two frequencies, each targeting to optimize the trapping of one speci
 We proceed in setting up a two-frequency trap as described in \cite{FOOT2018117, trypogeorgos2016cotrapping}. First, we must acknowledge that while higher frequency will have no significant impact on heavier ions, a light electron will experience the slower field to the full extent. Therefore we have to ensure that the trapping of electrons due to the higher frequency field is strong enough to withstand misguiding by the field with a lower frequency. We refer to this latent instability as the \emph{parametric excitation}. We can secure that to some extent by feeding potentials on electrodes in such a way that $V_1 \ll V_2$. We can provide potentials up to $V_2 \sim \SI{100}{\volt}$, and $V_1 \sim \SI{5}{\volt}$, in the conditions of our experiment. Let us now look at each frequency setup independently. Using \eqref{spring constant}, we get a ratio of spring constants:
 \begin{equation}
 	\label{two frequency ratio}
-	\Kappa = \dfrac{\kappa_{electron}(\Omega_2)}{\kappa_{ion}(\Omega_1)} \approx \dfrac{M_{ion}}{M_{electron}} \left(\dfrac{V_2}{V_1}\dfrac{\Omega_1}{\Omega_2}\right)^2.
+	\Kappa = \dfrac{\kappa_{el}(\Omega_2)}{\kappa_{ion}(\Omega_1)} \approx \dfrac{M_{ion}}{M_{el}} \left(\dfrac{V_2}{V_1}\dfrac{\Omega_1}{\Omega_2}\right)^2.
 \end{equation}
 The correct way to create a stable configuration of a two-frequency trap is to begin by finding the optimal parameters for the confinement of lighter species. Optimal trapping in a single frequency trap corresponds to \cite{gerlich1992inhomogeneous} $q_2 \approx 0.4$. Using \eqref{q_2}, with the choice of $V_2 = \SI{100}{\volt}$, we obtain optimal frequency for electron trapping as $\Omega_2 = \SI{1.88e10}{rad.s^{-1}}$. Now, we must choose the $\Omega_1$ and $V_1$ for ion trapping in a way that suppresses parametric heating of electrons. It is crucial to keep the electron's secular frequency higher than the driving frequency for ion confinement. Otherwise, the $\Omega_2$ frequency field would be too slow to save an electron from parametric excitation. So another condition that must be satisfied in two frequency trapping is:
 \begin{equation}
 	\label{frequency inequality}
-	\Omega_1 \ll \omega_2 = \dfrac{Q V_2}{\sqrt{2} M_{electron} \ell_0^2 \Omega_2},
+	\Omega_1 \ll \omega_2 = \dfrac{Q V_2}{\sqrt{2} M_{el} \ell_0^2 \Omega_2},
 \end{equation}
 where the second equality follows from \eqref{secular frequency}. Unfortunately \cite{FOOT2018117}, we will not be able to forestall parametric heating all the time. In the case of $$\mu \Omega_1 = 2 \omega_2,$$
 where $\mu \in \N$, occurs resonance of driving $\Omega_1$ and secular $\omega_2$ frequency, resulting in heating of lighter species. If substitute for $\omega_2$ from \eqref{secular frequency}, we get a set of unstable parameters $q_2$ characterized by the equation:
@@ -61,13 +61,13 @@ Instead of solving exact equations of motion, we can simulate a charged particle
 
 \begin{equation}
 	\label{electron pseudopotential}
-	V_{electron}^*(\vb{r}) = \frac{M_{electron} \Omega_2^2 q_2^2}{16}(x^2 + y^2 + 4 z^2),
+	V_{el}^*(\vb{r}) = \frac{M_{el} \Omega_2^2 q_2^2}{16}(x^2 + y^2 + 4 z^2),
 \end{equation}
-where we have set the static field to zero and substituted for $q_2$ from \eqref{q_2}. Both frequencies will figure only in pseudopotential for ions. Let us remark that Mathieu parameters \eqref{Mathieu params} differ for the case of electron and ion by a factor of $\nicefrac{M_{electron}}{M_{ion}}$. Using the Mathieu parameters evaluated for electrons, the pseudopotential for ions \cite{leefer2017investigation} is:
+where we have set the static field to zero and substituted for $q_2$ from \eqref{q_2}. Both frequencies will figure only in pseudopotential for ions. Let us remark that Mathieu parameters \eqref{Mathieu params} differ for the case of electron and ion by a factor of $\nicefrac{M_{el}}{M_{ion}}$. Using the Mathieu parameters evaluated for electrons, the pseudopotential for ions \cite{leefer2017investigation} is:
 
 \begin{equation}
 	\label{ion pseudopotential}
-	V_{ion}^*(\vb{r}) = \frac{M_{electron}^2 \Omega_2^2}{16 M_{ion}} \left( \left(\frac{\Omega_2}{\Omega_1}\right)^2 q_1^2 + q_2^2 \right) \left(x^2 + y^2 + 4z^2\right).
+	V_{ion}^*(\vb{r}) = \frac{M_{el}^2 \Omega_2^2}{16 M_{ion}} \left( \left(\frac{\Omega_2}{\Omega_1}\right)^2 q_1^2 + q_2^2 \right) \left(x^2 + y^2 + 4z^2\right).
 \end{equation}
  
 
@@ -196,8 +196,33 @@ after substituting corresponding values we get: $\lambda = \SI{100}{\mm} \gg \SI
 	\item[Induced charge on the electrodes:] charged particles induce surface charge density on the electrodes. This causes attraction of a particle toward the electrode, which can contribute to vacation of the particle from the trap. For reference we can look at simplified situation of a charged particle near an infinite conductive plane. As we have already stated, an average acceleration of the electron throughout the stable simulated trajectory was in the order of $\langle a_c \rangle \sim \SI{e17}{m.s^{-2}}$. For an infinite plane to cause an acceleration $\sim \nicefrac{\langle a_c \rangle}{100}$, the electron would have to approach the electrode up to the distance of $\approx \SI{0.25}{\micro\meter}$, which would already be outside our definition of stable trajectory. Hence we can omit such an effect. 
 	\item[Creation of Rydberg atoms:] an electron can get caught in some highly excited ion orbital creating a Rydberg atom. The electron can subsequently drop to a lower but still volatile state and vacate from it under the influence of the trap, losing energy by the associated photon emission. An electron moving inside a Coulomb crystal can be within reach of multiple ions simultaneously. Hence it may greatly contribute to electron cooling. It will be necessary to add such a process to our simulation in the future.
 	\item[Phase shift:] induced by the finite speed of electric signal delivered to the electrode. This could be problematic since the characteristic dimension of our trap is $\ell_0 = \SI{0.5}{\mm}$, and we are using frequencies up to the orders of $\Omega_2 \sim \SI{e10}{rad.s^{-1}}$. Suppose we optimistically assume that the signal travels through the electrode with the speed of light. In that case, the signal in one period $\nicefrac{1}{\Omega_2}$ spans over the distance of $\sim \SI{0.03}{\mm}$, which is getting close to our characteristic length. We tackle this problem by dividing our electrodes into eight sections, see \ref{fig:Real trap geometry 1}, each with its own feeding from the power source.
-	\item[Imperfection of electrodes:] \xxx{adding some perturbation to the electric potential caused by the imperfection of electrodes and the following study of its impact on stability will be one of the subjects for our future research.}	
-	\item[Collisions with neutrals:] \xxx{we will be able to make a vacuum with pressure of $\sim \SI{e-13}{bar}$\todo{I'll write this tomorrow}}
+	\item[Imperfection of electrodes:] adding some perturbation to the electric potential caused by the imperfection of electrodes and the following study of its impact on stability will be one of the subjects for our future research.	
+	\item[Collisions with neutrals:] we will be able to make a vacuum with pressure of $P\sim \SI{e-13}{bar}$. At this pressure, the heaviest remaining gas component is helium atoms. The collision frequency $Z$ is defined as:
+\begin{equation}
+	\label{collision frequency}
+	z = \frac{Z}{V} = \frac{N_{el} N_{He}}{V} \sigma \sqrt{\frac{8 k_b T}{\pi \mu}},
+\end{equation}
+where $N_{el}$ and $N_{He}$ are electron and helium counts respectively, $\mu$ is a reduced mass, $\sigma$ is the collision cross-section, and $V$ is a volume of the gas. The reduced mass for an electron and a helium atom is:
+\begin{equation}
+	\label{reduced mass}
+	\mu = \frac{M_{el} M_{He}}{M_{el} + M_{He}}.
+\end{equation}
+Assuming helium forms an ideal gas in thermodynamic equilibrium, we can derive the number of helium atoms as:
+\begin{equation}
+	\label{number of helium atoms}
+	N_{He} = \frac{P V}{k_b T}.
+\end{equation}
+The number of electrons will be in the orders of $N_{el} \sim 1$. We can approximate electron-helium collision as a collision of hard spheres. In that case, the cross-section is equal to $\sigma \approx \pi r_w^2$, where $r_w$ is a van der Waals radius\footnote{In the hard sphere model, van der Waals radius indicates a radius of an atom.} of a helium atom: $r_w = \SI{2.31e-10}{m}$. If we assume helium atoms with the room temperature $T=\SI{300}{\kelvin}$, we get a final collision frequency:
+\begin{equation}
+	\label{collision frequency value}
+	z = r_w^2 P \sqrt{\frac{8\pi}{\mu k_b T}} \approx \SI{4.36e-7}{\hertz}.
+\end{equation}
+\todo{to me that looks like we should not worry about it->guess this is not the correct value}It is not hard to prove that in the case of solid spheres, the change in a helium's kinetic energy after one elastic collision with an electron is\todo{not $100\%$ sure whether this is correct}:
+\begin{equation}
+	\label{change in energy after collision}
+	\frac{\Delta E_k^{He}}{E_k^{He}} = \minus 2\frac{M_{el} M_{He}}{(M_{el} + M_{He})^2} \left(1 \minus \cos \chi \right) = \minus\frac{\Delta E_k^{el}}{E_k^{He}},
+\end{equation}
+where $\chi$ is a dispersion angle. The maximal change in kinetic energy happens for $\chi = \pi$. Considering helium atoms at a room temperature $T = \SI{300}{\kelvin}$, the value of this energy change is $\Delta E = \SI{0.16}{\kelvin}$. That is enough to kick an electron out of our trapping potential with the dept of $\sim\SI{0.1}{\kelvin}$.
 \end{description}	
 
 \subsection{Choice of time-step}

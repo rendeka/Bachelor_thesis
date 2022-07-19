@@ -1,7 +1,7 @@
 \chapter{Theoretical introduction}
 \label{chap:intro}
 
-In this chapter, we introduce concepts essential for understanding this thesis's concerns. This chapter is divided into several subsections. In the first subsection, we are going to discuss the basic principles of plasma physics. In the following subsection, we will talk about the motion of a charged particle inside the Paul trap. Next, we will introduce the idea of laser cooling. And finally, in the last subsection, we will present our approach to simulating such a system, entering this thesis's practical component.
+In this chapter, we introduce concepts essential for understanding this thesis's concerns. The first subsection is aimed to deliver the basic characterization of CCs. In the following subsection, we talk about the motion of a charged particle in rapidly changing fields. Next, we will introduce the idea of laser cooling. And finally, in the last subsection, we propose our design of an experiment capable of achieving simultaneous electron-ion trapping and cooling.
 
 \section{Coulomb crystal}
 Most of the solid matter we come across has either a crystal or rather polycrystal structure. Meaning its elementary constituents (atoms, molecules, ions) create an ordered formation repeating itself, in the case of crystals up to macroscopic scales. The shape of these structures \cite{drewsen2003ion} is essentially dictated by the atomic wave function overlap. A CC orders itself differently. An average distance between ions in a CC is usually \cite{thompson2015ion} five orders of magnitude larger than it is for atoms in typical matter. On this scale are quantum effects negligible, and ions are merely pushed away from each other by classical Coulomb interaction. Therefore they need an external force to keep them together, which is provided by a trapping potential in our case. However, these structures can also be found in nature, namely in the cores of white dwarfs and crusts of neutron stars.
@@ -17,16 +17,16 @@ where $n$ represents a concentration of charged particles, $Q$ their charge, $M$
 Plasma can have multiple components, each having different masses and velocities. We define a temperature \cite{fitzpatrick2014plasma} for each species individually as their mean kinetic energy:
 \begin{equation}
 	\label{temperature}
-	T_s = \frac{1}{3} M_s \langle v_s \rangle,
+	k_b T_s = \frac{1}{3} M_s \langle v_s^2 \rangle,
 \end{equation}
-where $\langle v_s \rangle$ denotes an average velocity of single species.
+where $\langle v_s \rangle$ denotes an average velocity of single species, and $k_b$ is a Boltzmann constant.
 
 Another crucial attribute when examining plasma is the $\Gamma$ parameter, representing the proportion of Coulomb potential energy to the plasma's kinetic energy.
 \begin{equation}
 	\label{gamma def}
 	\Gamma \equiv \frac{E_c}{k_b T},
 \end{equation}
-where $T$ denotes temperature, $E_c$ Coulomb energy, and $k_b$ is a Boltzmann constant. It is not easy to figure out the potential energy of a general plasma. However, when dealing with Coulomb crystals with tens to hundreds of ions, nothing stops us from computing it exactly. Classical thermal plasma has $k_b T \gg E_c$. In the case of CCs, $k_b T < E_c$ and we are talking about \emph{strongly coupled} plasma.
+where $T$ denotes temperature, and $E_c$ Coulomb energy. It is not easy to figure out the potential energy of a general plasma. However, when dealing with Coulomb crystals with tens to hundreds of ions, nothing stops us from computing it exactly. Classical thermal plasma has $k_b T \gg E_c$. In the case of CCs, $k_b T < E_c$ and we are talking about \emph{strongly coupled} plasma.
 
 \section{Ion trapping}
 Here we introduce the concept of trapping a single ion by a quickly oscillating field. We will tightly follow a classic textbook \cite{gerlich1992inhomogeneous} in the whole section, starting by writing the equation of motion.
@@ -296,7 +296,7 @@ The equation \eqref{mathieu equation} bears a name after E.L. Mathieu, who was t
 \begin{equation}
 	\omega \approx \frac{\Omega_1}{2} \sqrt{a + \frac{q_1^2}{2}}.
 \end{equation}
-If we apply no static field $a = 0$ the secular frequency is:
+If we apply no static field $(a = 0)$ the secular frequency is:
 \begin{equation}
 	\omega \approx \frac{\Omega_1}{2} \sqrt{\dfrac{q_1^2}{2}} = \dfrac{Q V_1}{\sqrt{2}\ell_0^2 M \Omega_1},
 \end{equation}
@@ -319,11 +319,25 @@ We still need to find the right value for $r_m$. It has been established \cite{g
 \end{equation}
 
 \section{Laser cooling}
-The $Ca^+$ ion has an energy gap between the ground $(s_{\nicefrac{1}{2}})$ and one of its excited $(p_{\nicefrac{1}{2}})$ states with the value corresponding to the wavelength of $\SI{397}{\nano\meter}$ \cite{urabe1993laser}. By tuning the wavelength of our laser slightly below this transition energy, we can exploit the Doppler effect so that only ions moving towards the laser can experience radiation with the right frequency to excite them. After a brief time, the atom will deexcite, emitting a photon in a random direction. The only way the ion would still have the same momentum as before the absorption is if the photon was emitted exactly in the same direction as it was absorbed (as if the photon did not interact with the atom at all). But since the photon emission is isotropic, the ion will effectively slow down. This type of laser cooling is also known as \emph{Doppler cooling}. Detailed explanation can be found in \cite{alma990008711500106986}.   
+The principle of laser cooling can be demonstrated on a calcium ion. The $Ca^+$ ion has an energy gap between the ground $(S_{\nicefrac{1}{2}})$ and one of its excited $(P_{\nicefrac{1}{2}})$ states with the value corresponding to the wavelength of $\SI{397}{\nano\meter}$ \cite{urabe1993laser}. By tuning the wavelength of our laser slightly below this transition energy, we can exploit the Doppler effect so that only ions moving towards the laser can experience radiation with the right frequency to excite them. After a brief time, the atom will deexcite, emitting a photon in a random direction. The only way the ion would still have the same momentum as before the absorption is if the photon was emitted exactly in the same direction as it was absorbed (as if the photon did not interact with the atom at all). But since the photon emission is isotropic, the ion will effectively slow down. This type of laser cooling is also known as \emph{Doppler cooling}. Detailed explanation can be found in \cite{alma990008711500106986}.   
 
 \section{Design of the experiment}
 
-\todo{I will write this section on Monday with Albin's help}
-\begin{comment}
-\xxx{materials and processes used for making electrode; oven as source of calcium atoms, lasers for ionizing calcium atoms creating $Ca^+ + e^-$, lasers for ion cooling}
-\end{comment}
+As we have already stated, we chose a planar trap geometry, offering easy access to ions for laser cooling. Creating such a trap is a challenge in itself, and we have other colleagues in our team devoted to completing this task. Here we offer a quick overview of its development. Our circuit material is made of borosilicate glass for practical reasons. On it, we need to deposit a layer of copper by electroplating, forming the electrodes of our trap. Here arises the first problem, as the copper suffers from poor adhesion on the smooth surface of the glass. There are many ways to overcome this issue. We chose a straightforward one by roughening the glass mechanically with lasers.
+\begin{figure}[H]
+\begin{subfigure}{.45\textwidth}
+	\centering
+	\includegraphics[width=\linewidth]{img/200um_glass.pdf}
+	\caption{The surface of the glass after the laser roughening.}
+	\label{fig:glass}
+\end{subfigure}\hfill%
+\begin{subfigure}{.47\textwidth}
+	\centering
+	\includegraphics[width=\linewidth]{img/200um_copper.pdf}
+	\caption{A copper layer on the glass.\\}
+	\label{fig:quadrupole picture}
+\end{subfigure}
+\caption{Pictures of our electrode manufacturing taken by an electron microscope.}
+\label{fig:trap manufacturing}
+\end{figure}
+Next, we need a source of calcium ions. We manage that by evaporation from a calcium rod under a high voltage. Evaporated atoms will be excited by a $\SI{397}{\nano\meter}$, laser creating a desired ion $Ca^+$ and an electron. For cooling, we use two lasers. The first is the same as we use for photo-ionization. The second with a wavelength of $\SI{866}{\nano\meter}$ is necessary for cooling to lower temperatures, exploiting another transition of calcium ion between the state $(P_{\nicefrac{1}{2}})$ and the meta-stable state $(D_{\nicefrac{3}{2}})$. We are splitting those laser beams to target ions from all directions. Of course, such a complex experiment is met with dozens of other technical issues. However, those are outside of this thesis' scope.

@@ -20,7 +20,7 @@ def TemperatureToVelocity(T=4, mass=ionMass):
     
     return np.sqrt((8 * Kb * T)/(mass * np.pi)) * (2/f2)
 
-def RandomPosition(maxRadius=0.5 * r0, dim=3):
+def RandomPosition(maxRadius=0.1 * r0, dim=3):
     
     vector = 2 * maxRadius * np.random.rand(dim) - maxRadius
     
@@ -97,7 +97,8 @@ def MakeCoulombCrystalFromGrid(nCrystal='25', trapParams=np.array([0, 0.4, 0]), 
 
     n = int(nCrystal)
     #system = MakeParticleSystem(n, 0)
-    system = LoadParticleSystem('coulomb_crystals/' + nCrystal) ############temo
+    system = LoadParticleSystem('coulomb_crystals/' + nCrystal) ############temp
+    #system = MakeParticleGrid(n=n, T=0.1)
 
     
     def TotalVelocity(system):
@@ -108,7 +109,7 @@ def MakeCoulombCrystalFromGrid(nCrystal='25', trapParams=np.array([0, 0.4, 0]), 
             
         return vTot/n
     
-    trasholdVel = TemperatureToVelocity(T=0.01, mass=ionMass)   #povodne T=0.01 
+    trasholdVel = TemperatureToVelocity(T=0.001, mass=ionMass)   #povodne T=0.01 
     i = -1
     
     nBoost = 10
@@ -123,8 +124,8 @@ def MakeCoulombCrystalFromGrid(nCrystal='25', trapParams=np.array([0, 0.4, 0]), 
         """ 
         
         for particle in system:
-            if (Norm(particle[1]) < trasholdVel) and (i < nBoost - 1):
-                particle[1] = RandomVelocity(T=0.5, mass=ionMass)
+            if (Norm(particle[1]) < trasholdVel) and (i < nBoost - 3):
+                particle[1] = RandomVelocity(T=0.01, mass=ionMass)
         
         rs, vs, stepName, exeTime, energies, system, stability = ODEint(system, 
                                                                         trapParams, tmax, dt, ODESystem=ODESystemEffectiveDamping,

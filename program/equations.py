@@ -55,13 +55,13 @@ def ODESystemEffective(rv, t, aCoulomb, mass, charge, trapParams):
     vx,vy,vz = v
 
     x1 = vx
-    vx1 = aCoulomb[0] - x / 4 * (a + 2 * q1**2 / 2 * (f2 / f1)**2 + q2**2 / 2)
+    vx1 = aCoulomb[0] - x / 4 * (a + q1**2 / 2 * (f2 / f1)**2 + q2**2 / 2)
     
     y1 = vy
-    vy1 = aCoulomb[1] - y / 4 * (a + 2 * q1**2 / 2 * (f2 / f1)**2 + q2**2 / 2)
+    vy1 = aCoulomb[1] - y / 4 * (a + q1**2 / 2 * (f2 / f1)**2 + q2**2 / 2)
     
     z1 = vz
-    vz1 = aCoulomb[2] - z * (a + 2 * q1**2 / 2 * (f2 / f1)**2 + q2**2 / 2)
+    vz1 = aCoulomb[2] - z * (a + q1**2 / 2 * (f2 / f1)**2 + q2**2 / 2)
     
     r1 = np.array([x1, y1, z1])
     v1 = np.array([vx1, vy1, vz1])
@@ -98,13 +98,13 @@ def ODESystemEffectiveDamping(rv, tau, aCoulomb, mass, charge, trapParams): #eff
     vx,vy,vz = v
 
     x1 = vx
-    vx1 = aCoulomb[0] - x / 4 * (a + 2 * q1**2 / 2 * (f2 / f1)**2 + q2**2 / 2) - 2 * beta * vx
+    vx1 = aCoulomb[0] - x / 4 * (a + q1**2 / 2 * (f2 / f1)**2 + q2**2 / 2) - 2 * beta * vx
     
     y1 = vy
-    vy1 = aCoulomb[1] - y / 4 * (a + 2 * q1**2 / 2 * (f2 / f1)**2 + q2**2 / 2) - 2 * beta * vy
+    vy1 = aCoulomb[1] - y / 4 * (a + q1**2 / 2 * (f2 / f1)**2 + q2**2 / 2) - 2 * beta * vy
     
     z1 = vz
-    vz1 = aCoulomb[2] - z * (a + 2 * q1**2 / 2 * (f2 / f1)**2 + q2**2 / 2) - 2 * beta * vz
+    vz1 = aCoulomb[2] - z * (a + q1**2 / 2 * (f2 / f1)**2 + q2**2 / 2) - 2 * beta * vz
     
     r1 = np.array([x1, y1, z1])
     v1 = np.array([vx1, vy1, vz1])

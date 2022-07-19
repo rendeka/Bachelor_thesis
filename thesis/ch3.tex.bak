@@ -2,6 +2,7 @@
 \label{chap:results}
 
 \section{Characteristics of q\textsubscript{1} - q\textsubscript{2} stability diagrams for one electron}
+\label{sec:one electron stability}
 
 %\subsection{Comparison of simulation and determinant stability criterion}
 
@@ -117,7 +118,7 @@ Continuing to the frequency ratio compatible for trapping electrons and Ca+ ions
 \label{fig:stabil-eta=833}
 \end{figure}
 
-At this point, the unstable tongues became so dense and narrow that we practically could not see them in stability diagrams \ref{fig:stabil-eta=833}. The closeup was evaluated after a thousand secular oscillations, and the tongues vanished virtually instantly. The stability triangle will continue to shrink with an increasing frequency ratio. However, the character of this region will stay the same. Therefore, predicting stability for different frequency ratios in this range is simple. The essential information comes from the figure \ref{fig:vel-eta=833}. As we can see, an electron's average velocity drops in weaker fields, furnishing us with a method to reach lower electron velocities. Imagine we have already set up a CC in a field that is also stable for electrons. Assuming the electron can cool itself by interactions with Rydberg ions, we follow by gradual change of trapping parameters aiming towards the weak field region. Such will be simulated in the future.
+At this point, the unstable tongues became so dense and narrow that we practically could not see them in stability diagrams \ref{fig:stabil-eta=833}. The closeup was evaluated after a thousand secular oscillations, and the tongues vanished virtually instantly. The stability triangle will continue to shrink with an increasing frequency ratio. However, the character of this region will stay the same. Therefore, predicting stability for different frequency ratios in this range is simple. The essential information comes from the figure \ref{fig:vel-eta=833}. As we can see, an electron's average velocity drops in weaker fields, furnishing us with a method to reach lower electron velocities. Imagine we have already set up a CC in a field that is also stable for electrons. Assuming the electron can cool itself by interactions with ions, we follow by gradual change of trapping parameters aiming towards the weak field region. Such will be simulated in the future.
 
 It is worth pointing out that the computation time of the determinant stability diagram already exceeds that of simulated for a frequency ratio this big. However, we apply a built-in NumPy\footnote{NumPy is widely used, open source, numerical python library: \href{https://numpy.org}{https://numpy.org/}} function for computing determinants using LU decomposition \cite{teukolsky1992numerical} with time complexity $\mathcal{O}(n^3)$, not utilizing the fact that our matrices are sparse. Moreover, we are interested only in the sign of a determinant which also suggests a capacity for efficiency improvement. But since the determinant solutions are not essential to us, we do not investigate such further advancements in this thesis.
 
@@ -147,14 +148,18 @@ It is worth pointing out that the computation time of the determinant stability 
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=\linewidth]{img/0_ions_1_electrons_q1_0.0-0.04_q2_0.0-0.5_360x360_1207.png}
+	\includegraphics[width=\linewidth]{img/0_ions_1_electrons_q1_0.0-0.04_q2_0.0-0.5_960x960_1207_1000.png}
 	\caption{Average electron velocity for $\nicefrac{\Omega_2}{\Omega_1} = 1207$}
 	\label{fig:vel-eta=1207}
 \end{figure}
 
 \section{Creating a Coulomb crystal}
+As we have already mentioned, we assemble a CC by solving the equation of motion for each ion in an effective potential with damping and mutual Coulombic interaction. Meaning that the equation of motion for the i-th ion takes the form:
+\begin{equation}
+	\label{eomCC}
+	M\ddot{\vb{r}}_i = \sum\limits_{\substack{j=1 \\ j\neq i}}^{N} \frac{Q^2}{\pi \Omega_2^2 \varepsilon_0 \pi} \frac{\vb{r_i} - \vb{r_j}}{|\vb{r_i} - \vb{r_j}|^3} - 
+\end{equation}
 
-As we have already mentioned, we assemble a CC by solving the equation of motion for each ion in an effective potential with damping and mutual Coulombic interaction. Such an equation has the form:\todo{finish this}
 
 \begin{figure}[H]
 \begin{subfigure}{.5\textwidth}
@@ -172,12 +177,7 @@ As we have already mentioned, we assemble a CC by solving the equation of motion
 \end{figure}
 
 \section{Stability of electron in Coulomb crystal}
+The ions stand practically still in the time scales corresponding to twenty secular electron oscillations. Therefore, while computing stability diagrams in the presence of CCs, we freeze ions in place, rapidly improving computational time. We have performed such simulations with up to 200 ions, but no significant differences from results obtained in previous section \ref{sec:one electron stability} were observed. Potential instabilities may arise on longer time scales, which has to be investigated further.
 
-The ions stand practically still in the time scales corresponding to twenty secular electron oscillations. Therefore, while computing stability diagrams in the presence of CCs, we freeze ions in place, rapidly improving computational time.
-
-
-\xxx{We have simulated motion of an electron inside ideal Paul trap in the presence of CC with up to 200 ions in it, but it had no impact on the electron's stability. Potential instabilities may arise only on longer time scales, which has to be investigated further.}
-\todo{continue simulating with more ions\dots}
 \section{Future}
-
 Our concerns in the future will be reproducing results of this thesis for the real planar geometry of the trap used in our experiment. The potential of such a trap can be formulated in integral form utilizing Bessel functions, which will make our simulations much more computationally expensive. We need to derive equation of motion and identify parameters analogous to $a$, $q_1$ and $q_2$ which we had for ideal quadrupole trap. After that we can use our exiting program to study stability of particles in dependence on such parameters exactly as we did in this thesis. 
