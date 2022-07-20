@@ -154,10 +154,14 @@ It is worth pointing out that the computation time of the determinant stability 
 \end{figure}
 
 \section{Creating a Coulomb crystal}
-As we have already mentioned, we assemble a CC by solving the equation of motion for each ion in an effective potential with damping and mutual Coulombic interaction. Such an equation takes the form:
+As we have already mentioned, we assemble a CC by solving the equation of motion for each ion in an effective potential with damping and mutual Coulombic interaction. Meaning that the equation of motion for the i-th ion takes the form:
 \begin{equation}
 	\label{eomCC}
-	M\ddot{\vb{r}} = \sum\limits_{\substack{i=0 \\ i\neq 4}}^{N}
+	M_{ion}\vb{\ddot{r}}_i = \sum\limits_{\substack{j=1 \\ j\neq i}}^{N} \frac{Q^2}{4 \pi \varepsilon_0} \frac{\vb{r_i} \minus \vb{r_j}}{|\vb{r_i} \minus \vb{r_j}|^3} \minus  \frac{M_{el}^2 \Omega_2^2}{8 M_{ion}} \left( \left(\nicefrac{\Omega_2}{\Omega_1}\right)^2 q_1^2 + q_2^2 \right) \begin{bmatrix}
+		x_i \\
+		y_i \\
+		4z_i
+	\end{bmatrix} \minus \beta \vb{\dot{r}}_i
 \end{equation}
 
 
@@ -177,7 +181,18 @@ As we have already mentioned, we assemble a CC by solving the equation of motion
 \end{figure}
 
 \section{Stability of electron in Coulomb crystal}
-The ions stand practically still in the time scales corresponding to twenty secular electron oscillations. Therefore, while computing stability diagrams in the presence of CCs, we freeze ions in place, rapidly improving computational time. We have performed such simulations with up to 200 ions, but no significant differences from results obtained in previous section \ref{sec:one electron stability} were observed. Potential instabilities may arise on longer time scales, which has to be investigated further.
+The ions stand practically still in the time scales in orders of $\sim 10$ secular electron oscillations. Therefore, while computing stability diagrams in the presence of CCs, we freeze ions in place, rapidly improving computational time. We have performed such simulations with up to 200 ions, solving the equation for a i-th electron in the variable $\tau = \nicefrac{t\Omega_2}{2}$:
+\begin{multline}
+	\label{eq of motion for electrons in CC}
+	\vb{\ddot{r}}_i = \frac{Q^2}{\pi M_{el} \varepsilon_0 \Omega_2^2} \left( \sum\limits_{\substack{j=1}}^{N_j} \frac{\vb{r}_i \minus \vb{r}_j}{|\vb{r}_i \minus \vb{r}_j|^3} \minus \sum\limits_{\substack{k=1 \\ k \neq i}}^{N_k} \frac{\vb{r}_i \minus \vb{r}_k}{|\vb{r}_i \minus \vb{r}_k|^3} \right) \\ \minus \big( a \minus 2q_1 \cos\left(2\tau\nicefrac{\Omega_1}{\Omega_2}\right) \minus 2q_2\cos\left(2\tau\right) \big) \begin{bmatrix}
+		x\\
+		y\\
+		-2z
+	\end{bmatrix},
+\end{multline}
+where $\vb{r}_j$ denotes a position of j-th electron, and $\vb{r}_k$ is a position of k-th ion. $N_j$ and $N_k$ are the total numbers of electrons and ions respectively.
+
+but no significant differences from results obtained in previous section \ref{sec:one electron stability} were observed. Potential instabilities may arise on longer time scales, which has to be investigated further.
 
 \section{Future}
 Our concerns in the future will be reproducing results of this thesis for the real planar geometry of the trap used in our experiment. The potential of such a trap can be formulated in integral form utilizing Bessel functions, which will make our simulations much more computationally expensive. We need to derive equation of motion and identify parameters analogous to $a$, $q_1$ and $q_2$ which we had for ideal quadrupole trap. After that we can use our exiting program to study stability of particles in dependence on such parameters exactly as we did in this thesis. 

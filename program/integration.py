@@ -109,10 +109,10 @@ def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,
     else:
         if q1 > 0:
             if IsExact(ODESystem):    
-                tmax = kSecular * np.sqrt(2) / q1
+                tmax = 50*kSecular * np.sqrt(2) / q1
             else:
                 dt = dt * ionMass / electronMass
-                tmax = 500*kSecular * np.sqrt(2) / q1
+                tmax = 50000*kSecular * np.sqrt(2) / q1
 
                 #tmax = kSecular * np.sqrt(8) / (f1 * q1)
                 print('what are you doing?')
@@ -164,10 +164,8 @@ def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,
             kineticEnergy[k] = kineticEnergy[k] + 0.5 * mass[i] * Norm(v)**2 * (f2/2)**2
             potentialFromTrap = trapEnergy(ODESystem, trapParams, r, mass[i], t[i]) 
             potentialEnergy[k] = potentialEnergy[k] + potentialFromTrap + potentialCoulomb[i]
-            
-            
-            potentialEnergy[k] = potentialEnergy[k] + potentialCoulomb[i]
-            kineticEnergy[k] = 0
+            potentialEnergy[k] = 0
+
                                                               
             if allowRecombination:
                 

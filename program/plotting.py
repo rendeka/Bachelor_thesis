@@ -54,7 +54,7 @@ def PlotODESolution(ODESolution):
     ax.yaxis.set_tick_params(labelsize=sizeTick)
     ax.zaxis.set_tick_params(labelsize=sizeTick)
     
-    framesize = 0.8
+    framesize = 1000 * r0 * 20
     
     ax.auto_scale_xyz([-framesize, framesize], [-framesize, framesize], [-framesize, framesize])
 

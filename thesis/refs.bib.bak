@@ -189,4 +189,10 @@ abstract = {Radio-frequency (rf) traps are ideal places to store cold ions for s
   year={1984},
   publisher={Academia}
 }
+@book{tschoegl2000fundamentals,
+  title={Fundamentals of equilibrium and steady-state thermodynamics},
+  author={Tschoegl, Nicholas W},
+  year={2000},
+  publisher={Elsevier}
+}
 

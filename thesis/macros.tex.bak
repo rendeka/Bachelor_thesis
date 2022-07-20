@@ -41,7 +41,7 @@
 }
 
 % want a different minus sign
-\newcommand{\minus}{\scalebox{1.0}[1.1]{$ \ - \ $}}
+\newcommand{\minus}{\scalebox{1.0}[1.3]{$ \ - \ $}}
 
 % real/natural numbers
 \newcommand{\R}{\mathbb{R}}
