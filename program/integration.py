@@ -99,22 +99,28 @@ def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,
     a, q1, q2 = trapParams
     #dt = GetDt(ODESystem)#get dt depending on system of ODEs you want to solve
     
+    effectiveFactor = 10000
     if (nIons == 0) or freezeIons:
         if q2 > 0:
-            if IsExact(ODESystem):    
+            if IsExact(ODESystem):
+                dt = dt
                 tmax = kSecular * np.sqrt(2) / q2
             else:
+                dt = dt * 2 / f2 * effectiveFactor
                 tmax = kSecular * np.sqrt(8) / (f2 * q2)
-                
+                particles[:,1] = particles[:,1] * f2 / 2                
     else:
         if q1 > 0:
-            if IsExact(ODESystem):    
-                tmax = 50*kSecular * np.sqrt(2) / q1
+            if IsExact(ODESystem): 
+                dt = dt * f1 / f2
+                tmax = kSecular * ionMass / electronMass * np.sqrt(2) / q1
+                #particles[:,1] = particles[:,1] * f2 / f1
             else:
-                dt = dt * ionMass / electronMass
-                tmax = 50000*kSecular * np.sqrt(2) / q1
+                dt = dt * 2 / f2 * effectiveFactor
+                tmax = kSecular * ionMass / electronMass * np.sqrt(8)  / (f2 * q1) 
+                #tmax = kSecular * np.sqrt(8)  / (f2 * q1)
+                #particles[:,1] = particles[:,1] * f2 / 2
 
-                #tmax = kSecular * np.sqrt(8) / (f1 * q1)
                 print('what are you doing?')
                 
                 
@@ -164,7 +170,6 @@ def ODEint(system, trapParams, tmax=1.3e+2, dt=1e-2, ODESystem=ODESystemExact,
             kineticEnergy[k] = kineticEnergy[k] + 0.5 * mass[i] * Norm(v)**2 * (f2/2)**2
             potentialFromTrap = trapEnergy(ODESystem, trapParams, r, mass[i], t[i]) 
             potentialEnergy[k] = potentialEnergy[k] + potentialFromTrap + potentialCoulomb[i]
-            potentialEnergy[k] = 0
 
                                                               
             if allowRecombination:

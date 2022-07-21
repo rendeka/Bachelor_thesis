@@ -20,7 +20,7 @@ def TemperatureToVelocity(T=4, mass=ionMass):
     
     return np.sqrt((8 * Kb * T)/(mass * np.pi)) * (2/f2)
 
-def RandomPosition(maxRadius=0.1 * r0, dim=3):
+def RandomPosition(maxRadius=0.7 * r0, dim=3):
     
     vector = 2 * maxRadius * np.random.rand(dim) - maxRadius
     

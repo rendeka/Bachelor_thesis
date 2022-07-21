@@ -1,6 +1,6 @@
 \chapter{Using software}
 
-We have performed our calculations on a cluster with 32GiB of RAM, the 24-core processor 12th generation Intel Core i9-12900KF. The program is not optimized for minimal memory usage, and it is possible that some procedures will not run successfully on the less powerful machines.
+We have performed our calculations on a cluster with 32GiB of RAM, the 24-core processor: 12th generation Intel Core i9-12900KF. The program is not optimized for minimal memory usage, and it is possible that some procedures will not run successfully on the less powerful machines.
 
 \section{Python script}
 \label{sec:code}

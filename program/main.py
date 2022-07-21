@@ -45,13 +45,13 @@ def SolveParticleSystem(nCrystal='30'):
     #initsystem = AddElectron(crystal)  
     #initsystem = np.array([electron])
     #SaveParticleSystem(initsystem, 'oneElectron')
-    initsystem = MakeParticleSystem(1,0)
+    initsystem = MakeParticleSystem(0,1)
     #"""
     
-    trapParams = np.array([0, 0.01, 0.35])
+    trapParams = np.array([0, 0.02, 0.33])
     #trapParams = np.array([0, 0.0245, 0.447])
     
-    ODESolution = ODEint(initsystem, trapParams, endTime, 100*timeStep, ODESystemEffective, StepEulerAdvanced, freezeIons=False)
+    ODESolution = ODEint(initsystem, trapParams, endTime, timeStep, ODESystemExact, StepEulerAdvanced, freezeIons=False)
     #ODESolution = ODEint(initsystem, trapParams, 50*endTime, 5000*timeStep, ODESystemEffectiveDamping, StepEulerAdvanced, freezeIons=False)
     newsystem = ODESolution[-2]
     
@@ -328,7 +328,7 @@ if __name__ == '__main__':
     
     tp = np.array([0, 0.005, 0.25])
     #MakeCoulombCrystalFromGrid(nCrystal='100', trapParams=tp, tmax=25*f2/f1*5, dt=1/(400))
-    #SolveParticleSystem(nCrystal='200')
+    SolveParticleSystem(nCrystal='200')
     #PlotCrystal(nCrystal='100') 
 
     
@@ -360,7 +360,7 @@ if __name__ == '__main__':
 
     #StabilityDiagramForCrystals()
     
-    params = ClickStabilityRegions(fileName='det_q1_0.0-0.14_q2_0.0-1.0_960x960_3')
+    #params = ClickStabilityRegions(fileName='det_q1_0.0-0.14_q2_0.0-1.0_960x960_3')
     """left-click unstable, right-click stable. After you choose triangles you must save them with SaveTriangles"""
     #SaveTriangles(triangleUnstable, triangleStable, params)
     
