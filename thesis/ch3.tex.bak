@@ -6,7 +6,7 @@
 
 %\subsection{Comparison of simulation and determinant stability criterion}
 
-We will start by looking at the stability diagrams for different $\nicefrac{\Omega_2}{\Omega_1}$ ratios. Starting with \ref{fig:stabil-eta=3}.
+Before we move to frequencies for the optimal trapping of elections and calcium ions, we examine stability diagrams for different $\nicefrac{\Omega_2}{\Omega_1}$ ratios. Starting with $\nicefrac{\Omega_2}{\Omega_1} = 3$.
 
 \begin{figure}[H]
 \begin{subfigure}{.5\textwidth}
@@ -25,7 +25,7 @@ We will start by looking at the stability diagrams for different $\nicefrac{\Ome
 \label{fig:stabil-eta=3}
 \end{figure}
 
-In the figure \ref{fig:stabil-eta=3} we can see regions of stable\textit{(dark)} and unstable\textit{(light)} solutions to our equation of motion. The picture \ref{fig:det_3} was determined with use of Floquet theory. The adjacent image shows the stability of an electron based on numerical simulation. In contrast with the determinant solution, we can see some evident distinctions. The region around $q_1 \approx q_2 \approx 0$ became unstable. This is no surprise since in a weak field was not satisfied the stability requirement \eqref{stability condition inequality} for the given initial conditions. More importantly, two whole stability areas have melted away in the field with higher amplitudes. We must not forget that the stability in the figure \ref{fig:det_3} is calculated only along the z-axis. We can investigate this by setting the initial position and velocity in x-y directions to zero. As we can see, the subsequent picture \ref{fig:sim_3_z-direction} already agrees with the determinant solution \ref{fig:det_3}.
+In the figure \ref{fig:stabil-eta=3} we can see regions of stable\textit{(dark)} and unstable\textit{(light)} solutions to our equation of motion. The picture \ref{fig:det_3} was determined with use of Floquet theory. The adjacent image shows the stability of an electron based on numerical simulation. In contrast with the determinant solution, we can see some evident distinctions. The region around $q_1 \approx q_2 \approx 0$ became unstable. This is no surprise since the weak field simply did not satisfy the stability requirement \eqref{stability condition inequality} for the given initial conditions. More importantly, two whole stability areas have melted away in the field with higher amplitudes. We must not forget that the stability in the figure \ref{fig:det_3} is calculated only along the z-axis. We can investigate this by setting the initial position and velocity in x-y directions to zero. As we can see, the subsequent picture \ref{fig:sim_3_z-direction} already agrees with the determinant solution \ref{fig:det_3}.
 
 \begin{figure}[H]
 \begin{subfigure}{.5\textwidth}
@@ -44,9 +44,9 @@ In the figure \ref{fig:stabil-eta=3} we can see regions of stable\textit{(dark)}
 \label{fig:stabil-eta=3 different directions}
 \end{figure}
 
-In the next set of pictures \ref{fig:stabil-eta=3_x-y_directions}, we evaluate the stability diagram in x-y directions by setting $\zeta = x$ in \eqref{tilde params} for a determinant solution and setting the z-component of initial position and velocity to zero in the simulation. The red trace in both pictures embodies the edge of stability made with our standard \eqref{stability condition in simulation} stability requirement in simulation. The contour plot in \ref{fig:sim_3_x-direction} was created with the enhanced condition for identifying stable solutions from the standard \eqref{stability condition in simulation} to $\max\limits_{x \in \mathcal{L}}(r) \leq 2 \ \ell_0$, while increasing the total simulation time as well. So this picture \ref{fig:sim_3_x-direction}, among other things, illustrates the non-equivalence of our stability condition while simulating and the condition of stability we use in Floquet theory, as we have already mentioned in \ref{foot:different stability condition}. 
+In the next set of pictures \ref{fig:stabil-eta=3_x-y_directions}, we evaluate the stability diagram in x-y directions by setting $\zeta = x$ in \eqref{tilde params} for a determinant solution and setting the z-component of initial position and velocity to zero in the simulation. The red trace in both pictures embodies the edge of stability made with our standard \eqref{stability condition in simulation} stability requirement in simulation. The contour plot in \ref{fig:sim_3_x-direction} was created with the enhanced condition for identifying stable solutions from the standard \eqref{stability condition in simulation} to $\max\limits_{x \in \mathcal{L}}(r) \leq 2 \ \ell_0$, while increasing the total simulation time as well. So the picture \ref{fig:sim_3_x-direction}, among other things, illustrates the non-equivalence of our stability condition in simulation, and the condition we use in Floquet theory, as we have already mentioned in \ref{foot:different stability condition}. 
 
-In the background of \ref{fig:sim_3_x-y_edge} is a contour plot of the average electron velocity $\langle v \rangle$ throughout the whole trajectory\footnote{Average value defined as: $\langle \xi \rangle = \nicefrac{1}{T} \int_{0}^{T} \xi(\tau) \, d\tau,$ where $T$ denotes a total time of simulation.} relative to the initial velocity $v_0$. The color bar to the right indicates the value of this ratio. We create all the other figures similar to \ref{fig:sim_3_x-y_edge} in the same way. These diagrams can help us find stable trap parameters while keeping electron temperature as low as possible, which is our ultimate goal. The light blue line in \ref{fig:sim_3_x-y_edge} represents the stability edge taken from \ref{fig:stabil-eta=3_x-y_directions}, delivering a crucial message about the difference between the two stability diagrams in \ref{fig:stabil-eta=3}. We see that our discrepancy problem between determinant and simulated stability diagrams is settled by the obvious necessity to combine determinant solutions in both x and z directions. This can be easily fixed with the cost of doubling the computation time for a determinant solution. Nonetheless, from now on, we will focus on simulated results, keeping the determinant diagrams in the z-direction for comparison. Moreover, we can use these pictures \ref{fig:stabil-eta=3_x-y_directions} as a sanity check. By matching them with the results from \cite{leefer2017investigation} \textit{(where the stability of the ideal quadrupole trap along the x-direction was studied)}, we see that we have reproduced the same\footnote{Note that we are using different condition to identify stable solutions.} results $\rightarrow$ proving the validity of our code, at least to some extent.
+In the background of \ref{fig:sim_3_x-y_edge} is a contour plot of the average electron velocity $\langle v \rangle$ throughout the whole trajectory\footnote{Average value defined as: $\langle \xi \rangle = \nicefrac{1}{T} \int_{0}^{T} \xi(\tau) \, d\tau,$ where $T$ denotes a total time of simulation.} relative to the initial velocity $v_0$. The color bar to the right indicates the value of this ratio. We create all the other figures similar to \ref{fig:sim_3_x-y_edge} in the same way. These diagrams can help us find stable trap parameters while keeping electron temperature as low as possible, which is our ultimate goal. The light blue line in \ref{fig:sim_3_x-y_edge} represents the stability edge taken from \ref{fig:stabil-eta=3_x-y_directions}, delivering a crucial message about the difference between the two stability diagrams in \ref{fig:stabil-eta=3}. We see that the discrepancy between determinant and simulated stability diagrams is settled by the obvious necessity to combine determinant solutions in both x and z directions. This can be easily fixed with the cost of doubling the computation time for a determinant solution. Nonetheless, from now on, we will focus on simulated results, keeping the determinant diagrams in the z-direction for comparison. Moreover, we can use these pictures \ref{fig:stabil-eta=3_x-y_directions} as a sanity check. By matching them with the results from \cite{leefer2017investigation} \textit{(where the stability of the ideal quadrupole trap along the x-direction was studied)}, we see that we have reproduced the same\footnote{Note that we are using different condition to identify stable solutions.} results $\rightarrow$ proving the validity of our code, at least to some extent.
 \begin{figure}[H]
 \begin{subfigure}{.5\textwidth}
   \centering
@@ -63,7 +63,7 @@ In the background of \ref{fig:sim_3_x-y_edge} is a contour plot of the average e
 \caption{Stability diagrams for $\nicefrac{\Omega_2}{\Omega_1} = 3$ in x-y plane}
 \label{fig:stabil-eta=3_x-y_directions}
 \end{figure} 
-The image \ref{fig:velocityedge-eta=3} again combines two pictures. The pink curve from now on construes the stable simulated regions, in this case, taken for \ref{fig:sim_3}. 
+The image \ref{fig:velocityedge-eta=3} again combines two pictures. Here\textit{(and in all other pictures as well)} the pink curve construes the stable simulated regions, in this case, taken from \ref{fig:sim_3}. 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\linewidth]{img/0_ions_1_electrons_q1_0.0-0.1_q2_0.0-0.5_488x488_3_1000.png}
@@ -71,7 +71,7 @@ The image \ref{fig:velocityedge-eta=3} again combines two pictures. The pink cur
 	\label{fig:velocityedge-eta=3}
 \end{figure}
 
-Moving to larger frequency ratio $\rightarrow \nicefrac{\Omega_2}{\Omega_1} = 13$ we can start to notice some patterns.
+Moving to larger frequency ratio $\rightarrow \nicefrac{\Omega_2}{\Omega_1} = 13$ we can start to notice some patterns. There emerges one stable triangle with many tongues of instability. With an increasing ratio $\nicefrac{\Omega_2}{\Omega_1}$ we can see a gain in the number of these tongues, but their width promptly shrinks as well. We can expect that by further increasing the frequency ratio, the unstable tongues will be realistically affecting only the regions near the edge of stability, leaving the regions further inside a stable triangle safe to work with.
 
 \begin{figure}[H]
 \begin{subfigure}{.5\textwidth}
@@ -97,8 +97,6 @@ Moving to larger frequency ratio $\rightarrow \nicefrac{\Omega_2}{\Omega_1} = 13
 	\label{fig:stabil-eta=13}
 \end{figure}
 
-There emerges one stable triangle with many tongues of instability. With an increasing ratio $\nicefrac{\Omega_2}{\Omega_1}$ we can see a gain in the number of these tongues, but their width promptly shrinks as well. We expect that by further increasing the frequency ratio, the unstable tongues will be realistically affecting only the regions near the edge of stability, leaving the regions further inside a stable triangle safe to work with.
-
 Continuing to the frequency ratio compatible for trapping electrons and Ca+ ions $\rightarrow \nicefrac{\Omega_2}{\Omega_1} = 833$
 
 \begin{figure}[H]
@@ -118,7 +116,7 @@ Continuing to the frequency ratio compatible for trapping electrons and Ca+ ions
 \label{fig:stabil-eta=833}
 \end{figure}
 
-At this point, the unstable tongues became so dense and narrow that we practically could not see them in stability diagrams \ref{fig:stabil-eta=833}. The closeup on the stability edge \ref{fig:stabil-edge-eta=833} was evaluated after a thousand secular oscillations, and the tongues vanished virtually instantly. The stability triangle will continue to shrink with an increasing frequency ratio. However, the character of this region will stay the same. Therefore, predicting stability for different frequency ratios in this range is forthright. 
+At this point, the unstable tongues became so dense and narrow that we practically could not see them in stability diagrams \ref{fig:stabil-eta=833}. The closeup on the stability edge \ref{fig:stabil-edge-eta=833} was evaluated after a thousand secular oscillations, and the tongues vanished virtually instantly. The stability triangle will continue to shrink with an increasing frequency ratio. However, the character of this region will stay the same. Therefore, based on the results for $\nicefrac{\Omega_2}{\Omega_1} = 833$, we can even make a rough prediction of stability for different frequency ratios in this range. 
 
 \begin{figure}[H]
 	\centering
@@ -144,9 +142,9 @@ At this point, the unstable tongues became so dense and narrow that we practical
 \label{fig:stabil-edge-eta=833}
 \end{figure}
 
-The essential information comes from the figure \ref{fig:vel-eta=833}. As we can see, an electron's average velocity drops in weaker fields, furnishing us with a method to reach lower electron velocities. Imagine we have already set up a CC and managed to trap an electron inside it. Assuming the electron can cool itself by interactions with ions, we can follow by gradual change of trapping parameters aiming towards the weak field region, effectively lowering the electrons' temperature. Such a process will be simulated in the future.
+The essential information comes from the figure \ref{fig:vel-eta=833}. We can see that the electrons' average velocity drops in the fields with a higher $q_1$ parameter. However, there arises an even more reliable tendency of the electrons slowing down in the direction of the weaker fields, furnishing us with a method to reach lower electron velocities. Imagine we have already assembled a CC and managed to trap an electron inside it. Assuming the electron can cool itself by interactions with ions, we can follow by gradual change of trapping parameters aiming towards the weak field region, effectively lowering the electrons' average velocity. This means that we have found the recipe for reaching low temperatures of electrons in two frequency Paul trap. Such a process will be simulated in the future.
 
-It is worth pointing out that the computation time of the determinant stability diagram already exceeds that of simulated for a frequency ratio this big. However, we apply a built-in NumPy\footnote{NumPy is widely used, open source, numerical python library: \href{https://numpy.org}{https://numpy.org/}} function for computing determinants using LU decomposition \cite{teukolsky1992numerical} with time complexity $\mathcal{O}(n^3)$, not utilizing the fact that our matrices are sparse. Moreover, we are interested only in the sign of a determinant which also supports a capacity for efficiency improvement. But since the determinant solutions are not essential to us, we do not investigate such further advancements in this thesis.
+It is worth pointing out that the computation time of the determinant stability diagram already exceeds that of simulated for a frequency ratio this big. However, we apply a built-in NumPy\footnote{NumPy is widely used, open source, numerical python library: \href{https://numpy.org}{https://numpy.org/}} function for computing determinants using LU decomposition \cite{teukolsky1992numerical} with time complexity $\mathcal{O}(n^3)$, not utilizing the fact that our matrices are sparse. Moreover, we are interested only in the sign of a determinant, which also supports a capacity for efficiency improvement. But since the determinant solutions are not essential to us, we do not investigate such further advancements in this thesis.
 
 \begin{figure}[H]
 	\centering
@@ -155,19 +153,19 @@ It is worth pointing out that the computation time of the determinant stability 
 	\label{fig:vel-eta=1207}
 \end{figure}
 
-We produced one more diagram showing stability and average electron velocity for the different ratio of driving frequencies. As was predicted, solutions with lower frequency $\omega_1$ are less stable but show similar qualities as \ref{fig:vel-eta=833}.
+We produced one more diagram showing stability and average electron velocity for the different ratio of driving frequencies. As predicted, solutions with lower frequency $\omega_1$ are less stable but show similar qualities as \ref{fig:vel-eta=833}.
 
 \section{Creating a Coulomb crystal}
 As we have already mentioned, we assemble a CC by solving the equation of motion for each ion in an effective potential with damping and mutual Coulombic interaction. Meaning that the equation of motion for the i-th ion takes the form:
 \begin{equation}
 	\label{eomCC}
-	M_{ion}\vb{\ddot{r}}_i = \sum\limits_{\substack{j=1 \\ j\neq i}}^{N} \frac{Q^2}{4 \pi \varepsilon_0} \frac{\vb{r_i} \minus \vb{r_j}}{|\vb{r_i} \minus \vb{r_j}|^3} \minus  \frac{M_{el}^2 \Omega_2^2}{8 M_{ion}} \left( \left(\nicefrac{\Omega_2}{\Omega_1}\right)^2 q_1^2 + q_2^2 \right) \begin{bmatrix}
+	M_{ion}\vb{\ddot{R}}_i = \sum\limits_{\substack{j=1 \\ j\neq i}}^{N} \frac{Q^2}{4 \pi \varepsilon_0} \frac{\vb{R_i} \minus \vb{R_j}}{|\vb{R_i} \minus \vb{R_j}|^3} \minus  \frac{M_{el}^2 \Omega_2^2}{8 M_{ion}} \left( \left(\nicefrac{\Omega_2}{\Omega_1}\right)^2 q_1^2 + q_2^2 \right) \begin{bmatrix}
 		x_i \\
 		y_i \\
 		4z_i
-	\end{bmatrix} \minus \beta \vb{\dot{r}}_i
+	\end{bmatrix} \minus \beta \vb{\dot{R}}_i,
 \end{equation}
-
+where here, the vector $\vb{R}$ denotes a position of a concrete ion. For these simulations, we have made a classic choice of implementing Verlet integration with the constant time-step. We have tried using a custom adaptive time-step, looking at relative positions and velocities of particles. However, this approach turned out to be less efficient. Nevertheless, such a time-step will be preferred once we start investigating the stability while allowing the possibility of recombination.
 
 \begin{figure}[H]
 \begin{subfigure}{.5\textwidth}
@@ -185,7 +183,7 @@ As we have already mentioned, we assemble a CC by solving the equation of motion
 \end{figure}
 
 \section{Stability of electron in Coulomb crystal}
-The ions stand practically still in the time scales in orders of $\sim 10$ secular electron oscillations. Therefore, while computing stability diagrams in the presence of CCs, we freeze ions in place, rapidly improving computational time. We have performed such simulations with up to 200 ions, solving the equation for a i-th electron in the variable $\tau = \nicefrac{t\Omega_2}{2}$:
+The ions stand practically still in the time scales of $\sim 20$ secular electron oscillations. Therefore, while computing stability diagrams in the presence of CCs, we freeze ions in place, rapidly improving computational time. We have performed such simulations with up to 200 ions, solving the equation for a i-th electron in the variable $\tau = \nicefrac{t\Omega_2}{2}$:
 \begin{multline}
 	\label{eq of motion for electrons in CC}
 	\vb{\ddot{r}}_i = \frac{Q^2}{\pi M_{el} \varepsilon_0 \Omega_2^2} \left( \sum\limits_{\substack{j=1 \\ j \neq i}}^{N_j} \frac{\vb{r}_i \minus \vb{r}_j}{|\vb{r}_i \minus \vb{r}_j|^3} \minus \sum\limits_{\substack{k=1}}^{N_k} \frac{\vb{r}_i \minus \vb{R}_k}{|\vb{r}_i \minus \vb{R}_k|^3} \right) \\ \minus \big( a \minus 2q_1 \cos\left(2\tau\nicefrac{\Omega_1}{\Omega_2}\right) \minus 2q_2\cos\left(2\tau\right) \big) \begin{bmatrix}
@@ -194,7 +192,7 @@ The ions stand practically still in the time scales in orders of $\sim 10$ secul
 		-2z
 	\end{bmatrix},
 \end{multline}
-where $\vb{r}_j$ denotes a position of j-th electron, and $\vb{R}_k$ is the constant position of k-th ion. $N_j$ and $N_k$ are the total numbers of electrons and ions respectively. We have simulated stability diagrams by solving equation \eqref{eq of motion for electrons in CC} with up to 200 ions and frequency ratios $\nicefrac{\Omega_2}{\Omega_1} = 833$ and $\nicefrac{\Omega_2}{\Omega_1} = 1207$. However, we did not observe any noticeable differences from results obtained in the previous section \ref{sec:one electron stability}. Nevertheless, instabilities may arise on longer time scales, which we did not manage to inspect in detail in this thesis, but will be investigated further. 
+where $\vb{r}_j$ denotes a position of j-th electron, and $\vb{R}_k$ is the constant position of k-th ion. $N_j$ and $N_k$ are the total numbers of electrons and ions respectively. We have simulated stability diagrams by solving equation \eqref{eq of motion for electrons in CC} for multiple CCs, and frequency ratios $\nicefrac{\Omega_2}{\Omega_1} = 833$ and $\nicefrac{\Omega_2}{\Omega_1} = 1207$. However, we did not observe any noticeable differences in contrast to results obtained without the presence of CCs. Nevertheless, some instabilities may arise on longer time scales, which we did not manage to inspect in detail in this thesis because of exhaustive computational durations of these simulations. However, such possible instabilities will be investigated in the future. 
 
 \section{Future}
 Our future concerns will begin by continuing the study of electrons' stability in the presence of CC on longer time scales and adding the option of electron cooling via interactions with ions. Another leap will be reproducing the results of this thesis for the real planar geometry of the trap used in our experiment. The potential of such a trap can be formulated in integral form utilizing Bessel functions, making our simulations much more computationally expensive. We need to derive the equation of motion and identify parameters analogous to $a$, $q_1$, and $q_2$, which we had for the ideal quadrupole trap. After that, we can use our exiting program to study the stability and average particle velocity in dependence on such parameters exactly as we did in this thesis. 

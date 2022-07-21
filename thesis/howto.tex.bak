@@ -4,7 +4,18 @@ We have performed our calculations on a cluster with 32GiB of RAM, the 24-core p
 
 \section{Python script}
 \label{sec:code}
-We do not provide an entire architecture of our program since it awaits an extensive reconstruction in the near future. In this appendix, we explain how to use the basic functionalities of the developed python script. Of course, it is best to follow actualized instructions on the \href{https://github.com/rendeka/Bachelor_thesis.git}{github\footnote{\href{https://github.com/rendeka/Bachelor_thesis.git}{$https://github.com/rendeka/Bachelor\_thesis.git$}}}. The program starts by running the \verb|main.py| file. This file has definitions of functions using many different modules. When running the \verb|main.py|, one should uncomment all the lines he/she wants to be executed. Fixed parameters can be adjusted in the module \verb|parameters.py|.
+We do not provide an entire architecture of our program since it awaits an extensive reconstruction in the near future. In this appendix, we explain how to use the basic functionalities of the developed python script. Of course, it is best to follow actualized instructions on the \href{https://github.com/rendeka/Bachelor_thesis.git}{github\footnote{\href{https://github.com/rendeka/Bachelor_thesis.git}{$https://github.com/rendeka/Bachelor\_thesis.git$}}}. The program starts by running the \verb|main.py| file. This file has definitions of functions using many different modules. When running the \verb|main.py|, one should uncomment all the lines he/she wants to be executed\footnote{We warn a dear reader that the script is by no means foolproof, and its usage may require a substantial amount of patience.}. Fixed parameters can be adjusted in the module \verb|parameters.py|. Let us briefly introduce the essential procedures:
+
+\begin{description}
+	\item[MakeStabilityDiagram():] is a procedure for computing a stability diagram on a grid with dimensions $(q1Resol \times q2Resol)$ for a given frequency ratio. Its parameters are minimal and maximal values of $q_1$ and $q_2$, resolution in each direction $q1Resol$ and $q2Resol$, and the option $velocityDiagram$ for evaluating the average velocity. The computation of the stability diagram is always parallelized to all available cores. Its output is a data file that can be found in \verb|data/stability_diagrams|, and a picture of stability diagram in \verb|pics/stability_diagrams|.
+	\item[MakeStabilityDiagramEdge():] evaluates the stability only on its edge. The value of stability is either 0\textit{(stable)} or 1\textit{(unstable)}. The edge of stability is identified as a set of points on the grid with a close neighbor having a different stability value. Evaluation is then repeated with higher resolution. This procedure can be used to speed up the creation of stability diagrams or for smoothening already made ones.
+	\item[MakeCoulombCrystal():] has two parameters $nCrystal$, which is the number of ions in the crystal, and $trapParams$, which is a list of trapping parameters $[a, q_1, q_2]$. Its output is a data file that can be found in \verb|data/coulomb_crystals|. Sometimes it might be necessary to feed the output back into this procedure in order to give ions enough time to crystallize.
+\end{description}
+
+
+
+
+
 
 \begin{comment}
 

@@ -1,27 +1,27 @@
 \chapter{Theoretical introduction}
 \label{chap:intro}
 
-In this chapter, we introduce concepts essential for understanding this thesis' concerns. The first subsection is aimed to deliver the basic characterization of CCs. In the following subsection, we talk about the motion of a charged particle in rapidly changing fields. Next, we will introduce the idea of laser cooling. And finally, in the last subsection, we propose our design of an experiment capable of achieving simultaneous electron-ion trapping and cooling.
+In this chapter, we introduce concepts essential for understanding this thesis' concerns. The first subsection is aimed to deliver the basic characterization of CCs. In the following subsection, we talk about the motion of a charged particle in rapidly changing fields. Next, we introduce the idea of laser cooling. In the last subsection, we propose our design of an experiment capable of achieving simultaneous electron-ion trapping and cooling.
 
 \section{Coulomb crystal}
 Most of the solid matter we come across has either a crystal or rather polycrystal structure. Meaning its elementary constituents (atoms, molecules, ions) create an ordered formation repeating itself, in the case of crystals up to macroscopic scales. The shape of these structures \cite{drewsen2003ion} is essentially dictated by the atomic wave function overlap. A CC orders itself differently. An average distance between ions in a CC is usually \cite{thompson2015ion} five orders of magnitude larger than it is for atoms in typical matter. On this scale are quantum effects negligible, and ions are merely pushed away from each other by classical Coulomb interaction. Therefore they need an external force to keep them together, which is provided by a trapping potential in our case. However, these structures can also be found in nature, namely in the cores of white dwarfs and crusts of neutron stars.
 
-\subsubsection{Plasma}
-Not all texts agree on a precise definition of plasma. A somewhat broad definition \cite{fitzpatrick2014plasma} states that plasma is an ionized gas exerting collective behavior. We often demand quasineutrality as well, suggesting similar ion and electron concentrations. By this merit, a CC can not be labeled plasma as it is composed exclusively of positive ions. Collective behavior means the plasma responds to external macroscopic stimuli as a whole. The standard parameter linked to this aspect is plasma frequency $\omega_p$, describing how quickly plasma reacts to the imposed electromagnetic field.
+\subsection{Plasma}
+Not all texts agree on a precise definition of plasma. A somewhat broad definition \cite{fitzpatrick2014plasma} states that plasma is an ionized gas exerting collective behavior. We often demand quasineutrality as well, suggesting similar ion and electron concentrations. By this merit, a CC can not be labeled plasma, as it is composed exclusively of positive ions. Collective behavior means the plasma responds to external macroscopic stimuli as a whole. The standard parameter linked to this aspect is plasma frequency $\omega_p$, describing how quickly plasma reacts to the imposed electromagnetic field.
 \begin{equation}
 	\label{plasma frequency}
 	\omega_p = \frac{n Q^2}{\varepsilon_0 M},
 \end{equation}
 where $n$ represents a concentration of charged particles, $Q$ their charge, $M$ their mass, and $\varepsilon_0$ is the vacuum permittivity. This equation \eqref{plasma frequency} shows that the electrons play an essential role in collective behavior, as they can react much more swiftly than heavy ions. That is another reason it is necessary to add electrons so that CC can become plasma.
 
-Plasma can have multiple components, each having different masses and velocities. We define a temperature \cite{fitzpatrick2014plasma} for each species individually as their mean kinetic energy:
+Plasma can have multiple components, each having different masses and velocities. We define a temperature $T_s$ \cite{fitzpatrick2014plasma} for each species individually by their mean kinetic energy:
 \begin{equation}
 	\label{temperature}
 	k_b T_s = \frac{1}{3} M_s \langle v_s^2 \rangle,
 \end{equation}
 where $\langle v_s \rangle$ denotes an average velocity of single species, and $k_b$ is a Boltzmann constant.
 
-Another crucial attribute when examining plasma is the $\Gamma$ parameter, representing the proportion of Coulomb potential energy to the plasma's kinetic energy.
+Another crucial attribute of plasma is characterized by the parameter$\Gamma$, representing the proportion of Coulomb potential energy to the plasma's kinetic energy.
 \begin{equation}
 	\label{gamma def}
 	\Gamma \equiv \frac{E_c}{k_b T},
@@ -131,7 +131,7 @@ we see that equation \eqref{first integral of motion} implies:
 	\label{adiabatic constant}
 	\dfrac{1}{2}M R_0^2 + \left\langle \dfrac{1}{2} M R_1^2 \right\rangle + Q\Phi_s = E_m,
 \end{equation}
-which means that if the necessary assumptions in the derivation of the effective potential are met, then the total time-averaged energy of the system is an adiabatic constant. Such an outstanding finding provokes a question of whether we can identify a range of validity for the effective potential. There are more ways to approach this problem. We follow the one demonstrated in \cite{gerlich1992inhomogeneous}, kicking off the necessary condition for keeping just the first two terms in Taylor expansion \eqref{field expansion} of the field $\vb{E}(\vb{r})$. This condition is satisfied if the spatial change of the field is much smaller than the field itself over the scope of one rapid oscillation, meaning:
+which means that if the necessary assumptions in the derivation of the effective potential are met, then the total time-averaged energy of the system is an adiabatic constant. Such an outstanding finding provokes the question of whether we can identify a range of validity for the effective potential. There are more ways to approach this problem. We follow the one demonstrated in \cite{gerlich1992inhomogeneous}, kicking off the necessary condition for keeping just the first two terms in Taylor expansion \eqref{field expansion} of the field $\vb{E}(\vb{r})$. This condition is satisfied if the spatial change of the field is much smaller than the field itself over the scope of one rapid oscillation, meaning:
 \begin{equation}
 	|2(\vb{A} \cdot \nabla)\vb{E_0}| < |\vb{E_0}|.
 \end{equation}
@@ -168,7 +168,7 @@ A multipole is one of Paul trap's classical, well-studied geometries. N-th order
 \caption{The quadrupole trap}
 \label{fig:quadrupole}
 \end{figure}
-\todo{Do I need to cite somebody for \ref{fig:quadrupole picture}?}In the figure \ref{fig:quadrupole scheme}, we can see a comparison of a quadrupole trap's hyperbolical \textit{(dashed)} and linear \textit{(four circles)} electrode geometries. The quadrupole is already a very important geometry worth a special alias $\rightarrow$ the Paul trap, as will be pointed out shortly. We define a characteristic length of the multipole $\ell_0$, indicating the closest distance from the trap's center to an electrode. It is possible to obtain a potential of a multipole with infinitely long linear electrodes by applying boundary conditions \eqref{boundary condition n-pole} to a solution of Laplace equation with cylindrical symmetry \eqref{cylindrical symmetry potential}.
+In the figure \ref{fig:quadrupole scheme}, we can see a comparison of a quadrupole trap's hyperbolical \textit{(dashed)} and linear \textit{(four circles)} electrode geometries. The quadrupole is already a very important geometry worth a special alias $\rightarrow$ the Paul trap, as will be pointed out shortly. We define a characteristic length $\ell_0$, indicating the closest distance from the trap's center to an electrode. It is possible to obtain a potential of a multipole with infinitely long linear electrodes by applying boundary conditions \eqref{boundary condition n-pole} to a solution of Laplace equation with cylindrical symmetry \eqref{cylindrical symmetry potential}.
 \begin{subequations}
 \label{boundary condition n-pole}
 \begin{align}
@@ -215,7 +215,7 @@ After substituting for $\Phi_0$ we get equation of motion in variable $\vb{\hat{
 		\sin\big((n \minus 1)\varphi\big)
 	\end{bmatrix} = \vb{0}.
 \end{equation}
-We see that for the case $n = 2$ the equation of motion \eqref{eq of motion multipole} is linear. The same is clearly does not hold for $n > 2$. That is why the motion in a quadrupole trap is the easiest to describe, and we chose this geometry to study simultaneous electron-ion trapping in this thesis.
+We see that for the case $n = 2$ the equation of motion \eqref{eq of motion multipole} is linear. The same clearly does not hold for $n > 2$. That is why the motion in a quadrupole trap is the easiest to describe, and we chose this geometry to study simultaneous electron-ion trapping in this thesis.
 
 \subsubsubsection{Ideal quadrupole trap}
 \label{sec:quadrupole trap}
@@ -241,7 +241,7 @@ where we define $\tilde{r} \equiv \left[x, y, \minus 2 z\right]^\top$. Meaning t
 \end{equation}
 
 \subsubsection{Real geometry of our trap}
-Since we want to implement laser cooling in our experiment, the Paul trap is not a viable option, as its apparatus would stand in the way of laser beams. For this reason, we will use surface electrodes where the particles levitate above the trap so that the ions will be accessible to us.
+Since we want to implement laser cooling in our experiment, the Paul trap is not a viable option, as its apparatus would stand in the way of laser beams. For this reason, we will use planar geometry where the particles levitate above the trap so that the ions will be accessible to us.
 \begin{figure}[H]
 \begin{subfigure}{.5\textwidth}
   \centering
@@ -262,7 +262,7 @@ Nevertheless, we will conduct our research in this thesis by examining the situa
 
 \subsection{Spring constant}
 \label{sec:spring constant}
-If we focus on the dynamic component of an effective potential \eqref{effective potential hyperbolic}, we can see that it is formally equivalent to a potential of a harmonic oscillator\footnote{Meaning a potential in the form: $V(\xi) = \dfrac{\kappa}{2} \xi^2$}. This encourages us to define a spring constant: 
+If we focus on the dynamic component of an effective potential \eqref{effective potential hyperbolic}, we can see that it is formally equivalent to a potential of a harmonic oscillator\footnote{Meaning a potential in the form: $V(\xi) = \dfrac{\kappa}{2} \xi^2$}. This seduces us to define a spring constant: 
 \begin{equation}
 	\label{spring constant}
 	\kappa \equiv \dfrac{Q^2 V_1^2}{2\ell_0^4 M \Omega_1^2},
@@ -292,14 +292,14 @@ The equation \eqref{mathieu equation} bears a name after E.L. Mathieu, who was t
 \begin{equation}
 	\omega \approx \frac{\Omega_1}{2} \sqrt{a + \frac{q_1^2}{2}}.
 \end{equation}
-If we do not apply any static field \textit{(as in is the case for our configuration)} the secular frequency is:
+If we do not apply any static field \textit{(as in the case of our configuration)} the secular frequency is:
 \begin{equation}
-	\omega \approx \frac{\Omega_1}{2} \sqrt{\dfrac{q_1^2}{2}} = \dfrac{Q V_1}{\sqrt{2}\ell_0^2 M \Omega_1},
+	\omega \approx \frac{\Omega_1 q_1}{\sqrt{8}} = \dfrac{Q V_1}{\sqrt{2}\ell_0^2 M \Omega_1},
 \end{equation}
 which is in accordance with the result we attained with the spring constant in the harmonic pseudopotential.
 
 \subsection{Stability} 
-The stability of a linear system such as \eqref{mathieu equation} can be examined with the help of a robust theory for linear ODEs with periodic coefficients, which we do in section \ref{sec:floquet theory}. Nevertheless, we eventually want to study the trapping of multiple charged particles, and their mutual interaction razes the linearity of our equations. There is no single outright mathematical way to define the stability of a non-linear, non-autonomous system. Mathematical approaches might demand the boundedness of the solution in the phase space. Then we would talk about Lagrange stability \cite{bhatia2002stability}. Another approach would be to seek stable points and study what happens to the solutions starting in their proximity. This approach is referred to as Lyapunov stability \cite{lyapunov1992general}. We will use a simple but practical criterion for identifying stable solutions. A stable particle cannot vacate the internal dimension of the trap, meaning:
+The stability of a linear system such as \eqref{mathieu equation} can be examined with the help of the robust theory for linear ODEs with periodic coefficients, which we do in section \ref{sec:floquet theory}. Nevertheless, we eventually want to study the trapping of multiple charged particles, and their mutual interaction razes the linearity of our equations. There is no single outright mathematical way to define the stability of a non-linear, non-autonomous system. Mathematical approaches might demand the boundedness of the solution in the phase space. Then we would talk about Lagrange stability \cite{bhatia2002stability}. Another approach would be to seek stable points and study what happens to the solutions starting in their proximity. This approach is referred to as Lyapunov stability \cite{lyapunov1992general}. We will use a simple but practical criterion for identifying stable solutions. A stable particle cannot vacate the internal dimension of the trap, meaning:
 \begin{equation}
 	\max\limits_{x \in \mathcal{L}}(r) \leq r_m < \ell_0,
 \end{equation}
@@ -319,7 +319,7 @@ We demonstrate the principle of laser cooling on a calcium ion. The $Ca^+$ ion h
 
 \section{Design of the experiment}
 
-As we have already stated, we chose a planar trap geometry, offering easy access to ions for laser cooling. Creating such a trap is a challenge in itself, and we have other colleagues in our team devoted to completing this task. Here we offer a quick overview of its development. Our circuit material is made of borosilicate glass for practical reasons. On it, we need to deposit a layer of copper by electroplating, forming the electrodes of our trap. Here arises the first problem, as the copper suffers from poor adhesion on the smooth surface of the glass. There are many ways to overcome this issue. We chose a straightforward one by roughening the glass mechanically with lasers.
+As we have already stated, we chose a planar trap geometry, offering us easy access to ions for laser cooling. One such scheme was already shown in the figure \ref{fig:planar trap geometry}, but we have not decided on the final detailed shape of the electrodes yet. Creating a trap is a challenge in itself, and we have other colleagues in our team devoted to completing this task. Here we offer a quick overview of its development. Our circuit material is made of borosilicate glass for practical reasons. On it, we need to deposit a layer of copper by electroplating, forming the electrodes of our trap. Here arises the first problem, as the copper suffers from poor adhesion on the smooth surface of the glass. There are many ways to overcome this issue. We chose a straightforward one by roughening the glass mechanically with lasers\footnote{{This is carried out by the external company: \href{https://www.hilase.cz}{HiLASE}}}.
 \begin{figure}[H]
 \begin{subfigure}{.45\textwidth}
 	\centering
@@ -336,4 +336,4 @@ As we have already stated, we chose a planar trap geometry, offering easy access
 \caption{Pictures of our electrode manufacturing taken by an electron microscope.}
 \label{fig:trap manufacturing}
 \end{figure}
-We also use lasers to cut ways for the connection of each electrode to the power source. Next, we need a source of calcium ions. We manage that by evaporation from a calcium rod under a high voltage. Evaporated atoms will be excited by a $\SI{397}{\nano\meter}$, laser creating a desired ion $Ca^+$ and an electron. For cooling, we use two lasers. The first is the same as we use for photo-ionization. The second with a wavelength of $\SI{866}{\nano\meter}$ is necessary for cooling to lower temperatures, exploiting another transition of calcium ion between the state $(P_{\nicefrac{1}{2}})$ and the meta-stable state $(D_{\nicefrac{3}{2}})$. Of course, such a complex experiment is met with dozens of other technical issues, but those are outside the scope of this thesis.
+We also use lasers to cut routes into the glass for connections of each electrode to the power source. The next component of our experiment is a source of calcium ions. We manage that by evaporation from a calcium rod under a high voltage. Evaporated atoms will be excited by a $\SI{397}{\nano\meter}$ laser, creating the desired ion $Ca^+$ and an electron. For cooling, we use two lasers. The first is the same as we use for photo-ionization. The second with a wavelength of $\SI{866}{\nano\meter}$ is necessary for cooling to lower temperatures, exploiting another transition of calcium ion between the state $(P_{\nicefrac{1}{2}})$ and the meta-stable state $(D_{\nicefrac{3}{2}})$. We are also developing a method to detect subtle motions of ions induced by the interaction with light electrons. Our method is based on the entanglement of ion's quantum states and the modes of an optical resonator. This makes up another pantry that needs to be polished for a successful outcome of our experiment. The trap itself will be set in a vacuum chamber with the pressure of $P = \SI{1e-13}{\bar}$ to eliminate inconvenient effects of the surroundings. Of course, such a complex experiment is met with dozens of other technical issues, but those are outside the scope of this thesis.
